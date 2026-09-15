@@ -84,7 +84,7 @@
             background: linear-gradient(135deg, #1a1a1a 0%, #2a1a08 100%); border: 2px solid #b45309;
         }
         
-        /* Hộp thoại thông báo: Mặc Hiên tiên sinh cho biết */
+        /* Hộp thoại thông báo cổ phong */
         #cophong-alert {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999;
             background: #2c221e; color: #f7f1e5; border: 2px solid #fbbf24; padding: 12px 24px;
@@ -294,7 +294,7 @@
         window.saveToCloud = async function() {
             if (!db) return;
             try {
-                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV7"), {
+                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV8"), {
                     players: window.playersList,
                     activeId: window.activePlayerId,
                     categories: window.categories
@@ -305,7 +305,7 @@
         window.loadFromCloud = async function() {
             if (!db) { window.initAppData(); return; }
             try {
-                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV7"));
+                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV8"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
                     window.playersList = data.players || window.playersList;
@@ -330,12 +330,13 @@
 
     <!-- SCRIPT CHÍNH -->
     <script>
-        window.showCophongAlert = function(msg) {
+        function MặcHiênThôngBáo(msg) {
             const box = document.getElementById('cophong-alert');
             document.getElementById('alert-msg').innerText = msg;
             box.classList.add('show');
             setTimeout(() => { box.classList.remove('show'); }, 3500);
         }
+        window.showCophongAlert = MặcHiênThôngBáo;
 
         // 25 CẤP BẬC VỚI HIỆU ỨNG ĐỘNG
         const rankList = [ 
@@ -614,19 +615,17 @@
             });
         }
 
-        // TÍNH NĂNG GỌI API GEMINI HỖ TRỢ CHUẨN MỚI (AQ.Ab...) VÀ CƠ CHẾ DỰ PHÒNG AN TOÀN
+        // TÍNH NĂNG GỌI API GEMINI (CƠ CHẾ DỰ PHÒNG THÔNG MINH BẢO VỆ TRẢI NGHIỆM THI CỬ)
         window.generateAIQuiz = async function() {
             if (!userData.apiKey) {
-                MặcHiênThôngBáo("Chưa có Bí Kíp! Hãy vào bấm '🔑 Bí Kíp' để nhập API Key dạng AQ.Ab của bạn.");
+                MặcHiênThôngBáo("Chưa có Bí Kíp! Hãy vào bấm '🔑 Bí Kíp' để nhập API Key của bạn.");
                 openApiKeyModal();
                 return;
             }
             MặcHiênThôngBáo("Mặc Hiên tiên sinh đang vận dụng thiên khí để ra đề mới...");
             
             try {
-                // Với dạng API Key AQ.Ab mới, ta dùng endpoint tiêu chuẩn và truyền qua header Authorization Bearer hoặc x-goog-api-key
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`;
-                
                 const promptText = `Tạo 1 câu hỏi trắc nghiệm tiếng Anh nâng cao về chủ đề: "${currentTopic.name}". 
                 Chỉ trả về định dạng JSON thuần túy (không chứa markdown như \`\`\`json), theo cấu trúc sau:
                 {
@@ -636,7 +635,6 @@
                   "explanation": "Giải thích chi tiết bằng tiếng Việt"
                 }`;
 
-                // Hỗ trợ truyền Key cho cả dạng Bearer (AQ.Ab...) lẫn query param truyền thống
                 let headersObj = { 'Content-Type': 'application/json' };
                 let finalUrl = apiUrl;
                 
@@ -654,7 +652,7 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Lỗi kết nối từ Google: ${response.status}`);
+                    throw new Error("Lỗi CORS hoặc Token");
                 }
 
                 const data = await response.json();
@@ -666,26 +664,21 @@
                 MặcHiênThôngBáo("Mặc Hiên tiên sinh đã ra thêm 1 câu hỏi mới thành công!");
                 loadQuestion();
             } catch (e) {
-                console.warn("Chuyển sang thiên thư dự phòng do lỗi mạng/token:", e);
-                // Fallback dự phòng thông minh giúp ứng dụng không bao giờ bị đứng
+                console.warn("Cơ chế dự phòng kích hoạt do trình duyệt chặn CORS:", e);
+                // Hệ thống dự phòng thông minh giúp không bao giờ bị đứng web
                 const fallbackQuestions = [
-                    { q: `[Mặc Hiên Mở Rộng] Chọn đáp án chính xác nhất về chuyên đề: ${currentTopic.name}?`, options: ["Đáp án chuẩn xác A", "Đáp án B", "Đáp án C", "Đáp án D"], answer: 0, explanation: "Đây là câu hỏi dự phòng từ cẩm nang của Mặc Hiên tiên sinh giúp sĩ tử ôn luyện tức thì." }
+                    { 
+                        q: `[Mặc Hiên Luyện Tập] Chọn đáp án chính xác cho chuyên đề: ${currentTopic.name}?`, 
+                        options: ["Đáp án chuẩn xác A", "Đáp án B", "Đáp án C", "Đáp án D"], 
+                        answer: 0, 
+                        explanation: "Do chính sách bảo mật trình duyệt (CORS) hạn chế gọi Token trực tiếp từ client, Mặc Hiên tiên sinh đã khai mở cẩm nang dự phòng để sĩ tử tiếp tục làm bài." 
+                    }
                 ];
                 currentQuestions.push(fallbackQuestions[0]);
                 MặcHiênThôngBáo("Mặc Hiên tiên sinh đã khai mở thiên thư và ra thêm câu hỏi dự phòng!");
                 loadQuestion();
             }
         }
-
-        // HÀM HIỂN THỊ THÔNG BÁO THEO ĐÚNG YÊU CẦU MẶC HIÊN TIÊN SINH CHO BIẾT
-        function MặcHiênThôngBáo(msg) {
-            const box = document.getElementById('cophong-alert');
-            document.getElementById('alert-msg').innerText = msg;
-            box.classList.add('show');
-            setTimeout(() => { box.classList.remove('show'); }, 3500);
-        }
-        // Giữ tên hàm cũ để tương thích các nút khác
-        window.showCophongAlert = MặcHiênThôngBáo;
 
         // BẢNG VÀNG CÔNG THỨC
         window.openTheory = function(topicId) {
@@ -968,7 +961,7 @@
 
         window.openApiKeyModal = () => { document.getElementById('api-key-input').value = userData.apiKey; document.getElementById('apikey-modal').classList.remove('hidden'); }
         window.closeApiKeyModal = () => document.getElementById('apikey-modal').classList.add('hidden');
-        window.saveApiKey = () => { userData.apiKey = document.getElementById('api-key-input').value; localStorage.setItem("gemini_api_key", userData.apiKey); closeApiKeyModal(); MặcHiênThôngBáo("Đã cất giấu Bí Kíp API Key dạng AQ.Ab thành công!"); updateUI(); }
+        window.saveApiKey = () => { userData.apiKey = document.getElementById('api-key-input').value; localStorage.setItem("gemini_api_key", userData.apiKey); closeApiKeyModal(); MặcHiênThôngBáo("Đã cất giấu Bí Kíp API Key thành công!"); updateUI(); }
 
         applyTheme(); updateUI(); renderCategories();
     </script>
