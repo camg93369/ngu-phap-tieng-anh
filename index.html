@@ -20,6 +20,27 @@
         
         .seal-stamp { border: 2px dashed #b91c1c; color: #b91c1c; transform: rotate(-3deg); }
 
+        /* Hiệu ứng khung quan phẩm động (Lửa, Sấm sét, Ánh sáng) */
+        @keyframes fireGlow {
+            0% { box-shadow: 0 0 5px #f59e0b, inset 0 0 5px #ef4444; border-color: #f59e0b; }
+            50% { box-shadow: 0 0 20px #ef4444, inset 0 0 12px #f59e0b; border-color: #ef4444; }
+            100% { box-shadow: 0 0 5px #f59e0b, inset 0 0 5px #ef4444; border-color: #f59e0b; }
+        }
+        @keyframes lightningFlash {
+            0% { box-shadow: 0 0 8px #38bdf8; border-color: #38bdf8; }
+            30% { box-shadow: 0 0 25px #ffffff, inset 0 0 15px #38bdf8; border-color: #ffffff; }
+            100% { box-shadow: 0 0 8px #38bdf8; border-color: #38bdf8; }
+        }
+        @keyframes royalGold {
+            0% { box-shadow: 0 0 15px #fbbf24; border-color: #fbbf24; }
+            50% { box-shadow: 0 0 30px #facc15, inset 0 0 20px #f59e0b; border-color: #fef08a; }
+            100% { box-shadow: 0 0 15px #fbbf24; border-color: #fbbf24; }
+        }
+
+        .rank-card-fire { animation: fireGlow 3s infinite ease-in-out; }
+        .rank-card-lightning { animation: lightningFlash 2s infinite ease-in-out; }
+        .rank-card-royal { animation: royalGold 2.5s infinite ease-in-out; }
+
         /* Khung Đua Top Card */
         .top-card {
             border-radius: 16px;
@@ -29,51 +50,24 @@
             border: 2px solid #2d2f36;
             transition: all 0.3s ease;
         }
-        .top-card.rank-1 {
-            border-color: #f59e0b;
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3), inset 0 0 15px rgba(245, 158, 11, 0.15);
-        }
-        .top-card.rank-2 {
-            border-color: #3b82f6;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1);
-        }
-        .top-card.rank-3 {
-            border-color: #b45309;
-            box-shadow: 0 0 15px rgba(180, 83, 9, 0.25), inset 0 0 10px rgba(180, 83, 9, 0.1);
-        }
+        .top-card.rank-1 { border-color: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3), inset 0 0 15px rgba(245, 158, 11, 0.15); }
+        .top-card.rank-2 { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1); }
+        .top-card.rank-3 { border-color: #b45309; box-shadow: 0 0 15px rgba(180, 83, 9, 0.25), inset 0 0 10px rgba(180, 83, 9, 0.1); }
 
         .rank-badge {
-            position: absolute;
-            top: -12px;
-            left: 12px;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 12px;
-            color: #fff;
+            position: absolute; top: -12px; left: 12px; width: 28px; height: 28px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 12px; color: #fff;
         }
         .rank-1 .rank-badge { background: #f59e0b; }
         .rank-2 .rank-badge { background: #3b82f6; }
         .rank-3 .rank-badge { background: #b45309; }
 
         .avatar-frame {
-            width: 84px;
-            height: 84px;
-            margin: 0 auto 12px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
+            width: 84px; height: 84px; margin: 0 auto 12px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 40px;
             background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.6) 100%);
-            border: 2px solid rgba(251, 191, 36, 0.5);
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
+            border: 2px solid rgba(251, 191, 36, 0.5); overflow: hidden; position: relative; cursor: pointer;
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
         .avatar-frame img { width: 100%; height: 100%; object-fit: cover; }
@@ -184,7 +178,7 @@
         </div>
     </main>
 
-    <!-- BẢNG CÁC CẤP BẬC HỆ THỐNG (MỖI CẤP CÓ KHUNG THẺ THIẾT KẾ RIÊNG) -->
+    <!-- BẢNG CÁC CẤP BẬC HỆ THỐNG (25 CẤP BẬC CÓ KHUNG HIỆU ỨNG ĐỘNG LỬA, SÉT, ÁNH SÁNG) -->
     <div id="rank-system-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-4xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative">
             <div class="flex justify-between border-b border-amber-300 pb-3 items-center">
@@ -197,7 +191,7 @@
         </div>
     </div>
 
-    <!-- BẢNG ĐUA TOP CỦA SĨ TỬ (KHUNG ĐÚNG ẢNH + ĐỔI AVATAR) -->
+    <!-- BẢNG ĐUA TOP CỦA SĨ TỬ -->
     <div id="ranks-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
         <div class="max-w-4xl w-full p-6 rounded-2xl space-y-6 max-h-[90vh] overflow-y-auto relative bg-[#0f1012] text-white border border-gray-800">
             <div class="flex justify-between border-b border-gray-800 pb-3 items-center">
@@ -214,10 +208,7 @@
                 <div id="players-selector-list" class="flex flex-wrap gap-1.5 pt-1"></div>
             </div>
 
-            <!-- Khung Đua Top Card -->
             <div id="top-ranks-cards-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2"></div>
-
-            <!-- Danh sách tiếp theo -->
             <div id="other-ranks-list" class="space-y-2 pt-2 border-t border-gray-800"></div>
 
             <button onclick="closeRanksModal()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-lg font-bold transition">Trở Về</button>
@@ -231,7 +222,6 @@
                 <h3 class="cophong-title text-xl font-bold text-amber-600 dark:text-amber-400">🖼️ Đổi Ảnh Đại Diện Sĩ Tử</h3>
                 <button onclick="closeAvatarModal()" class="font-bold">✕</button>
             </div>
-            
             <div class="space-y-3">
                 <div>
                     <label class="block text-xs font-bold mb-1">1. Tải ảnh lên từ máy tính:</label>
@@ -267,7 +257,7 @@
         </div>
     </div>
 
-    <!-- MODULE FIREBASE ĐÁM MY (KHÔI PHỤC HOÀN CHỈNH) -->
+    <!-- MODULE FIREBASE ĐÁM MÂY -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -293,7 +283,7 @@
         window.saveToCloud = async function() {
             if (!db) return;
             try {
-                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFull"), {
+                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV2"), {
                     players: window.playersList,
                     activeId: window.activePlayerId,
                     categories: window.categories
@@ -304,7 +294,7 @@
         window.loadFromCloud = async function() {
             if (!db) { window.initAppData(); return; }
             try {
-                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFull"));
+                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV2"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
                     window.playersList = data.players || window.playersList;
@@ -329,7 +319,7 @@
 
     <!-- SCRIPT CHÍNH -->
     <script>
-        // 25 CẤP BẬC QUAN PHẨM (MỖI CẤP CÓ KHUNG THẺ THIẾT KẾ ĐẶC BIỆT RIÊNG)
+        // 25 CẤP BẬC VỚI HIỆU ỨNG ĐỘNG (LỬA, SÉT, HÀO QUANG VÀNG)
         const rankList = [ 
             { name: "Sĩ tử", exp: 0, frame: "border-gray-400 bg-gray-500/10 text-gray-700 dark:text-gray-300" }, 
             { name: "Đồng Sinh", exp: 100, frame: "border-emerald-500 bg-emerald-500/10 text-emerald-600" }, 
@@ -344,21 +334,20 @@
             { name: "Chánh Thất Phẩm", exp: 5500, frame: "border-yellow-500 bg-yellow-500/10 text-yellow-500" }, 
             { name: "Tòng Lục Phẩm", exp: 6800, frame: "border-teal-500 bg-teal-500/10 text-teal-400" }, 
             { name: "Chánh Lục Phẩm", exp: 8200, frame: "border-teal-400 bg-teal-400/10 text-teal-300" }, 
-            { name: "Tòng Ngũ Phẩm", exp: 10000, frame: "border-cyan-500 bg-cyan-500/10 text-cyan-400" }, 
-            { name: "Chánh Ngũ Phẩm", exp: 12000, frame: "border-cyan-400 bg-cyan-400/10 text-cyan-300" }, 
-            { name: "Tòng Tứ Phẩm", exp: 15000, frame: "border-rose-500 bg-rose-500/10 text-rose-400" }, 
-            { name: "Chánh Tứ Phẩm", exp: 18000, frame: "border-rose-600 bg-rose-600/10 text-rose-300" }, 
-            { name: "Tòng Tam Phẩm", exp: 22000, frame: "border-pink-500 bg-pink-500/10 text-pink-400" }, 
-            { name: "Chánh Tam Phẩm", exp: 27000, frame: "border-pink-600 bg-pink-600/10 text-pink-300" }, 
-            { name: "Tòng Nhị Phẩm", exp: 33000, frame: "border-violet-500 bg-violet-500/10 text-violet-400" }, 
-            { name: "Chánh Nhị Phẩm", exp: 40000, frame: "border-violet-600 bg-violet-600/10 text-violet-300" }, 
-            { name: "Tòng Nhất Phẩm", exp: 48000, frame: "border-red-500 bg-red-500/10 text-red-500" }, 
-            { name: "Chánh Nhất Phẩm", exp: 57000, frame: "border-red-600 bg-red-600/10 text-red-400" }, 
-            { name: "Thái Sư", exp: 68000, frame: "border-amber-400 bg-amber-400/20 text-amber-300 font-bold ring-1 ring-amber-400" }, 
-            { name: "Tể Tướng Đương Triều", exp: 80000, frame: "border-yellow-300 bg-gradient-to-r from-amber-600/30 to-red-600/30 text-yellow-200 font-extrabold ring-2 ring-yellow-400" } 
+            { name: "Tòng Ngũ Phẩm", exp: 10000, frame: "border-cyan-500 bg-cyan-500/10 text-cyan-400 rank-card-lightning" }, 
+            { name: "Chánh Ngũ Phẩm", exp: 12000, frame: "border-cyan-400 bg-cyan-400/10 text-cyan-300 rank-card-lightning" }, 
+            { name: "Tòng Tứ Phẩm", exp: 15000, frame: "border-rose-500 bg-rose-500/10 text-rose-400 rank-card-fire" }, 
+            { name: "Chánh Tứ Phẩm", exp: 18000, frame: "border-rose-600 bg-rose-600/10 text-rose-300 rank-card-fire" }, 
+            { name: "Tòng Tam Phẩm", exp: 22000, frame: "border-pink-500 bg-pink-500/10 text-pink-400 rank-card-fire" }, 
+            { name: "Chánh Tam Phẩm", exp: 27000, frame: "border-pink-600 bg-pink-600/10 text-pink-300 rank-card-fire" }, 
+            { name: "Tòng Nhị Phẩm", exp: 33000, frame: "border-violet-500 bg-violet-500/10 text-violet-400 rank-card-royal" }, 
+            { name: "Chánh Nhị Phẩm", exp: 40000, frame: "border-violet-600 bg-violet-600/10 text-violet-300 rank-card-royal" }, 
+            { name: "Tòng Nhất Phẩm", exp: 48000, frame: "border-red-500 bg-red-500/10 text-red-500 rank-card-royal" }, 
+            { name: "Chánh Nhất Phẩm", exp: 57000, frame: "border-red-600 bg-red-600/10 text-red-400 rank-card-royal" }, 
+            { name: "Thái Sư", exp: 68000, frame: "border-amber-400 bg-amber-400/20 text-amber-300 font-bold rank-card-royal" }, 
+            { name: "Tể Tướng Đương Triều", exp: 80000, frame: "border-yellow-300 bg-gradient-to-r from-amber-600/30 to-red-600/30 text-yellow-200 font-extrabold rank-card-royal" } 
         ];
         
-        // 15 VẬT PHẨM MẶC HƯƠNG TRAI
         const shopItems = [
             { id: 1, name: "Bút Lông Sói Thượng Hạng", desc: "Giúp thi cử hanh thông.", price: 150, icon: "🖌️" },
             { id: 2, name: "Nghiên Mực Hoàng Sơn", desc: "Nét chữ mượt mà, rèn luyện trí tuệ.", price: 200, icon: "🪨" },
@@ -379,7 +368,7 @@
 
         const petAvatars = ["🐱", "🦊", "🐰", "🐼", "🐯", "🦁", "🐨", "🦉"];
 
-        // DỮ LIỆU NGỮ PHÁP ĐẦY ĐỦ (CÁC THÌ VÀ NGỮ PHÁP KHÁC)
+        // DỮ LIỆU NGỮ PHÁP ĐẦY ĐỦ (CÁC THÌ VÀ NGỮ PHÁP KHÁC KHÔNG BỊ THIẾU SÓT)
         window.categories = [
             {
                 id: 'cat1', title: 'Trường Thi Thứ Nhất: Nhóm Các Thì Hiện Tại',
@@ -414,6 +403,21 @@
                         questions: [
                             { q: "Listen! Someone _____ a song.", options: ["sing", "sings", "is singing", "sang"], answer: 2, explanation: "Có câu lệnh 'Listen!' báo hiệu hành động đang xảy ra." }
                         ] 
+                    },
+                    { 
+                        id: 't_present_perfect', 
+                        name: '3. Hiện Tại Hoàn Thành (Present Perfect)', 
+                        type: 'tense',
+                        formula: {
+                            affirmative: "S + have/has + V3/ed",
+                            negative: "S + have/has + NOT + V3/ed",
+                            interrogative: "Have/Has + S + V3/ed?"
+                        },
+                        signals: "already, yet, just, ever, never, since, for, so far, recently...",
+                        usage: "Diễn tả hành động bắt đầu trong quá khứ và còn kéo dài đến hiện tại hoặc vừa mới xảy ra.",
+                        questions: [
+                            { q: "I _____ English for 3 years.", options: ["learn", "learned", "have learned", "am learning"], answer: 2, explanation: "Có 'for 3 years' chỉ khoảng thời gian kéo dài dùng Hiện tại hoàn thành." }
+                        ] 
                     }
                 ]
             },
@@ -422,7 +426,7 @@
                 topics: [
                     { 
                         id: 't_past_simple', 
-                        name: '3. Quá Khứ Đơn (Past Simple)', 
+                        name: '4. Quá Khứ Đơn (Past Simple)', 
                         type: 'tense',
                         formula: {
                             affirmative: "S + V2/ed + O | S + was/were + N/Adj",
@@ -430,14 +434,14 @@
                             interrogative: "Did + S + V-bare + O? | Was/Were + S + N/Adj?"
                         },
                         signals: "yesterday, ago, in 1990, last night/week/year...",
-                        usage: "Diễn tả hành động đã xảy ra và kết thúc trong quá khứ.",
+                        usage: "Diễn tả hành động đã xảy ra và kết thúc hoàn toàn trong quá khứ.",
                         questions: [
                             { q: "They _____ to Paris last summer.", options: ["go", "goes", "went", "gone"], answer: 2, explanation: "Có 'last summer' nên dùng quá khứ đơn 'went'." }
                         ] 
                     },
                     { 
                         id: 't_future_simple', 
-                        name: '4. Tương Lai Đơn (Future Simple)', 
+                        name: '5. Tương Lai Đơn (Future Simple)', 
                         type: 'tense',
                         formula: {
                             affirmative: "S + will + V-bare + O",
@@ -457,7 +461,7 @@
                 topics: [
                     { 
                         id: 't_passive_voice', 
-                        name: '5. Câu Bị Động (Passive Voice)', 
+                        name: '6. Câu Bị Động (Passive Voice)', 
                         type: 'other',
                         usage: "Dùng khi muốn nhấn mạnh vào đối tượng chịu tác động của hành động thay vì người thực hiện.",
                         formulaDetails: "Chủ động: S + V + O  ➜  Bị động: S(O) + Be + V3/ed + (by O)",
@@ -468,13 +472,24 @@
                     },
                     { 
                         id: 't_relative_clauses', 
-                        name: '6. Mệnh Đề Quan Hệ (Relative Clauses)', 
+                        name: '7. Mệnh Đề Quan Hệ (Relative Clauses)', 
                         type: 'other',
                         usage: "Dùng để nối hai câu có chung danh từ, bổ nghĩa cho danh từ đứng trước bằng các đại từ quan hệ như who, which, that, whose...",
-                        formulaDetails: "Who (chỉ người - làm chủ ngữ), Whom (chỉ người - làm tân ngữ), Which (chỉ vật), That (thay thế cho who/which trong mệnh đề xác định).",
+                        formulaDetails: "Who (chỉ người - chủ ngữ), Whom (chỉ người - tân ngữ), Which (chỉ vật), That (thay thế trong mệnh đề xác định).",
                         signals: "Các đại từ quan hệ đứng ngay sau danh từ cần bổ nghĩa.",
                         questions: [
                             { q: "The man _____ spoke to you is my teacher.", options: ["which", "who", "where", "whose"], answer: 1, explanation: "'The man' là chỉ người và đóng vai trò chủ ngữ nên dùng 'who'." }
+                        ] 
+                    },
+                    { 
+                        id: 't_conditionals', 
+                        name: '8. Câu Điều Kiện (Conditional Sentences)', 
+                        type: 'other',
+                        usage: "Dùng để nêu lên một giả thiết về một sự việc chỉ có thể xảy ra khi điều kiện cho trước thỏa mãn.",
+                        formulaDetails: "Loại 1: If + HTĐ, S + will + V-bare | Loại 2: If + QKĐ, S + would + V-bare",
+                        signals: "Có từ 'If' nằm trong mệnh đề điều kiện.",
+                        questions: [
+                            { q: "If it rains, I _____ at home.", options: ["stay", "will stay", "stayed", "would stay"], answer: 1, explanation: "Câu điều kiện loại 1 diễn tả khả năng xảy ra ở hiện tại hoặc tương lai." }
                         ] 
                     }
                 ]
@@ -672,13 +687,13 @@
             renderCategories();
         }
 
-        // BẢNG 25 CẤP BẬC QUAN PHẨM (MỖI CẤP CÓ KHUNG THẺ THIẾT KẾ RIÊNG BIỆT)
+        // BẢNG 25 CẤP BẬC QUAN PHẨM (MỖI CẤP CÓ KHUNG HIỆU ỨNG ĐỘNG RIÊNG)
         window.openRankSystemModal = function() {
             const list = document.getElementById('rank-system-list');
             list.innerHTML = '';
             rankList.forEach((r, idx) => {
                 list.innerHTML += `
-                    <div class="p-4 rounded-xl flex flex-col justify-between items-center border-2 shadow-md ${r.frame} transition transform hover:scale-[1.02]">
+                    <div class="p-4 rounded-xl flex flex-col justify-between items-center border-2 shadow-md ${r.frame} transition transform hover:scale-[1.03]">
                         <span class="text-xs font-extrabold uppercase opacity-80 tracking-wider">Quan Phẩm #${idx + 1}</span>
                         <span class="font-bold text-base my-1 text-center">${r.name}</span>
                         <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-black/20 mt-1">🎯 ${r.exp} EXP</span>
