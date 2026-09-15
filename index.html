@@ -68,12 +68,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 38px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.5) 100%);
-            border: 2px solid rgba(255,255,255,0.2);
+            font-size: 40px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.6) 100%);
+            border: 2px solid rgba(251, 191, 36, 0.5);
             overflow: hidden;
             position: relative;
             cursor: pointer;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
         .avatar-frame img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -131,7 +132,7 @@
             <div class="space-y-8" id="categories-container"></div>
         </div>
 
-        <!-- BẢNG VÀNG CÔNG THỨC & LÝ THUYẾT (ĐÃ SỬA LỖI UNDEFINED) -->
+        <!-- BẢNG VÀNG CÔNG THỨC & LÝ THUYẾT -->
         <div id="screen-theory" class="hidden border p-6 sm:p-8 rounded-2xl shadow-lg space-y-6 bg-amber-50/90 dark:bg-[#1a1714] border-amber-300 dark:border-amber-800">
             <div class="border-b border-amber-300 dark:border-amber-800 pb-4 flex justify-between items-center">
                 <div>
@@ -184,7 +185,7 @@
         </div>
     </main>
 
-    <!-- BẢNG CÁC CẤP BẬC HỆ THỐNG (25 CẤP BẬC CÓ KHUNG RIÊNG) -->
+    <!-- BẢNG CÁC CẤP BẬC HỆ THỐNG (MỖI CẤP CÓ KHUNG THẺ RIÊNG BIỆT) -->
     <div id="rank-system-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-3xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative">
             <div class="flex justify-between border-b border-amber-300 pb-3 items-center">
@@ -239,14 +240,14 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold mb-1">2. Hoặc chọn Linh Vật Cổ Phong dễ thương:</label>
-                    <div id="pet-avatar-grid" class="grid grid-cols-4 gap-2 text-2xl text-center py-2"></div>
+                    <div id="pet-avatar-grid" class="grid grid-cols-4 gap-2 text-3xl text-center py-2"></div>
                 </div>
             </div>
             <button onclick="closeAvatarModal()" class="w-full bg-[#2c221e] text-white py-2 rounded-lg font-bold text-sm">Đóng</button>
         </div>
     </div>
 
-    <!-- MẶC HƯƠNG TRAI (ĐỦ 15 MÓN ĐỒ + NÂNG GIÁ) -->
+    <!-- MẶC HƯƠNG TRAI (15 VẬT PHẨM) -->
     <div id="shop-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-3xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto">
             <div class="flex justify-between border-b border-amber-300 pb-3">
@@ -267,100 +268,38 @@
         </div>
     </div>
 
-    <!-- MODULE FIREBASE VÀ LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-          apiKey: "AIzaSyDJSfaGfY_9iXyShM3Z4CMp0mfuxJRQY-M",
-          authDomain: "khoa-cu-ngu-phap.firebaseapp.com",
-          projectId: "khoa-cu-ngu-phap",
-          storageBucket: "khoa-cu-ngu-phap.firebasestorage.app",
-          messagingSenderId: "122415863763",
-          appId: "1:122415863763:web:e710818de130ec57b7c126",
-          measurementId: "G-5SHBCWTHH8"
-        };
-
-        let db = null;
-        try {
-            if (!firebaseConfig.apiKey.includes("DÁN_API_KEY")) {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                document.getElementById('firebase-status').innerText = "🟢 Đã kết nối Đám mây (Đồng bộ Bật)";
-                document.getElementById('firebase-status').classList.replace('text-red-500', 'text-green-500');
-            }
-        } catch(e) { console.error("Lỗi Firebase:", e); }
-
-        window.saveToCloud = async function() {
-            if (!db) return;
-            try {
-                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCu"), {
-                    players: window.playersList,
-                    activeId: window.activePlayerId,
-                    categories: window.categories
-                });
-            } catch(e) { console.error("Lỗi khi lưu mây:", e); }
-        }
-
-        window.loadFromCloud = async function() {
-            if (!db) { window.initAppData(); return; }
-            try {
-                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCu"));
-                if (docSnap.exists()) {
-                    let data = docSnap.data();
-                    window.playersList = data.players || window.playersList;
-                    window.activePlayerId = data.activeId || window.playersList[0].id;
-                    window.categories = data.categories || window.categories;
-                    window.syncActivePlayerFromList();
-                    window.updateUI();
-                    window.renderCategories();
-                    window.applyTheme();
-                } else {
-                    window.initAppData();
-                    window.saveToCloud();
-                }
-            } catch(e) { 
-                console.error("Lỗi khi tải mây:", e);
-                window.initAppData(); 
-            }
-        }
-
-        window.loadFromCloud();
-    </script>
-
     <!-- SCRIPT CHÍNH -->
     <script>
-        // ĐỦ 25 CẤP BẬC VỚI THANG ĐIỂM NÂNG CAO & MÀU VIỀN CẤP BẬC RIÊNG
+        // 25 CẤP BẬC QUAN PHẨM (MỖI CẤP CÓ KHUNG THẺ THIẾT KẾ RIÊNG)
         const rankList = [ 
-            { name: "Sĩ tử", exp: 0, style: "border-gray-400 bg-gray-500/10 text-gray-700 dark:text-gray-300" }, 
-            { name: "Đồng Sinh", exp: 100, style: "border-emerald-500 bg-emerald-500/10 text-emerald-600" }, 
-            { name: "Tú Tài", exp: 300, style: "border-blue-500 bg-blue-500/10 text-blue-500" }, 
-            { name: "Cử Nhân", exp: 600, style: "border-indigo-500 bg-indigo-500/10 text-indigo-500" }, 
-            { name: "Tiến Sĩ", exp: 1000, style: "border-purple-500 bg-purple-500/10 text-purple-400" }, 
-            { name: "Tòng Cửu Phẩm", exp: 1500, style: "border-amber-700 bg-amber-700/10 text-amber-700" }, 
-            { name: "Chánh Cửu Phẩm", exp: 2100, style: "border-amber-600 bg-amber-600/10 text-amber-600" }, 
-            { name: "Tòng Bát Phẩm", exp: 2800, style: "border-stone-400 bg-stone-400/10 text-stone-300" }, 
-            { name: "Chánh Bát Phẩm", exp: 3600, style: "border-stone-300 bg-stone-300/10 text-stone-200" }, 
-            { name: "Tòng Thất Phẩm", exp: 4500, style: "border-yellow-600 bg-yellow-600/10 text-yellow-600" }, 
-            { name: "Chánh Thất Phẩm", exp: 5500, style: "border-yellow-500 bg-yellow-500/10 text-yellow-500" }, 
-            { name: "Tòng Lục Phẩm", exp: 6800, style: "border-teal-500 bg-teal-500/10 text-teal-400" }, 
-            { name: "Chánh Lục Phẩm", exp: 8200, style: "border-teal-400 bg-teal-400/10 text-teal-300" }, 
-            { name: "Tòng Ngũ Phẩm", exp: 10000, style: "border-cyan-500 bg-cyan-500/10 text-cyan-400" }, 
-            { name: "Chánh Ngũ Phẩm", exp: 12000, style: "border-cyan-400 bg-cyan-400/10 text-cyan-300" }, 
-            { name: "Tòng Tứ Phẩm", exp: 15000, style: "border-rose-500 bg-rose-500/10 text-rose-400" }, 
-            { name: "Chánh Tứ Phẩm", exp: 18000, style: "border-rose-600 bg-rose-600/10 text-rose-300" }, 
-            { name: "Tòng Tam Phẩm", exp: 22000, style: "border-pink-500 bg-pink-500/10 text-pink-400" }, 
-            { name: "Chánh Tam Phẩm", exp: 27000, style: "border-pink-600 bg-pink-600/10 text-pink-300" }, 
-            { name: "Tòng Nhị Phẩm", exp: 33000, style: "border-violet-500 bg-violet-500/10 text-violet-400" }, 
-            { name: "Chánh Nhị Phẩm", exp: 40000, style: "border-violet-600 bg-violet-600/10 text-violet-300" }, 
-            { name: "Tòng Nhất Phẩm", exp: 48000, style: "border-red-500 bg-red-500/10 text-red-500" }, 
-            { name: "Chánh Nhất Phẩm", exp: 57000, style: "border-red-600 bg-red-600/10 text-red-400" }, 
-            { name: "Thái Sư", exp: 68000, style: "border-amber-400 bg-amber-400/20 text-amber-300 font-bold" }, 
-            { name: "Tể Tướng Đương Triều", exp: 80000, style: "border-yellow-300 bg-gradient-to-r from-amber-500 to-red-600 text-yellow-200 font-extrabold shadow-lg" } 
+            { name: "Sĩ tử", exp: 0, frame: "border-gray-400 bg-gray-500/10 text-gray-700 dark:text-gray-300 shadow-sm" }, 
+            { name: "Đồng Sinh", exp: 100, frame: "border-emerald-500 bg-emerald-500/10 text-emerald-600 shadow-sm" }, 
+            { name: "Tú Tài", exp: 300, frame: "border-blue-500 bg-blue-500/10 text-blue-500 shadow-sm" }, 
+            { name: "Cử Nhân", exp: 600, frame: "border-indigo-500 bg-indigo-500/10 text-indigo-500 shadow-md" }, 
+            { name: "Tiến Sĩ", exp: 1000, frame: "border-purple-500 bg-purple-500/10 text-purple-400 shadow-md" }, 
+            { name: "Tòng Cửu Phẩm", exp: 1500, frame: "border-amber-700 bg-amber-700/10 text-amber-700 shadow-md" }, 
+            { name: "Chánh Cửu Phẩm", exp: 2100, frame: "border-amber-600 bg-amber-600/10 text-amber-600 shadow-md" }, 
+            { name: "Tòng Bát Phẩm", exp: 2800, frame: "border-stone-400 bg-stone-400/10 text-stone-300 shadow-md" }, 
+            { name: "Chánh Bát Phẩm", exp: 3600, frame: "border-stone-300 bg-stone-300/10 text-stone-200 shadow-md" }, 
+            { name: "Tòng Thất Phẩm", exp: 4500, frame: "border-yellow-600 bg-yellow-600/10 text-yellow-600 shadow-md" }, 
+            { name: "Chánh Thất Phẩm", exp: 5500, frame: "border-yellow-500 bg-yellow-500/10 text-yellow-500 shadow-lg" }, 
+            { name: "Tòng Lục Phẩm", exp: 6800, frame: "border-teal-500 bg-teal-500/10 text-teal-400 shadow-lg" }, 
+            { name: "Chánh Lục Phẩm", exp: 8200, frame: "border-teal-400 bg-teal-400/10 text-teal-300 shadow-lg" }, 
+            { name: "Tòng Ngũ Phẩm", exp: 10000, frame: "border-cyan-500 bg-cyan-500/10 text-cyan-400 shadow-lg" }, 
+            { name: "Chánh Ngũ Phẩm", exp: 12000, frame: "border-cyan-400 bg-cyan-400/10 text-cyan-300 shadow-lg" }, 
+            { name: "Tòng Tứ Phẩm", exp: 15000, frame: "border-rose-500 bg-rose-500/10 text-rose-400 shadow-xl" }, 
+            { name: "Chánh Tứ Phẩm", exp: 18000, frame: "border-rose-600 bg-rose-600/10 text-rose-300 shadow-xl" }, 
+            { name: "Tòng Tam Phẩm", exp: 22000, frame: "border-pink-500 bg-pink-500/10 text-pink-400 shadow-xl" }, 
+            { name: "Chánh Tam Phẩm", exp: 27000, frame: "border-pink-600 bg-pink-600/10 text-pink-300 shadow-xl" }, 
+            { name: "Tòng Nhị Phẩm", exp: 33000, frame: "border-violet-500 bg-violet-500/10 text-violet-400 shadow-xl" }, 
+            { name: "Chánh Nhị Phẩm", exp: 40000, frame: "border-violet-600 bg-violet-600/10 text-violet-300 shadow-xl" }, 
+            { name: "Tòng Nhất Phẩm", exp: 48000, frame: "border-red-500 bg-red-500/10 text-red-500 shadow-2xl" }, 
+            { name: "Chánh Nhất Phẩm", exp: 57000, frame: "border-red-600 bg-red-600/10 text-red-400 shadow-2xl" }, 
+            { name: "Thái Sư", exp: 68000, frame: "border-amber-400 bg-amber-400/20 text-amber-300 font-bold shadow-2xl ring-1 ring-amber-400" }, 
+            { name: "Tể Tướng Đương Triều", exp: 80000, frame: "border-yellow-300 bg-gradient-to-r from-amber-600/30 to-red-600/30 text-yellow-200 font-extrabold shadow-2xl ring-2 ring-yellow-400" } 
         ];
         
-        // ĐỦ 15 VẬT PHẨM MẶC HƯƠNG TRAI VỚI MỨC GIÁ MỚI
+        // 15 VẬT PHẨM MẶC HƯƠNG TRAI
         const shopItems = [
             { id: 1, name: "Bút Lông Sói Thượng Hạng", desc: "Giúp thi cử hanh thông.", price: 150, icon: "🖌️" },
             { id: 2, name: "Nghiên Mực Hoàng Sơn", desc: "Nét chữ mượt mà, rèn luyện trí tuệ.", price: 200, icon: "🪨" },
@@ -379,10 +318,9 @@
             { id: 15, name: "Ấn Chương Tử Giáp", desc: "Báu vật uy quyền của bậc đại khoa.", price: 2000, icon: "🏺" }
         ];
 
-        // DANH SÁCH AVATAR ĐỘNG VẬT CỔ PHONG DỄ THƯƠNG
         const petAvatars = ["🐱", "🦊", "🐰", "🐼", "🐯", "🦁", "🐨", "🦉"];
 
-        // CẤU TRÚC NGỮ PHÁP (ĐÃ CHUẨN HÓA KHÔNG BỊ UNDEFINED)
+        // DỮ LIỆU NGỮ PHÁP ĐẦY ĐỦ CÔNG THỨC & CÁCH DÙNG
         window.categories = [
             {
                 id: 'cat1', title: 'Trường Thi Thứ Nhất: Nhóm Các Thì Hiện Tại',
@@ -444,61 +382,34 @@
             { id: "p3", name: "Sĩ tử 3", exp: 30, coins: 90, avatar: "🐰" }
         ];
         window.activePlayerId = localStorage.getItem("khoacu_active_id") || "p1";
-        
-        window.userData = {
-            apiKey: localStorage.getItem("gemini_api_key") || "",
-            darkMode: localStorage.getItem("dark_mode") === "true"
-        };
+        window.userData = { darkMode: localStorage.getItem("dark_mode") === "true" };
 
         let currentTopic = null, currentQuestions = [], currentQIndex = 0, score = 0;
 
         function getRankDetails(exp) {
             let currentRank = rankList[0];
-            let rIndex = 0;
             for (let i = rankList.length - 1; i >= 0; i--) { 
-                if (exp >= rankList[i].exp) { 
-                    currentRank = rankList[i]; 
-                    rIndex = i;
-                    break; 
-                } 
+                if (exp >= rankList[i].exp) { currentRank = rankList[i]; break; } 
             }
-            return { rank: currentRank, index: rIndex };
-        }
-
-        window.initAppData = function() {
-            window.syncActivePlayerFromList();
-            window.renderCategories();
+            return { rank: currentRank };
         }
 
         window.getActivePlayer = function() {
             let p = window.playersList.find(x => x.id === window.activePlayerId);
-            if (!p && window.playersList.length > 0) {
-                p = window.playersList[0];
-                window.activePlayerId = p.id;
-            }
+            if (!p && window.playersList.length > 0) { p = window.playersList[0]; window.activePlayerId = p.id; }
             return p;
-        }
-
-        window.syncActivePlayerFromList = function() {
-            let p = window.getActivePlayer();
-            if(p) { document.getElementById('current-player-name').innerText = p.name + " ✏️"; }
         }
 
         window.updateUI = function() {
             let p = window.getActivePlayer();
             if (!p) return;
-
             document.getElementById('user-exp').innerText = p.exp;
             document.getElementById('user-coins').innerText = p.coins;
-            
             let rDetails = getRankDetails(p.exp);
             document.getElementById('current-player-name').innerText = p.name + " ✏️";
             document.getElementById('user-rank').innerText = rDetails.rank.name;
-
             localStorage.setItem("khoacu_players", JSON.stringify(window.playersList));
             localStorage.setItem("khoacu_active_id", window.activePlayerId);
-            
-            if(window.saveToCloud) window.saveToCloud(); 
         }
 
         window.changePlayerName = function() {
@@ -515,7 +426,6 @@
             userData.darkMode = !userData.darkMode;
             localStorage.setItem("dark_mode", userData.darkMode);
             applyTheme();
-            if(window.saveToCloud) window.saveToCloud();
         }
 
         window.applyTheme = function() {
@@ -537,14 +447,13 @@
             });
         }
 
-        // BẢNG VÀNG NGỮ PHÁP - FIX LỖI UNDEFINED
+        // BẢNG VÀNG CÔNG THỨC (ĐÃ FIX ĐẢM BẢO HIỂN THỊ ĐỦ THÔNG TIN)
         window.openTheory = function(topicId) {
             for (let cat of categories) {
                 let found = cat.topics.find(t => t.id === topicId);
                 if (found) { currentTopic = found; break; }
             }
             document.getElementById('theory-title').innerText = currentTopic.name;
-            
             let contentEl = document.getElementById('theory-content');
             
             if (currentTopic.type === 'tense' && currentTopic.formula) {
@@ -552,33 +461,30 @@
                     <div class="bg-white dark:bg-[#221f1a] p-4 rounded-xl border border-amber-300 dark:border-amber-700 space-y-3">
                         <h4 class="font-bold text-amber-800 dark:text-amber-300 text-lg flex items-center gap-2">📐 CÔNG THỨC CỦA THÌ</h4>
                         <div class="space-y-2 text-sm">
-                            <div class="p-2.5 bg-green-500/10 border-l-4 border-green-500 rounded"><b class="text-green-700 dark:text-green-400">Câu Khẳng Định (+):</b> ${currentTopic.formula.affirmative || 'Đang cập nhật...'}</div>
-                            <div class="p-2.5 bg-red-500/10 border-l-4 border-red-500 rounded"><b class="text-red-700 dark:text-red-400">Câu Phủ Định (-):</b> ${currentTopic.formula.negative || 'Đang cập nhật...'}</div>
-                            <div class="p-2.5 bg-blue-500/10 border-l-4 border-blue-500 rounded"><b class="text-blue-700 dark:text-blue-400">Câu Nghi Vấn (?):</b> ${currentTopic.formula.interrogative || 'Đang cập nhật...'}</div>
+                            <div class="p-2.5 bg-green-500/10 border-l-4 border-green-500 rounded"><b class="text-green-700 dark:text-green-400">Câu Khẳng Định (+):</b> ${currentTopic.formula.affirmative}</div>
+                            <div class="p-2.5 bg-red-500/10 border-l-4 border-red-500 rounded"><b class="text-red-700 dark:text-red-400">Câu Phủ Định (-):</b> ${currentTopic.formula.negative}</div>
+                            <div class="p-2.5 bg-blue-500/10 border-l-4 border-blue-500 rounded"><b class="text-blue-700 dark:text-blue-400">Câu Nghi Vấn (?):</b> ${currentTopic.formula.interrogative}</div>
                         </div>
                     </div>
-
                     <div class="bg-white dark:bg-[#221f1a] p-4 rounded-xl border border-amber-300 dark:border-amber-700 space-y-2">
                         <h4 class="font-bold text-amber-800 dark:text-amber-300 text-lg flex items-center gap-2">💡 DẤU HIỆU NHẬN BIẾT</h4>
-                        <p class="text-sm italic text-gray-700 dark:text-gray-300">${currentTopic.signals || 'Chưa có dấu hiệu đặc biệt.'}</p>
+                        <p class="text-sm italic text-gray-700 dark:text-gray-300">${currentTopic.signals}</p>
                     </div>
-
                     <div class="bg-white dark:bg-[#221f1a] p-4 rounded-xl border border-amber-300 dark:border-amber-700 space-y-2">
                         <h4 class="font-bold text-amber-800 dark:text-amber-300 text-lg flex items-center gap-2">📖 CÁCH DÙNG</h4>
-                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${currentTopic.usage || 'Đang cập nhật...'}</p>
+                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${currentTopic.usage}</p>
                     </div>
                 `;
             } else {
                 contentEl.innerHTML = `
                     <div class="bg-white dark:bg-[#221f1a] p-4 rounded-xl border border-amber-300 dark:border-amber-700 space-y-3">
                         <h4 class="font-bold text-amber-800 dark:text-amber-300 text-lg flex items-center gap-2">📖 CÁCH DÙNG VÀ CẤU TRÚC</h4>
-                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${currentTopic.usage || 'Đang cập nhật...'}</p>
-                        <div class="p-2.5 bg-amber-500/10 border-l-4 border-amber-500 rounded text-sm font-semibold">${currentTopic.formulaDetails || 'Xem chi tiết trong bài thi.'}</div>
+                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${currentTopic.usage}</p>
+                        <div class="p-2.5 bg-amber-500/10 border-l-4 border-amber-500 rounded text-sm font-semibold">${currentTopic.formulaDetails}</div>
                     </div>
-
                     <div class="bg-white dark:bg-[#221f1a] p-4 rounded-xl border border-amber-300 dark:border-amber-700 space-y-2">
                         <h4 class="font-bold text-amber-800 dark:text-amber-300 text-lg flex items-center gap-2">💡 LƯU Ý & DẤU HIỆU</h4>
-                        <p class="text-sm text-gray-700 dark:text-gray-300">${currentTopic.signals || 'Không có lưu ý đặc biệt.'}</p>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">${currentTopic.signals}</p>
                     </div>
                 `;
             }
@@ -616,7 +522,6 @@
                 if (idx === q.answer) btn.classList.add('bg-green-500/20', 'border-green-500', 'text-green-600');
                 else if (idx === selectedIndex) btn.classList.add('bg-red-500/20', 'border-red-500', 'text-red-600');
             });
-
             if (selectedIndex === q.answer) {
                 score++; setTimeout(() => { nextQuestion(); }, 1200);
             } else {
@@ -635,7 +540,6 @@
         window.finishQuiz = function() {
             document.getElementById('screen-quiz').classList.add('hidden');
             document.getElementById('screen-result').classList.remove('hidden');
-            
             let p = window.getActivePlayer();
             if(p) { p.exp += score * 10; p.coins += score * 15; }
             updateUI();
@@ -652,15 +556,15 @@
             renderCategories();
         }
 
-        // BẢNG 25 CẤP BẬC QUAN PHẨM HỆ THỐNG
+        // BẢNG 25 CẤP BẬC QUAN PHẨM (MỖI CẤP CÓ KHUNG THẺ THIẾT KẾ ĐẶC BIỆT)
         window.openRankSystemModal = function() {
             const list = document.getElementById('rank-system-list');
             list.innerHTML = '';
             rankList.forEach((r, idx) => {
                 list.innerHTML += `
-                    <div class="p-3 rounded-xl flex justify-between items-center border ${r.style}">
+                    <div class="p-3 rounded-xl flex justify-between items-center border ${r.frame}">
                         <span class="font-bold">#${idx + 1} ${r.name}</span>
-                        <span class="text-xs font-bold">${r.exp} EXP</span>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded bg-black/20">${r.exp} EXP</span>
                     </div>
                 `;
             });
@@ -668,7 +572,7 @@
         }
         window.closeRankSystemModal = () => document.getElementById('rank-system-modal').classList.add('hidden');
 
-        // BẢNG ĐUA TOP THIẾT KẾ CARD CHUẨN ĐÚNG ẢNH
+        // BẢNG ĐUA TOP CARD & AVATAR
         window.openRanksModal = function() {
             renderPlayersSelector();
             renderRanksList();
@@ -679,7 +583,6 @@
         window.renderPlayersSelector = function() {
             const selectorList = document.getElementById('players-selector-list');
             selectorList.innerHTML = '';
-            
             window.playersList.forEach(pl => {
                 let isActive = pl.id === window.activePlayerId;
                 selectorList.innerHTML += `
@@ -698,14 +601,10 @@
         }
 
         window.addNewPlayer = function() {
-            if (window.playersList.length >= 5) {
-                alert("Nhóm chỉ tối đa 5 sĩ tử!");
-                return;
-            }
+            if (window.playersList.length >= 5) { alert("Nhóm chỉ tối đa 5 sĩ tử!"); return; }
             const input = document.getElementById('new-player-input');
             const name = input.value.trim();
             if (!name) return;
-            
             const newId = 'p_' + Date.now();
             window.playersList.push({ id: newId, name: name, exp: 0, coins: 50, avatar: "🐱" });
             window.activePlayerId = newId;
@@ -728,7 +627,7 @@
                 let rDetails = getRankDetails(pl.exp);
                 let avatarContent = pl.avatar && pl.avatar.startsWith('data:image') 
                     ? `<img src="${pl.avatar}" alt="avatar">` 
-                    : `<span>${pl.avatar || "👤"}</span>`;
+                    : `<span>${pl.avatar || "🐱"}</span>`;
                 
                 cardsContainer.innerHTML += `
                     <div class="top-card ${rankClass} text-center">
@@ -737,7 +636,7 @@
                             ${avatarContent}
                         </div>
                         <h4 class="font-bold text-lg text-white truncate px-2" title="${pl.name}">${pl.name}</h4>
-                        <div class="mt-2 text-xs font-semibold px-2 py-1 rounded-full inline-block border ${rDetails.rank.style}">
+                        <div class="mt-2 text-xs font-semibold px-2.5 py-1 rounded-full inline-block border ${rDetails.rank.frame}">
                             🛡️ ${rDetails.rank.name}
                         </div>
                         <div class="mt-3 text-sm font-bold text-gray-300">
@@ -830,7 +729,7 @@
         window.closeApiKeyModal = () => document.getElementById('apikey-modal').classList.add('hidden');
         window.saveApiKey = () => { userData.apiKey = document.getElementById('api-key-input').value; localStorage.setItem("gemini_api_key", userData.apiKey); closeApiKeyModal(); updateUI(); }
 
-        applyTheme(); updateUI();
+        applyTheme(); updateUI(); renderCategories();
     </script>
 </body>
 </html>
