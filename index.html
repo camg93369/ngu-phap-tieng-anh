@@ -630,12 +630,17 @@ window.generateAIQuiz = async function() {
         // Sử dụng Endpoint chuẩn Gemini 2.5 Flash
         // Đoạn mã mới đã sửa:
 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
-const randomSeed = Date.now();
+
+// Tạo chuỗi ngẫu nhiên kết hợp giữa thời gian và số ngẫu nhiên
+const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+
 const promptText = `Bạn là Mặc Hiên tiên sinh, một thầy giáo dạy tiếng Anh giỏi.
-Hãy sáng tạo 1 câu hỏi trắc nghiệm tiếng Anh hoàn toàn MỚI và ĐỘC ĐÁO (mã ngẫu nhiên: ${randomSeed}) về chủ đề: "${currentTopic.name}".
+Hãy sáng tạo 1 câu hỏi trắc nghiệm tiếng Anh HOÀN TOÀN MỚI, ĐỘC ĐÁO và KHÁC BIỆT với các câu trước đó về chủ đề: "${currentTopic.name}".
 
 YÊU CẦU BẮT BUỘC:
-- Mức độ: Cơ bản/trung bình (A2-B1), từ vựng thông dụng, câu ngắn gọn, tình huống gần gũi với đời sống, tránh dùng từ hàn lâm hay câu quá phức tạp.
+- Mắt mã ngẫu nhiên duy nhất cho lượt này: [${randomSeed}]. Hãy dùng mã này để biến đổi ngữ cảnh/nhân vật trong câu hỏi.
+- Mức độ: Cơ bản/trung bình (A2-B1), từ vựng thông dụng, câu ngắn gọn, tình huống gần gũi (trường học, mua sắm, du lịch, gia đình...), tránh dùng từ hàn lâm.
+- Thay đổi cấu trúc câu và từ vựng, không lặp lại các kịch bản cũ.
 - Định dạng output: Chỉ trả về duy nhất 1 chuỗi JSON hợp lệ, KHÔNG sử dụng định dạng Markdown (không ghi \`\`\`json).
 
 Cấu trúc JSON bắt buộc:
@@ -643,9 +648,8 @@ Cấu trúc JSON bắt buộc:
   "question": "Nội dung câu hỏi tiếng Anh...",
   "options": ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"],
   "correct": 0,
-  "explanation": "Giải thích ngắn gọn bằng tiếng Việt vì sao chọn đáp án này..."
+  "explanation": "Giải thích ngắn gọn bằng tiếng Việt..."
 }`;
-
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
