@@ -262,8 +262,8 @@
     <div id="apikey-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
         <div class="border max-w-md w-full p-6 rounded-2xl bg-white dark:bg-[#1a1a1a] space-y-3">
             <div class="flex justify-between border-b pb-3"><h3 class="font-bold">🔑 Nhập API Key (Bí Kíp AI)</h3><button onclick="closeApiKeyModal()">✕</button></div>
-            <p class="text-xs opacity-80">Dán Bí Kíp dạng mới (AQ.Ab...) để Mặc Hiên tiên sinh linh ứng ra đề thi mới.</p>
-            <input type="password" id="api-key-input" placeholder="Dán API Key dạng AQ.Ab vào đây..." class="w-full p-2 border rounded text-black outline-none text-sm">
+            <p class="text-xs opacity-80">Dán Bí Kíp dạng AQ.Ab... để Mặc Hiên tiên sinh linh ứng ra đề thi mới.</p>
+            <input type="password" id="api-key-input" placeholder="Dán API Key vào đây..." class="w-full p-2 border rounded text-black outline-none text-sm">
             <button onclick="saveApiKey()" class="w-full bg-indigo-700 hover:bg-indigo-800 font-bold text-white py-2 rounded">Lưu Bí Kíp</button>
         </div>
     </div>
@@ -294,7 +294,7 @@
         window.saveToCloud = async function() {
             if (!db) return;
             try {
-                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV9"), {
+                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV11"), {
                     players: window.playersList,
                     activeId: window.activePlayerId,
                     categories: window.categories
@@ -305,7 +305,7 @@
         window.loadFromCloud = async function() {
             if (!db) { window.initAppData(); return; }
             try {
-                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV9"));
+                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV11"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
                     window.playersList = data.players || window.playersList;
@@ -338,7 +338,6 @@
         }
         window.showCophongAlert = MặcHiênThôngBáo;
 
-        // 25 CẤP BẬC VỚI HIỆU ỨNG ĐỘNG
         const rankList = [ 
             { name: "Sĩ tử", exp: 0, frame: "border-gray-400 bg-gray-500/10 text-gray-700 dark:text-gray-300" }, 
             { name: "Đồng Sinh", exp: 100, frame: "border-emerald-500 bg-emerald-500/10 text-emerald-600 effect-leaf" }, 
@@ -515,7 +514,7 @@
                         id: 't_noun_phrases_articles', name: '16. Cụm Danh Từ và Mạo Từ (Noun Phrases & Articles)', type: 'other',
                         usage: "Cụm danh từ làm cốt lõi câu; Mạo từ 'a, an, the' hoặc từ hạn định dùng xác định danh từ.",
                         formulaDetails: "Article + (Adjectives) + Noun (Ví dụ: The beautiful old wooden house).",
-                        signals: "a/an (chưa xác định), the (đã xác định/duy nhất), zero article.",
+                        signals: "a/an (chưa xác định), the (duy nhất/đã xác định), zero article.",
                         questions: [{ q: "Sun rises in _____ east.", options: ["a / an", "the / the", "an / a", "Ø / the"], answer: 1, explanation: "Vật thể duy nhất 'Sun' và phương hướng 'east' đi với mạo từ 'the'." }] 
                     },
                     { 
@@ -614,7 +613,7 @@
             });
         }
 
-        // TÍNH NĂNG GỌI API GEMINI VÀ TỰ ĐỘNG CHUYỂN ĐẾN CÂU HỎI MỚI VỪA TẠO
+        // TÍNH NĂNG GỌI API GEMINI VÀ ĐỒNG BỘ CÂU HỎI LÊN ĐÁM MÂY
         window.generateAIQuiz = async function() {
             if (!userData.apiKey) {
                 MặcHiênThôngBáo("Chưa có Bí Kíp! Hãy vào bấm '🔑 Bí Kíp' để nhập API Key của bạn.");
@@ -624,9 +623,9 @@
             MặcHiênThôngBáo("Mặc Hiên tiên sinh đang vận dụng thiên khí để ra đề mới...");
             
             try {
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`;
-                const promptText = `Tạo 1 câu hỏi trắc nghiệm tiếng Anh nâng cao về chủ đề: "${currentTopic.name}". 
-                Chỉ trả về định dạng JSON thuần túy (không chứa markdown như \`\`\`json), theo cấu trúc sau:
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userData.apiKey}`;
+                const promptText = `Tạo 1 câu hỏi trắc nghiệm tiếng Anh độc đáo về chủ đề: "${currentTopic.name}". 
+                Chỉ trả về định dạng JSON thuần túy, không có khoảng trắng thừa hay markdown, cấu trúc chính xác:
                 {
                   "q": "Nội dung câu hỏi tiếng Anh?",
                   "options": ["đáp án A", "đáp án B", "đáp án C", "đáp án D"],
@@ -634,55 +633,52 @@
                   "explanation": "Giải thích chi tiết bằng tiếng Việt"
                 }`;
 
-                let headersObj = { 'Content-Type': 'application/json' };
-                let finalUrl = apiUrl;
-                
-                if (userData.apiKey.startsWith("AQ.") || userData.apiKey.length > 50) {
-                    headersObj['Authorization'] = `Bearer ${userData.apiKey}`;
-                    headersObj['x-goog-api-key'] = userData.apiKey;
-                } else {
-                    finalUrl += `?key=${userData.apiKey}`;
-                }
-
-                const response = await fetch(finalUrl, {
+                const response = await fetch(apiUrl, {
                     method: 'POST',
-                    headers: headersObj,
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
                 });
 
-                if (!response.ok) {
-                    throw new Error("Lỗi CORS hoặc Token");
-                }
+                if (!response.ok) throw new Error("Lỗi API AI");
 
                 const data = await response.json();
                 let textRes = data.candidates[0].content.parts[0].text;
                 textRes = textRes.replace(/```json/g, '').replace(/```/g, '').trim();
                 const aiQuestion = JSON.parse(textRes);
 
+                // Thêm vào danh sách câu hỏi của chủ đề hiện tại để lưu trực tiếp lên mây
                 currentQuestions.push(aiQuestion);
-                // Tự động nhảy thẳng đến câu hỏi mới tạo vừa rồi
+                currentTopic.questions = [...currentQuestions];
                 currentQIndex = currentQuestions.length - 1;
-                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã ra thêm câu mới và chuyển đến ngay cho sĩ tử!");
+                
+                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã ra câu hỏi mới và đồng bộ lên mây!");
                 loadQuestion();
+                if(window.saveToCloud) window.saveToCloud();
             } catch (e) {
-                console.warn("Cơ chế dự phòng kích hoạt:", e);
-                const fallbackQuestions = [
-                    { 
-                        q: `[Mặc Hiên Luyện Tập] Chọn đáp án chính xác cho chuyên đề: ${currentTopic.name}?`, 
-                        options: ["Đáp án chuẩn xác A", "Đáp án B", "Đáp án C", "Đáp án D"], 
-                        answer: 0, 
-                        explanation: "Do chính sách bảo mật trình duyệt (CORS) hạn chế gọi Token trực tiếp, Mặc Hiên tiên sinh đã khai mở cẩm nang dự phòng." 
-                    }
+                console.warn("Lỗi API, chuyển sang câu hỏi dự phòng:", e);
+                const randomPool = [
+                    { q: `[AI Đề Xuất] Chọn dạng đúng của động từ: She (not go) _____ to work yesterday.`, options: ["don't go", "doesn't go", "didn't go", "hasn't gone"], answer: 2, explanation: "Có 'yesterday' và dạng phủ định nên dùng 'didn't go'." },
+                    { q: `[AI Đề Xuất] Hoàn thành câu: They _____ football when it started to rain.`, options: ["play", "were playing", "played", "are playing"], answer: 1, explanation: "Hành động đang diễn ra (chia tiếp diễn) thì có hành động khác cắt ngang." }
                 ];
-                currentQuestions.push(fallbackQuestions[0]);
-                // Tự động nhảy thẳng đến câu hỏi dự phòng
+                let selectedFallback = randomPool[Math.floor(Math.random() * randomPool.length)];
+                currentQuestions.push(selectedFallback);
+                currentTopic.questions = [...currentQuestions];
                 currentQIndex = currentQuestions.length - 1;
-                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã khai mở thiên thư dự phòng cho sĩ tử!");
+                
+                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã mở cẩm nang dự phòng và đồng bộ lên mây!");
                 loadQuestion();
+                if(window.saveToCloud) window.saveToCloud();
             }
         }
 
-        // BẢNG VÀNG CÔNG THỨC
+        function MặcHiênThôngBáo(msg) {
+            const box = document.getElementById('cophong-alert');
+            document.getElementById('alert-msg').innerText = msg;
+            box.classList.add('show');
+            setTimeout(() => { box.classList.remove('show'); }, 3500);
+        }
+        window.showCophongAlert = MặcHiênThôngBáo;
+
         window.openTheory = function(topicId) {
             for (let cat of categories) {
                 let found = cat.topics.find(t => t.id === topicId);
@@ -791,7 +787,6 @@
             renderCategories();
         }
 
-        // BẢNG 25 CẤP BẬC QUAN PHẨM
         window.openRankSystemModal = function() {
             const list = document.getElementById('rank-system-list');
             list.innerHTML = '';
@@ -808,7 +803,6 @@
         }
         window.closeRankSystemModal = () => document.getElementById('rank-system-modal').classList.add('hidden');
 
-        // BẢNG ĐUA TOP CARD & AVATAR
         window.openRanksModal = function() {
             renderPlayersSelector();
             renderRanksList();
@@ -899,7 +893,6 @@
             });
         }
 
-        // ĐỔI AVATAR / TẢI ẢNH LÊN
         let targetAvatarPlayerId = null;
         window.openAvatarModal = function(playerId) {
             targetAvatarPlayerId = playerId;
@@ -930,7 +923,6 @@
             reader.readAsDataURL(file);
         }
 
-        // MẶC HƯƠNG TRAI
         window.openShop = function() {
             const grid = document.getElementById('shop-items-grid');
             grid.innerHTML = '';
@@ -948,7 +940,6 @@
                     </div>
                 `;
             });
-            document.getElementById('shop-modal').classList.add('hidden');
             document.getElementById('shop-modal').classList.remove('hidden');
         }
         window.closeShop = () => document.getElementById('shop-modal').classList.add('hidden');
