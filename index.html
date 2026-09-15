@@ -302,28 +302,33 @@
             } catch(e) { console.error("Lỗi khi lưu mây:", e); }
         }
 
-        window.loadFromCloud = async function() {
-            if (!db) { window.initAppData(); return; }
-            try {
-                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV11"));
-                if (docSnap.exists()) {
-                    let data = docSnap.data();
-                    window.playersList = data.players || window.playersList;
-                    window.activePlayerId = data.activeId || window.playersList[0].id;
-                    
-                    window.syncActivePlayerFromList();
-                    window.updateUI();
-                    window.renderCategories();
-                    window.applyTheme();
-                } else {
-                    window.initAppData();
-                    window.saveToCloud();
-                }
-            } catch(e) { 
-                console.error("Lỗi khi tải mây:", e);
-                window.initAppData(); 
+ window.loadFromCloud = async function() {
+    if (!db) { window.initAppData(); return; }
+    try {
+        const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV11"));
+        if (docSnap.exists()) {
+            let data = docSnap.data();
+            window.playersList = data.players || window.playersList;
+            window.activePlayerId = data.activeId || window.playersList[0].id;
+            
+            // THÊM DÒNG NÀY: Nạp danh sách câu hỏi (categories) từ Đám Mây về
+            if (data.categories && data.categories.length > 0) {
+                window.categories = data.categories;
             }
+            
+            window.syncActivePlayerFromList();
+            window.updateUI();
+            window.renderCategories();
+            window.applyTheme();
+        } else {
+            window.initAppData();
+            window.saveToCloud();
         }
+    } catch(e) { 
+        console.error("Lỗi khi tải mây:", e);
+        window.initAppData(); 
+    }
+}
 
         window.loadFromCloud();
     </script>
@@ -668,12 +673,11 @@ const formattedQuestion = {
     explanation: aiQuestion.explanation || aiQuestion.e || "Mặc Hiên tiên sinh chưa để lại giải thích."
 };
 
-// 1. Thêm câu hỏi mới vào Topic hiện tại
 if (currentTopic && currentTopic.questions) {
     currentTopic.questions.push(formattedQuestion);
 }
 
-// 2. CẬP NHẬT LẠI VÀO BIẾN DỮ LIỆU TỔNG (Tránh lỗi mất dữ liệu trên điện thoại)
+// Cập nhật câu hỏi vào categories gốc
 window.categories.forEach(cat => {
     let t = cat.topics.find(top => top.id === currentTopic.id);
     if (t) {
@@ -681,15 +685,15 @@ window.categories.forEach(cat => {
     }
 });
 
-// 3. ĐẨY LÊN ĐÁM MÂY (FIRESTORE)
+// Lưu lên Firebase Đám Mây
 if (typeof window.saveToCloud === 'function') {
     await window.saveToCloud();
 }
 
-                currentQuestions = [...currentTopic.questions];
-                currentQIndex = currentQuestions.length - 1;
-                loadQuestion();
-                MặcHiênThôngBáo("Đã có đề thi mới từ Mặc Hiên tiên sinh!");
+currentQuestions = [...currentTopic.questions];
+currentQIndex = currentQuestions.length - 1;
+loadQuestion();
+MặcHiênThôngBáo("Đã lưu đề thi mới từ Mặc Hiên tiên sinh lên Đám mây!");
 
             } catch (error) {
                 console.error("Lỗi AI ra đề:", error);
