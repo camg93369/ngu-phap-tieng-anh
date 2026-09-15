@@ -7,7 +7,6 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Cấu hình Tailwind hỗ trợ toggle dark mode bằng class thủ công
         tailwind.config = { darkMode: 'class' }
     </script>
     <!-- Google Fonts -->
@@ -16,13 +15,12 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s, color 0.3s; }
         .cophong-title { font-family: 'Playfair Display', serif; }
         
-        /* Chế độ Sáng / Tối đồng bộ hoàn toàn */
         .paper-bg { background-color: #fcf8f2; background-image: radial-gradient(#e5d9c5 0.75px, transparent 0.75px); background-size: 15px 15px; color: #2c221e; }
         html.dark .paper-bg { background-color: #121212; background-image: radial-gradient(#262626 0.75px, transparent 0.75px); background-size: 15px 15px; color: #e5e5e5; }
         
         .seal-stamp { border: 2px dashed #b91c1c; color: #b91c1c; transform: rotate(-3deg); }
         
-        /* Hiệu ứng lấp lánh cho Bảng Vàng */
+        /* Hiệu ứng lấp lánh cho NÚT */
         @keyframes goldGlow {
             0% { box-shadow: 0 0 5px #f59e0b; transform: scale(1); }
             50% { box-shadow: 0 0 20px #fbbf24, 0 0 30px #f59e0b; transform: scale(1.05); }
@@ -30,23 +28,33 @@
         }
         .btn-glow { animation: goldGlow 2s infinite ease-in-out; }
 
-        /* Hiệu ứng vệt sáng lướt (Chíu chíu) cho Mặc Hương Trai */
-        @keyframes shine {
-            0% { left: -100%; }
-            20% { left: 100%; }
-            100% { left: 100%; }
-        }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
         .btn-shine { position: relative; overflow: hidden; }
         .btn-shine::before {
             content: ""; position: absolute; top: 0; left: -100%; width: 50px; height: 100%;
             background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
             transform: skewX(-20deg); animation: shine 3s infinite;
         }
+
+        /* Hiệu ứng LẤP LÁNH TOÀN BỘ BẢNG */
+        @keyframes panelSparkle {
+            0% { box-shadow: 0 0 15px #f59e0b, inset 0 0 20px #fef3c7; border-color: #f59e0b; }
+            50% { box-shadow: 0 0 40px #fbbf24, inset 0 0 50px #fde68a; border-color: #fbbf24; }
+            100% { box-shadow: 0 0 15px #f59e0b, inset 0 0 20px #fef3c7; border-color: #f59e0b; }
+        }
+        .sparkle-panel {
+            animation: panelSparkle 2.5s infinite alternate;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(253,230,138,0.4) 100%);
+            border: 2px solid #fbbf24;
+        }
+        html.dark .sparkle-panel {
+            background: linear-gradient(135deg, #1a1a1a 0%, #422006 100%);
+            border: 2px solid #b45309;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between paper-bg" id="body-theme">
 
-    <!-- HEADER -->
     <header class="bg-[#2c221e] text-[#f7f1e5] shadow-md border-b-4 border-[#b91c1c] sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
             <div class="flex items-center space-x-2 cursor-pointer" onclick="backToMenu()">
@@ -60,10 +68,8 @@
                 <div>Ngân lượng: <span id="user-coins" class="font-bold text-yellow-300">50</span> 🪙</div>
                 
                 <div class="flex items-center gap-1.5">
-                    <!-- NÚT CÓ HIỆU ỨNG -->
                     <button onclick="openRanksModal()" class="btn-glow bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-md font-bold transition border border-amber-300">Bảng Vàng ✨</button>
                     <button onclick="openShop()" class="btn-shine bg-[#b91c1c] hover:bg-red-800 text-white px-3 py-1.5 rounded-md font-bold transition">Mặc Hương Trai</button>
-                    
                     <button onclick="openApiKeyModal()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-2.5 py-1.5 rounded-md font-bold transition">🔑 Bí Kíp</button>
                     <button onclick="toggleDarkMode()" id="dark-mode-btn" class="bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1.5 rounded-md font-bold transition">🌙</button>
                 </div>
@@ -71,9 +77,7 @@
         </div>
     </header>
 
-    <!-- NỘI DUNG CHÍNH -->
     <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full">
-        <!-- MÀN HÌNH CHỌN CHỦ ĐỀ -->
         <div id="screen-menu" class="space-y-6">
             <div class="text-center space-y-2 py-4">
                 <h2 class="cophong-title text-3xl sm:text-4xl font-bold">Hành Trình Nắm Vững Ngữ Pháp</h2>
@@ -83,14 +87,13 @@
             <div class="space-y-8" id="categories-container"></div>
         </div>
 
-        <!-- MÀN HÌNH LÝ THUYẾT & THI (Tương tự cũ) -->
         <div id="screen-theory" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 bg-white dark:bg-[#1a1a1a]">
             <div class="border-b dark:border-gray-700 pb-4 flex justify-between items-center">
                 <div>
                     <span class="text-xs font-bold uppercase tracking-widest text-red-600">Phao Cứu Sinh Cấp Tốc</span>
                     <h2 id="theory-title" class="cophong-title text-2xl sm:text-3xl font-bold mt-1">Tên Lớp Học</h2>
                 </div>
-                <button onclick="backToMenu()" class="text-sm font-semibold">← Quay lại</button>
+                <button onclick="backToMenu()" class="text-sm font-semibold hover:text-amber-500">← Quay lại</button>
             </div>
             <div id="theory-content" class="text-sm sm:text-base leading-relaxed space-y-4"></div>
             <div class="flex justify-end pt-4 border-t dark:border-gray-700">
@@ -115,7 +118,7 @@
                 <p id="explanation-text" class="opacity-90"></p>
             </div>
             <div class="flex justify-between pt-4 border-t dark:border-gray-700">
-                <button onclick="backToMenu()" class="text-sm font-medium">Bỏ thi</button>
+                <button onclick="backToMenu()" class="text-sm font-medium hover:text-red-500">Bỏ thi</button>
                 <button id="next-btn" onclick="nextQuestion()" class="hidden bg-[#b91c1c] text-white px-6 py-2.5 rounded-xl font-bold">Câu tiếp theo</button>
             </div>
         </div>
@@ -134,43 +137,55 @@
         </div>
     </main>
 
-    <!-- Các Modal (ẩn) -->
-    <div id="ranks-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-        <div class="border max-w-md w-full p-6 rounded-2xl space-y-4 bg-white dark:bg-[#1a1a1a] max-h-[85vh] overflow-y-auto">
-            <div class="flex justify-between border-b pb-3"><h3 class="cophong-title text-xl font-bold">🏆 Bảng Vàng</h3><button onclick="closeRanksModal()">✕</button></div>
-            <div id="ranks-list-container" class="space-y-2 text-sm"></div>
-            <button onclick="closeRanksModal()" class="w-full bg-gray-500 text-white py-2 rounded-lg mt-2">Đóng</button>
+    <!-- BẢNG VÀNG ĐÃ ĐƯỢC LÀM LẤP LÁNH -->
+    <div id="ranks-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+        <div class="sparkle-panel max-w-md w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative">
+            <div class="flex justify-between border-b border-amber-300 pb-3">
+                <h3 class="cophong-title text-xl font-bold text-amber-700 dark:text-amber-400">🏆 Bảng Vàng Thăng Quan</h3>
+                <button onclick="closeRanksModal()" class="text-xl font-bold opacity-70 hover:opacity-100">✕</button>
+            </div>
+            <div id="ranks-list-container" class="space-y-2 text-sm text-[#2c221e] dark:text-gray-200"></div>
+            <button onclick="closeRanksModal()" class="w-full bg-[#2c221e] text-white py-2 rounded-lg mt-2 font-bold">Đóng Bảng Vàng</button>
         </div>
     </div>
     
-    <!-- Tương tự ẩn Shop, Api Key, Rankup Modals... (Giữ cấu trúc HTML cũ cho gọn) -->
-    <div id="shop-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50"><div class="border max-w-2xl w-full p-6 rounded-2xl bg-white dark:bg-[#1a1a1a] max-h-[85vh] overflow-y-auto"><div class="flex justify-between border-b pb-3"><h3 class="cophong-title text-xl font-bold">🏮 Mặc Hương Trai</h3><button onclick="closeShop()">✕</button></div><div id="shop-items-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4"></div><button onclick="closeShop()" class="w-full bg-gray-500 text-white py-2 rounded-lg mt-4">Đóng</button></div></div>
+    <!-- MẶC HƯƠNG TRAI ĐÃ ĐƯỢC LÀM LẤP LÁNH -->
+    <div id="shop-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+        <div class="sparkle-panel max-w-2xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between border-b border-amber-300 pb-3">
+                <h3 class="cophong-title text-xl font-bold text-amber-700 dark:text-amber-400">🏮 Mặc Hương Trai</h3>
+                <button onclick="closeShop()" class="text-xl font-bold opacity-70 hover:opacity-100">✕</button>
+            </div>
+            <div id="shop-items-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 text-[#2c221e] dark:text-gray-200"></div>
+            <button onclick="closeShop()" class="w-full bg-[#2c221e] text-white py-2 rounded-lg mt-4 font-bold">Rời Khỏi Cửa Hàng</button>
+        </div>
+    </div>
     
-    <div id="apikey-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50"><div class="border max-w-md w-full p-6 rounded-2xl bg-white dark:bg-[#1a1a1a]"><div class="flex justify-between border-b pb-3"><h3 class="font-bold">🔑 Nhập API Key</h3><button onclick="closeApiKeyModal()">✕</button></div><input type="password" id="api-key-input" class="w-full mt-4 p-2 border rounded text-black"><button onclick="saveApiKey()" class="w-full bg-indigo-700 text-white py-2 rounded mt-4">Lưu</button></div></div>
+    <!-- Các Modal khác -->
+    <div id="apikey-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50"><div class="border max-w-md w-full p-6 rounded-2xl bg-white dark:bg-[#1a1a1a]"><div class="flex justify-between border-b pb-3"><h3 class="font-bold">🔑 Nhập API Key</h3><button onclick="closeApiKeyModal()">✕</button></div><input type="password" id="api-key-input" class="w-full mt-4 p-2 border rounded text-black outline-none"><button onclick="saveApiKey()" class="w-full bg-indigo-700 hover:bg-indigo-800 font-bold text-white py-2 rounded mt-4">Lưu Bí Kíp</button></div></div>
 
-    <div id="rankup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"><div class="border-4 border-amber-400 bg-amber-50 dark:bg-[#2a2416] w-full max-w-md p-8 rounded-3xl text-center btn-glow"><div class="text-5xl">👑</div><h3 id="rankup-title" class="cophong-title text-2xl font-bold text-amber-900 dark:text-amber-200 mt-2">Thăng quan!</h3><p id="rankup-desc" class="mt-2 text-sm">Chúc mừng!</p><button onclick="closeRankUpModal()" class="mt-4 bg-amber-600 text-white px-6 py-2 rounded-xl">Tạ ơn</button></div></div>
+    <div id="rankup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"><div class="border-4 border-amber-400 bg-amber-50 dark:bg-[#2a2416] w-full max-w-md p-8 rounded-3xl text-center btn-glow"><div class="text-5xl">👑</div><h3 id="rankup-title" class="cophong-title text-2xl font-bold text-amber-900 dark:text-amber-200 mt-2">Thăng quan!</h3><p id="rankup-desc" class="mt-2 text-sm">Chúc mừng!</p><button onclick="closeRankUpModal()" class="mt-4 bg-amber-600 text-white px-6 py-2 rounded-xl font-bold">Tạ ơn</button></div></div>
 
     <!-- MODULE FIREBASE VÀ LOGIC -->
     <script type="module">
-        // ---------------------------------------------------------
-        // 1. CẤU HÌNH FIREBASE Ở ĐÂY
-        // ---------------------------------------------------------
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+        // MÃ CẤU HÌNH CỦA BẠN ĐÃ ĐƯỢC CHÈN VÀO ĐÂY
         const firebaseConfig = {
-            apiKey: "DÁN_API_KEY_CỦA_FIREBASE_VÀO_ĐÂY",
-            authDomain: "TÊN_PROJECT.firebaseapp.com",
-            projectId: "TÊN_PROJECT",
-            storageBucket: "TÊN_PROJECT.appspot.com",
-            messagingSenderId: "SỐ_SENDER_ID",
-            appId: "MÃ_APP_ID"
+          apiKey: "AIzaSyDJSfaGfY_9iXyShM3Z4CMp0mfuxJRQY-M",
+          authDomain: "khoa-cu-ngu-phap.firebaseapp.com",
+          projectId: "khoa-cu-ngu-phap",
+          storageBucket: "khoa-cu-ngu-phap.firebasestorage.app",
+          messagingSenderId: "122415863763",
+          appId: "1:122415863763:web:e710818de130ec57b7c126",
+          measurementId: "G-5SHBCWTHH8"
         };
 
         let db = null;
         try {
             if (firebaseConfig.apiKey.includes("DÁN_API_KEY")) {
-                console.warn("Chưa cấu hình Firebase.");
+                console.warn("Chưa cấu hình Firebase. Đang chạy Local.");
             } else {
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
@@ -179,64 +194,85 @@
             }
         } catch(e) { console.error("Lỗi Firebase:", e); }
 
-        // Hàm Đẩy dữ liệu lên mây
         window.saveToCloud = async function() {
-            if (!db) return; // Nếu chưa setup thì bỏ qua, xài local
+            if (!db) return;
             try {
                 await setDoc(doc(db, "UsersData", "MySĩTử"), {
                     userData: window.userData,
-                    categories: window.categories // Lưu luôn câu hỏi mới sinh ra
+                    categories: window.categories
                 });
             } catch(e) { console.error("Lỗi khi lưu mây:", e); }
         }
 
-        // Hàm Tải dữ liệu từ mây về khi vừa mở web
         window.loadFromCloud = async function() {
-            if (!db) return;
+            if (!db) { window.renderCategories(); return; }
             try {
                 const docSnap = await getDoc(doc(db, "UsersData", "MySĩTử"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
                     window.userData = data.userData;
-                    window.categories = data.categories; // Phục hồi các câu hỏi AI
+                    window.categories = data.categories; 
                     window.updateUI();
                     window.renderCategories();
                     window.applyTheme();
+                } else {
+                    // Lần đầu chạy trên Cloud, lưu dữ liệu mặc định lên
+                    window.saveToCloud();
+                    window.renderCategories();
                 }
-            } catch(e) { console.error("Lỗi khi tải mây:", e); }
+            } catch(e) { 
+                console.error("Lỗi khi tải mây:", e);
+                window.renderCategories(); 
+            }
         }
 
-        // Tải dữ liệu khi khởi động
+        // Tải dữ liệu
         window.loadFromCloud();
-
     </script>
 
     <!-- SCRIPT CHÍNH (LOGIC GAME VÀ GIAO DIỆN) -->
     <script>
-        const rankList = [{ name: "Sĩ tử", exp: 0 }, { name: "Đồng Sinh", exp: 10 }, { name: "Tú Tài", exp: 25 }, { name: "Cử Nhân", exp: 45 }, { name: "Tiến Sĩ", exp: 70 }, { name: "Chánh Nhất Phẩm", exp: 1375 }, { name: "Tể Tướng", exp: 1650 }];
-        const shopItems = [{ id: 1, name: "Bút Lông Sói", desc: "Tăng trí tuệ.", price: 30, icon: "🖌️" }, { id: 2, name: "Nghiên Mực", desc: "Nét chữ tinh anh.", price: 45, icon: "🪨" }];
+        // TRẢ LẠI ĐẦY ĐỦ DỮ LIỆU
+        const rankList = [ { name: "Sĩ tử", exp: 0 }, { name: "Đồng Sinh", exp: 10 }, { name: "Tú Tài", exp: 25 }, { name: "Cử Nhân", exp: 45 }, { name: "Tiến Sĩ", exp: 70 }, { name: "Tòng Cửu Phẩm", exp: 100 }, { name: "Chánh Cửu Phẩm", exp: 135 }, { name: "Tòng Bát Phẩm", exp: 175 }, { name: "Chánh Bát Phẩm", exp: 220 }, { name: "Tòng Thất Phẩm", exp: 270 }, { name: "Chánh Thất Phẩm", exp: 325 }, { name: "Tòng Lục Phẩm", exp: 385 }, { name: "Chánh Lục Phẩm", exp: 450 }, { name: "Tòng Ngũ Phẩm", exp: 520 }, { name: "Chánh Ngũ Phẩm", exp: 595 }, { name: "Tòng Tứ Phẩm", exp: 675 }, { name: "Chánh Tứ Phẩm", exp: 760 }, { name: "Tòng Tam Phẩm", exp: 850 }, { name: "Chánh Tam Phẩm", exp: 945 }, { name: "Tòng Nhị Phẩm", exp: 1045 }, { name: "Chánh Nhị Phẩm", exp: 1150 }, { name: "Tòng Nhất Phẩm", exp: 1260 }, { name: "Chánh Nhất Phẩm", exp: 1375 }, { name: "Tam Súc (Thái Sư / Thái Bảo)", exp: 1500 }, { name: "Tể Tướng Đương Triều", exp: 1650 } ];
+        
+        const shopItems = [ { id: 1, name: "Bút Lông Sói Thượng Hạng", desc: "Tăng 20% trí tuệ khi giải đề.", price: 30, icon: "🖌️" }, { id: 2, name: "Nghiên Mực Hoàng Sơn", desc: "Giúp nét chữ thêm phần tinh anh.", price: 45, icon: "🪨" }, { id: 3, name: "Giấy Tuyên Chỉ Thượng Đẳng", desc: "Giấy thơm viết văn không sai sót.", price: 25, icon: "📜" }, { id: 4, name: "Tráp Đựng Sách Gỗ Trắc", desc: "Gọn gàng kinh thư, ôn bài nhanh.", price: 60, icon: "🧰" }, { id: 5, name: "Đèn Khổng Minh Soi Sáng", desc: "Xua tan bóng tối khi học ban đêm.", price: 80, icon: "🏮" }, { id: 6, name: "Quạt Giấy Thơ Đề", desc: "Tăng phong thái tiêu dao sĩ tử.", price: 50, icon: "🪭" }, { id: 7, name: "Hồ Lô Rượu Thơm", desc: "Giải tỏa căng thẳng sau giờ học.", price: 70, icon: "🍾" }, { id: 8, name: "Gối Sứ Trúc Quân Tử", desc: "Giúp ngủ ngon, minh mẫn khi thi cử.", price: 90, icon: "🛌" }, { id: 9, name: "Triện Son Khắc Chữ", desc: "Đóng dấu xác nhận bài thi xuất sắc.", price: 110, icon: "🟥" }, { id: 10, name: "Áo Tràng Nguyên Gấm Vóc", desc: "Trang phục vinh quy bái tổ rực rỡ.", price: 200, icon: "👘" }, { id: 11, name: "Mũ Ô Sa Quan Phẩm", desc: "Uy nghiêm chốn triều đình.", price: 250, icon: "🎩" }, { id: 12, name: "Hài Thêu Chỉ Vàng", desc: "Bước đi vững chãi trên đường quan lộ.", price: 150, icon: "👞" }, { id: 13, name: "Bức Tranh Tùng Hạc", desc: "Treo phòng học tăng cường tĩnh tâm.", price: 180, icon: "🖼️" }, { id: 14, name: "Kính Lúp Phố Cổ", desc: "Soi kỹ từng lỗi nhỏ ngữ pháp.", price: 95, icon: "🔍" }, { id: 15, name: "Thượng Phương Bảo Kiếm", desc: "Vật phẩm uy quyền bậc nhất triều đình.", price: 500, icon: "⚔️" } ];
 
-        // ĐÃ BỔ SUNG: Tương lai gần, Mạo từ, Cụm danh từ
         window.categories = [
             {
                 id: 'cat1', title: 'Trường Thi Thứ Nhất: Nhóm 4 Thì Hiện Tại',
                 topics: [
-                    { id: 't_present_simple', name: '1. Hiện Tại Đơn (Present Simple)', theory: `S + V(s/es)`, questions: [{ q: "She usually _____ to school.", options: ["go", "goes", "went", "going"], answer: 1, explanation: "Ngôi thứ 3 số ít thêm es" }] }
+                    { id: 't_present_simple', name: '1. Hiện Tại Đơn (Present Simple)', theory: `S + V(s/es)`, questions: [{ q: "She usually _____ to school.", options: ["go", "goes", "went", "going"], answer: 1, explanation: "Ngôi thứ 3 số ít thêm es" }] },
+                    { id: 't_present_continuous', name: '2. Hiện Tại Tiếp Diễn', theory: `S + am/is/are + V-ing`, questions: [{ q: "Listen! Someone _____ a song.", options: ["sing", "sings", "is singing", "sang"], answer: 2, explanation: "Đang diễn ra dùng V-ing." }] },
+                    { id: 't_present_perfect', name: '3. Hiện Tại Hoàn Thành', theory: `S + have/has + V3/ed`, questions: [{ q: "I _____ English for 3 years.", options: ["learn", "learned", "have learned", "am learning"], answer: 2, explanation: "Dùng for + thời gian." }] },
+                    { id: 't_present_perfect_cont', name: '4. Hiện Tại Hoàn Thành Tiếp Diễn', theory: `S + have/has + been + V-ing`, questions: [{ q: "It _____ all day.", options: ["rains", "rained", "has been raining", "is raining"], answer: 2, explanation: "Nhấn mạnh liên tục." }] }
+                ]
+            },
+            {
+                id: 'cat2', title: 'Trường Thi Thứ Hai: Nhóm 4 Thì Quá Khứ',
+                topics: [
+                    { id: 't_past_simple', name: '5. Quá Khứ Đơn', theory: `S + V2/ed`, questions: [{ q: "She _____ a car two days ago.", options: ["buy", "buys", "bought", "buying"], answer: 2, explanation: "ago dùng V2." }] },
+                    { id: 't_past_continuous', name: '6. Quá Khứ Tiếp Diễn', theory: `S + was/were + V-ing`, questions: [{ q: "While I _____ dinner, the phone rang.", options: ["cook", "cooked", "was cooking", "is cooking"], answer: 2, explanation: "Đang xảy ra trong QK." }] },
+                    { id: 't_past_perfect', name: '7. Quá Khứ Hoàn Thành', theory: `S + had + V3/ed`, questions: [{ q: "When we arrived, the train _____.", options: ["left", "had left", "has left", "leaves"], answer: 1, explanation: "Xảy ra trước mốc QK." }] },
+                    { id: 't_past_perfect_cont', name: '8. Quá Khứ Hoàn Thành Tiếp Diễn', theory: `S + had been + V-ing`, questions: [{ q: "They _____ for 2 hours before it rained.", options: ["have played", "played", "had been playing", "were playing"], answer: 2, explanation: "Kéo dài trước mốc QK." }] }
                 ]
             },
             {
                 id: 'cat3', title: 'Trường Thi Thứ Ba: Nhóm Tương Lai',
                 topics: [
                     { id: 't_future_simple', name: '9. Tương Lai Đơn (Will)', theory: `S + will + V`, questions: [{ q: "I _____ help you.", options: ["will", "am", "do", "have"], answer: 0, explanation: "Lời hứa dùng Will." }] },
-                    { id: 't_near_future', name: '10. Tương Lai Gần (Be going to)', theory: `S + am/is/are + going to + V`, questions: [{ q: "Look at the clouds! It _____ rain.", options: ["will", "is going to", "rains", "raining"], answer: 1, explanation: "Có dấu hiệu bầu trời nhiều mây (sắp mưa) dùng tương lai gần." }] }
+                    { id: 't_near_future', name: '10. Tương Lai Gần (Be going to)', theory: `S + am/is/are + going to + V`, questions: [{ q: "Look at the clouds! It _____ rain.", options: ["will", "is going to", "rains", "raining"], answer: 1, explanation: "Dấu hiệu rõ ràng dùng tương lai gần." }] },
+                    { id: 't_future_cont', name: '11. Tương Lai Tiếp Diễn', theory: `S + will be + V-ing`, questions: [{ q: "At 8 PM tomorrow, we _____.", options: ["will relax", "will be relaxing", "relaxed", "are relaxing"], answer: 1, explanation: "Đang xảy ra ở tương lai." }] },
+                    { id: 't_future_perfect', name: '12. Tương Lai Hoàn Thành', theory: `S + will have + V3/ed`, questions: [{ q: "By next month, she _____.", options: ["will finish", "will have finished", "finishes", "finished"], answer: 1, explanation: "Hoàn thành trước mốc TL." }] }
                 ]
             },
             {
                 id: 'cat4', title: 'Trường Thi Thứ Tư: Chuyên Sâu Ngữ Pháp Khác',
                 topics: [
                     { id: 't_modal_verbs', name: '1. Động Từ Khiếm Khuyết', theory: `Khuyên: should. Bắt buộc: must.`, questions: [{ q: "You _____ wear a helmet.", options: ["should", "must", "can", "may"], answer: 1, explanation: "Luật giao thông là bắt buộc (must)." }] },
-                    { id: 't_noun_phrases', name: '2. Cụm Danh Từ (Noun Phrases)', theory: `Mạo từ + Tính từ + Danh từ.`, questions: [{ q: "She is a _____ girl.", options: ["beautifully", "beauty", "beautiful", "beautify"], answer: 2, explanation: "Trước danh từ 'girl' cần một tính từ bổ nghĩa." }] },
-                    { id: 't_articles', name: '3. Mạo Từ (A, An, The)', theory: `Dùng 'an' trước nguyên âm u,e,o,a,i. 'The' dùng cho vật duy nhất.`, questions: [{ q: "I have _____ apple.", options: ["a", "an", "the", "no article"], answer: 1, explanation: "Apple bắt đầu bằng nguyên âm 'a' nên dùng 'an'." }] }
+                    { id: 't_noun_phrases', name: '2. Cụm Danh Từ (Noun Phrases)', theory: `Mạo từ + Tính từ + Danh từ.`, questions: [{ q: "She is a _____ girl.", options: ["beautifully", "beauty", "beautiful", "beautify"], answer: 2, explanation: "Trước danh từ cần tính từ." }] },
+                    { id: 't_articles', name: '3. Mạo Từ (A, An, The)', theory: `Dùng 'an' trước u,e,o,a,i.`, questions: [{ q: "I have _____ apple.", options: ["a", "an", "the", "no article"], answer: 1, explanation: "Bắt đầu bằng nguyên âm dùng 'an'." }] },
+                    { id: 't_gerund', name: '4. Danh Động Từ & To-V', theory: `Sau enjoy dùng V-ing. Sau want dùng To-V`, questions: [{ q: "She promised _____ back early.", options: ["come", "coming", "to come", "came"], answer: 2, explanation: "Promise + to V." }] },
+                    { id: 't_reported', name: '5. Câu Tường Thuật', theory: `Lùi 1 bậc thì.`, questions: [{ q: "He said he _____ happy.", options: ["is", "was", "were", "has been"], answer: 1, explanation: "Lùi thì hiện tại thành quá khứ." }] }
                 ]
             }
         ];
@@ -261,7 +297,7 @@
             localStorage.setItem("user_exp", userData.exp);
             localStorage.setItem("user_coins", userData.coins);
             
-            if(window.saveToCloud) window.saveToCloud(); // GỌI LƯU CLOUD
+            if(window.saveToCloud) window.saveToCloud(); 
         }
 
         window.toggleDarkMode = function() {
@@ -369,7 +405,6 @@
             renderCategories();
         }
 
-        // Tích hợp AI
         window.generateMoreQuestions = async function() {
             if (!userData.apiKey) return;
             alert("Thầy Đồ AI đang suy ngẫm...");
@@ -382,30 +417,71 @@
                 let textResult = data.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
                 const newQs = JSON.parse(textResult);
                 
-                // Đẩy vào mảng hiện tại đang thi
                 currentQuestions.push(...newQs); 
-                // LƯU CÂU HỎI VÀO DATABASE GỐC ĐỂ FIREBASE ĐỒNG BỘ
                 currentTopic.questions.push(...newQs); 
                 
-                if(window.saveToCloud) window.saveToCloud(); // Gọi Firebase lưu lại lên đám mây
+                if(window.saveToCloud) window.saveToCloud(); 
 
                 alert(`Đã thêm ${newQs.length} câu hỏi mới!`);
                 loadQuestion();
             } catch (err) { alert("Lỗi khi kết nối AI!"); }
         }
 
-        // Các hàm phụ (Mở/Đóng Modal)
-        window.openRanksModal = () => document.getElementById('ranks-modal').classList.remove('hidden');
+        // HÀM HIỂN THỊ ĐẦY ĐỦ BẢNG VÀNG
+        window.openRanksModal = function() {
+            const listContainer = document.getElementById('ranks-list-container');
+            listContainer.innerHTML = '';
+            rankList.forEach((r, idx) => {
+                let unlocked = userData.exp >= r.exp;
+                listContainer.innerHTML += `
+                    <div class="flex justify-between items-center p-2.5 rounded-lg border ${unlocked ? 'border-amber-500 bg-amber-500/20 font-bold shadow-sm' : 'opacity-50 border-gray-500'}">
+                        <div><span>#${idx + 1}. ${r.name}</span></div>
+                        <div><span class="text-xs text-amber-600 dark:text-amber-400">${r.exp} EXP</span> ${unlocked ? '✅' : '🔒'}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('ranks-modal').classList.remove('hidden');
+        }
         window.closeRanksModal = () => document.getElementById('ranks-modal').classList.add('hidden');
-        window.openShop = () => document.getElementById('shop-modal').classList.remove('hidden');
+
+        // HÀM HIỂN THỊ ĐẦY ĐỦ MẶC HƯƠNG TRAI
+        window.openShop = function() {
+            const grid = document.getElementById('shop-items-grid');
+            grid.innerHTML = '';
+            shopItems.forEach(item => {
+                grid.innerHTML += `
+                    <div class="border border-amber-300 p-3.5 rounded-xl flex items-center justify-between bg-white/60 dark:bg-black/40 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl">${item.icon}</span>
+                            <div>
+                                <h4 class="font-bold text-sm text-amber-900 dark:text-amber-200">${item.name}</h4>
+                                <p class="text-xs opacity-80">${item.desc}</p>
+                                <span class="text-xs font-bold text-yellow-600 dark:text-yellow-400">${item.price} 🪙</span>
+                            </div>
+                        </div>
+                        <button onclick="buyItem(${item.price}, '${item.name}')" class="bg-amber-700 hover:bg-amber-800 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition shrink-0">Thỉnh</button>
+                    </div>
+                `;
+            });
+            document.getElementById('shop-modal').classList.remove('hidden');
+        }
         window.closeShop = () => document.getElementById('shop-modal').classList.add('hidden');
-        window.openApiKeyModal = () => document.getElementById('apikey-modal').classList.remove('hidden');
+
+        window.buyItem = function(price, itemName) {
+            if (userData.coins >= price) {
+                userData.coins -= price; userData.exp += 15;
+                updateUI();
+                alert(`Thỉnh thành công "${itemName}"! Nhận +15 EXP.`);
+                openShop(); // Tải lại shop
+            } else { alert("Ngân lượng không đủ!"); }
+        }
+
+        window.openApiKeyModal = () => { document.getElementById('api-key-input').value = userData.apiKey; document.getElementById('apikey-modal').classList.remove('hidden'); }
         window.closeApiKeyModal = () => document.getElementById('apikey-modal').classList.add('hidden');
         window.saveApiKey = () => { userData.apiKey = document.getElementById('api-key-input').value; localStorage.setItem("gemini_api_key", userData.apiKey); closeApiKeyModal(); updateUI(); }
         window.closeRankUpModal = () => document.getElementById('rankup-modal').classList.add('hidden');
 
-        // Khởi tạo ban đầu
-        applyTheme(); updateUI(); renderCategories();
+        applyTheme(); updateUI();
     </script>
 </body>
 </html>
