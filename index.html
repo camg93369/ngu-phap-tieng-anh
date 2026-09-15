@@ -614,48 +614,70 @@
         }
 
         // TÍNH NĂNG GỌI API GEMINI VÀ ĐỒNG BỘ CÂU HỎI LÊN ĐÁM MÂY (ĐÃ CẬP NHẬT MODEL GEMINI-2.5-FLASH)
-        window.generateAIQuiz = async function() {
-            if (!userData.apiKey) {
-                MặcHiênThôngBáo("Chưa có Bí Kíp! Hãy vào bấm '🔑 Bí Kíp' để nhập API Key của bạn.");
-                openApiKeyModal();
-                return;
-            }
-            MặcHiênThôngBáo("Mặc Hiên tiên sinh đang vận dụng thiên khí để ra đề mới...");
-            
-            try {
-                // Cập nhật endpoint dùng model gemini-2.5-flash
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${userData.apiKey}`;
-                const promptText = `Tạo 1 câu hỏi trắc nghiệm tiếng Anh độc đáo về đúng chủ đề: "${currentTopic.name}". 
-                Chỉ trả về định dạng JSON thuần túy, không có khoảng trắng thừa hay markdown, cấu trúc chính xác:
-                {
-                  "q": "Nội dung câu hỏi tiếng Anh?",
-                  "options": ["đáp án A", "đáp án B", "đáp án C", "đáp án D"],
-                  "answer": 0,
-                  "explanation": "Giải thích chi tiết bằng tiếng Việt"
-                }`;
+       // TÍNH NĂNG GỌI API GEMINI (ĐÃ TỐI ƯU & SỬA LỖI CÚ PHÁP)
+window.generateAIQuiz = async function() {
+    if (!userData.apiKey) {
+        MặcHiênThôngBáo("Chưa có Bí Kíp! Hãy vào bấm '🔑 Bí Kíp' để nhập API Key của bạn.");
+        openApiKeyModal();
+        return;
+    }
+    
+    MặcHiênThôngBáo("Mặc Hiên tiên sinh đang suy ngẫm để vận công ra đề mới...");
+    
+    try {
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${userData.apiKey}`;
+        const randomSeed = Date.now();
+        const promptText = `Bạn là Mặc Hiên tiên sinh, một thầy giáo dạy tiếng Anh giỏi. 
+Hãy sáng tạo 1 câu hỏi trắc nghiệm tiếng Anh hoàn toàn MỚI và ĐỘC ĐÁO (mã ngẫu nhiên: ${randomSeed}) về chủ đề: "${currentTopic.name}".
 
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
-                });
+YÊU CẦU BẮT BUỘC:
+- Chỉ trả về duy nhất 1 chuỗi JSON hợp lệ.
+- Không sử dụng Markdown format (không ghi \`\`\`json).
+- Cấu trúc JSON phải chính xác như sau:
+{
+  "q": "Nội dung câu hỏi tiếng Anh?",
+  "options": ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"],
+  "answer": 0,
+  "explanation": "Giải thích chi tiết lý do chọn đáp án bằng tiếng Việt"
+}`;
 
-                if (!response.ok) throw new Error(`Lỗi API HTTP status ${response.status}`);
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: promptText }] }],
+                generationConfig: { temperature: 0.9 }
+            })
+        });
 
-                const data = await response.json();
-                let textRes = data.candidates[0].content.parts[0].text;
-                textRes = textRes.replace(/```json/g, '').replace(/```/g, '').trim();
-                const aiQuestion = JSON.parse(textRes);
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(`Mã lỗi ${response.status}: ${errData.error?.message || 'Không thể kết nối API'}`);
+        }
 
-                currentQuestions.push(aiQuestion);
-                currentTopic.questions = [...currentQuestions];
-                currentQIndex = currentQuestions.length - 1;
-                
-                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã ra câu hỏi mới thành công!");
-                loadQuestion();
-                if(window.saveToCloud) window.saveToCloud();
-            } catch (e) {
-                console.warn("Lỗi API, chuyển sang câu hỏi dự phòng linh hoạt:", e);
+        const data = await response.json();
+        let textRes = data.candidates[0].content.parts[0].text;
+        
+        textRes = textRes.replace(/```json/gi, '').replace(/```/g, '').trim();
+        const aiQuestion = JSON.parse(textRes);
+
+        if (!aiQuestion.q || !Array.isArray(aiQuestion.options) || aiQuestion.options.length !== 4) {
+            throw new Error("Dữ liệu câu hỏi từ AI không đúng định dạng!");
+        }
+
+        currentQuestions.push(aiQuestion);
+        currentTopic.questions = [...currentQuestions];
+        currentQIndex = currentQuestions.length - 1;
+        
+        MặcHiênThôngBáo("Mặc Hiên tiên sinh đã hoàn thành đề thi mới!");
+        loadQuestion();
+        if (window.saveToCloud) window.saveToCloud();
+
+    } catch (e) {
+        console.error("Lỗi API Chi Tiết:", e);
+        MặcHiênThôngBáo(`Lỗi ra đề: ${e.message}`);
+    }
+}
                 
                 // Mã dự phòng linh hoạt theo chủ đề hiện tại
                 const fallbackQuestion = { 
