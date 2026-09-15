@@ -763,7 +763,7 @@ YÊU CẦU:
             loadQuestion();
         }
 
-        window.loadQuestion = function() {
+       window.loadQuestion = function() {
             const q = currentQuestions[currentQIndex];
             document.getElementById('quiz-progress').innerText = `Câu ${currentQIndex + 1} / ${currentQuestions.length}`;
             document.getElementById('question-text').innerText = q.q;
@@ -772,9 +772,51 @@ YÊU CẦU:
             q.options.forEach((opt, idx) => {
                 optContainer.innerHTML += `<button onclick="selectAnswer(${idx})" class="option-btn w-full text-left p-3 rounded-xl border font-medium bg-white dark:bg-[#222]"><b>${String.fromCharCode(65 + idx)}.</b> ${opt}</button>`;
             });
+
+            // Nút Xóa câu hỏi sai
+            optContainer.innerHTML += `
+                <div class="pt-2 text-right">
+                    <button onclick="deleteCurrentQuestion()" class="text-xs text-red-500 hover:text-red-700 font-bold underline">
+                        🗑️ Xóa câu hỏi sai này
+                    </button>
+                </div>
+            `;
+
             document.getElementById('explanation-box').classList.add('hidden');
             document.getElementById('next-btn').classList.add('hidden');
         }
+window.deleteCurrentQuestion = async function() {
+            if (!confirm("Bạn có chắc chắn muốn xóa câu hỏi này khỏi hệ thống không?")) return;
+
+            // 1. Xóa câu hỏi khỏi danh sách hiện tại
+            currentQuestions.splice(currentQIndex, 1);
+            currentTopic.questions = currentQuestions;
+
+            // 2. Cập nhật lại danh sách categories
+            window.categories.forEach(cat => {
+                let t = cat.topics.find(top => top.id === currentTopic.id);
+                if (t) {
+                    t.questions = currentQuestions;
+                }
+            });
+
+            // 3. Đồng bộ lên Đám mây (Firestore)
+            if (typeof window.saveToCloud === 'function') {
+                await window.saveToCloud();
+            }
+
+            MặcHiênThôngBáo("Đã xóa câu hỏi bị sai!");
+
+            // 4. Tải câu hỏi tiếp theo hoặc về menu nếu hết câu
+            if (currentQuestions.length > 0) {
+                if (currentQIndex >= currentQuestions.length) {
+                    currentQIndex = currentQuestions.length - 1;
+                }
+                loadQuestion();
+            } else {
+                backToMenu();
+            }
+        };
 
         window.selectAnswer = function(selectedIndex) {
             const q = currentQuestions[currentQIndex];
