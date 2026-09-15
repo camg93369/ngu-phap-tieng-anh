@@ -151,14 +151,26 @@
 
         <!-- MÀN HÌNH THI -->
         <div id="screen-quiz" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 bg-white dark:bg-[#1a1a1a]">
-            <div class="flex flex-wrap justify-between items-center border-b dark:border-gray-700 pb-4 gap-2">
+        <div class="flex flex-wrap justify-between items-center border-b dark:border-gray-700 pb-4 gap-2">
                 <div>
-    <div class="flex items-center gap-2">
-        <span id="quiz-progress" class="text-xs font-bold opacity-70">Câu 1 / 5</span>
-        <button onclick="deleteCurrentQuestion()" class="text-xs text-red-500 hover:text-red-700 font-bold p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition" title="Xóa câu hỏi này">
-            🗑️ Xóa
-        </button>
-    </div>
+                    <span id="quiz-progress" class="text-xs font-bold opacity-70">Câu 1 / 5</span>
+                    <h3 id="quiz-topic-name" class="font-bold text-lg">Chủ đề</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="deleteCurrentQuestion()" class="bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-950/50 dark:text-red-400 text-xs font-bold px-3 py-2 rounded-lg border border-red-300 dark:border-red-800 transition">
+                        🗑️ Xóa câu này
+                    </button>
+                    <button onclick="generateAIQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow flex items-center gap-1.5 transition">
+                        ✨ Nhờ Mặc Hiên Tiên Sinh Ra Đề (AI)
+                    </button>
+                </div>
+            </div>
+    <h3 id="quiz-topic-name" class="font-bold text-lg">Chủ đề</h3>
+</div>
+                <button onclick="generateAIQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow flex items-center gap-1.5 transition">
+                    ✨ Nhờ Mặc Hiên Tiên Sinh Ra Đề (AI)
+                </button>
+            </div>
     <h3 id="quiz-topic-name" class="font-bold text-lg">Chủ đề</h3>
 </div>
                 <button onclick="generateAIQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow flex items-center gap-1.5 transition">
@@ -623,37 +635,36 @@
         }
 
         // TÍNH NĂNG GỌI API GEMINI DÙNG MODEL GEMINI-3.6-FLASH
-        window.generateAIQuiz = async function() {
+       window.generateAIQuiz = async function() {
     if (!userData.apiKey) {
         alert("Vui lòng nhập Gemini API Key trong phần Cài đặt!");
         return;
     }
 
+    // Giữ nguyên model gemini-3.6-flash của bạn
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
     
-    // 1. Lấy danh sách câu hỏi cũ của topic này để AI biết và né tránh trùng lặp
     const existingQuestions = currentTopic.questions ? currentTopic.questions.map(q => q.q).join("\n- ") : "";
-    
-    // 2. Tạo seed ngẫu nhiên & bối cảnh đa dạng
     const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
-    const contexts = ["du lịch", "công việc văn phòng", "sở thích cá nhân", "thời tiết", "ẩm thực", "thể thao", "cuộc sống gia đình", "học tập"];
-    const randomContext = contexts[Math.floor(Math.random() * contexts.length)];
 
-    const promptText = `Bạn là Mặc Hiên tiên sinh. Hãy tạo 1 câu hỏi trắc nghiệm tiếng Anh cho chủ đề ngữ pháp: "${currentTopic.name}".
-Bối cảnh câu hỏi: Hãy viết về chủ đề "${randomContext}".
-Mã ngẫu nhiên duy nhất: [${randomSeed}].
+    // Prompt siết chặt độ dài cho trình độ A2 - B1 Trung Học
+    const promptText = `Bạn là Mặc Hiên tiên sinh. Hãy tạo 1 câu hỏi trắc nghiệm tiếng Anh cho học sinh TRUNG HỌC (Trình độ A2 - B1) thuộc chủ đề: "${currentTopic.name}".
+Mã ngẫu nhiên: [${randomSeed}].
 
-CÁC CÂU HỎI ĐÃ CÓ TRONG HỆ THỐNG (TUYỆT ĐỐI KHÔNG TẠO CÂU TƯƠNG TỰ HOẶC TRÙNG LẶP NỘI DUNG/TỪ VỰNG CÁC CÂU NÀY):
+QUY ĐỊNH BẮT BUỘC VỀ ĐỘ DÀI VÀ NGỮ PHÁP:
+1. Trình độ: A2 - B1 (Dùng ngữ pháp trung học đơn giản như thì hiện tại đơn, quá khứ đơn, so sánh, mệnh đề quan hệ ngắn...).
+2. Độ dài CỰC KỲ NGẮN GỌN (Bắt buộc):
+   - Câu hỏi: Tối đa 10 đến 12 từ.
+   - Các lựa chọn A, B, C, D: Chỉ từ 1 đến 3 từ mỗi đáp án.
+   - Giải thích: Tối đa 1 câu ngắn.
+3. Không lặp lại các câu sau:
 - ${existingQuestions}
 
-YÊU CẦU:
-- Mức độ: A2 - B1.
-- Tự do sáng tạo nhân vật, hành động, từ vựng mới lạ để tránh lặp lại cấu trúc quen thuộc.
-- CHỈ trả về đúng 1 chuỗi JSON thuần túy theo định dạng:
-{"question": "Câu hỏi...", "options": ["A", "B", "C", "D"], "correct": 0, "explanation": "Giải thích..."}`;
+Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock \`\`\`json):
+{"question": "Câu hỏi ngắn...", "options": ["A", "B", "C", "D"], "correct": 0, "explanation": "Giải thích ngắn..."}`;
 
     try {
-        MặcHiênThôngBáo("Mặc Hiên tiên sinh đang sáng tạo đề thi mới...");
+        MặcHiênThôngBáo("Mặc Hiên tiên sinh đang tạo đề A2-B1 ngắn gọn...");
 
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -661,23 +672,18 @@ YÊU CẦU:
             body: JSON.stringify({
                 contents: [{ parts: [{ text: promptText }] }],
                 generationConfig: {
-                    temperature: 1.2, // Tăng nhẹ độ ngẫu nhiên và sáng tạo
-                    topP: 0.95
+                    temperature: 0.2, // Giảm sâu temperature để AI tuân thủ nghiêm ngặt độ dài
+                    topP: 0.8
                 }
             })
         });
 
         const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.error?.message || "Lỗi kết nối API");
-        }
+        if (!response.ok) throw new Error(data.error?.message || "Lỗi kết nối API");
 
         let rawText = data.candidates[0].content.parts[0].text;
         const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) {
-            throw new Error("AI không trả về cấu trúc JSON hợp lệ");
-        }
+        if (!jsonMatch) throw new Error("AI không trả về cấu trúc JSON hợp lệ");
         
         const aiQuestion = JSON.parse(jsonMatch[0]);
 
@@ -685,23 +691,18 @@ YÊU CẦU:
             q: aiQuestion.question || aiQuestion.q,
             options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
             answer: typeof aiQuestion.correct !== 'undefined' ? aiQuestion.correct : aiQuestion.c,
-            explanation: aiQuestion.explanation || aiQuestion.e || "Mặc Hiên tiên sinh chưa để lại giải thích."
+            explanation: aiQuestion.explanation || aiQuestion.e || "Giải thích ngắn gọn."
         };
 
-        // Thêm vào danh sách câu hỏi
         if (currentTopic && currentTopic.questions) {
             currentTopic.questions.push(formattedQuestion);
         }
 
-        // Cập nhật categories gốc
         window.categories.forEach(cat => {
             let t = cat.topics.find(top => top.id === currentTopic.id);
-            if (t) {
-                t.questions = currentTopic.questions;
-            }
+            if (t) t.questions = currentTopic.questions;
         });
 
-        // Đồng bộ Đám mây
         if (typeof window.saveToCloud === 'function') {
             await window.saveToCloud();
         }
@@ -709,10 +710,10 @@ YÊU CẦU:
         currentQuestions = [...currentTopic.questions];
         currentQIndex = currentQuestions.length - 1;
         loadQuestion();
-        MặcHiênThôngBáo("Đã lưu đề thi mới độc đáo từ Mặc Hiên tiên sinh!");
+        MặcHiênThôngBáo("Đã thêm câu hỏi A2-B1 mới!");
     } catch (error) {
         console.error("Lỗi AI ra đề:", error);
-        alert("Lỗi tạo câu hỏi từ AI: " + error.message + "\nVui lòng nhấn thử lại!");
+        alert("Lỗi tạo câu hỏi: " + error.message);
     }
 };
         window.openTheory = function(topicId) {
@@ -768,7 +769,7 @@ YÊU CẦU:
             loadQuestion();
         }
 
-       window.loadQuestion = function() {
+  window.loadQuestion = function() {
             const q = currentQuestions[currentQIndex];
             document.getElementById('quiz-progress').innerText = `Câu ${currentQIndex + 1} / ${currentQuestions.length}`;
             document.getElementById('question-text').innerText = q.q;
@@ -781,6 +782,42 @@ YÊU CẦU:
             document.getElementById('explanation-box').classList.add('hidden');
             document.getElementById('next-btn').classList.add('hidden');
         }
+
+        // Hàm xóa an toàn tách biệt 2 bước cho điện thoại
+        window.deleteCurrentQuestion = async function() {
+            if (!currentQuestions || currentQuestions.length === 0) return;
+
+            const confirmDelete = confirm(`⚠️ Bạn có chắc chắn muốn XÓA câu hỏi số ${currentQIndex + 1} này không?\nHành động này không thể hoàn tác!`);
+            if (!confirmDelete) return;
+
+            currentQuestions.splice(currentQIndex, 1);
+            currentTopic.questions.splice(currentQIndex, 1);
+
+            if (typeof window.categories !== 'undefined') {
+                window.categories.forEach(cat => {
+                    let t = cat.topics.find(top => top.id === currentTopic.id);
+                    if (t) t.questions = currentTopic.questions;
+                });
+            }
+
+            if (typeof window.saveToCloud === 'function') {
+                await window.saveToCloud();
+            }
+
+            if (typeof MặcHiênThôngBáo === 'function') {
+                MặcHiênThôngBáo("Đã xóa câu hỏi!");
+            }
+
+            if (currentQuestions.length === 0) {
+                alert("Đã xóa hết câu hỏi trong chủ đề này!");
+                if (typeof backToMenu === 'function') backToMenu();
+            } else {
+                if (currentQIndex >= currentQuestions.length) {
+                    currentQIndex = currentQuestions.length - 1;
+                }
+                loadQuestion();
+            }
+        };
 
         window.selectAnswer = function(selectedIndex) {
             const q = currentQuestions[currentQIndex];
