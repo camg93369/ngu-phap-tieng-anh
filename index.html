@@ -84,7 +84,7 @@
             background: linear-gradient(135deg, #1a1a1a 0%, #2a1a08 100%); border: 2px solid #b45309;
         }
         
-        /* Hộp thoại thông báo cổ phong */
+        /* Hộp thoại thông báo phong cách Mặc Hiên tiên sinh */
         #cophong-alert {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999;
             background: #2c221e; color: #f7f1e5; border: 2px solid #fbbf24; padding: 12px 24px;
@@ -96,7 +96,6 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between paper-bg" id="body-theme">
 
-    <!-- Hộp thông báo thay thế alert() -->
     <div id="cophong-alert">Mặc Hiên tiên sinh cho biết: <span id="alert-msg">Nội dung...</span></div>
 
     <header class="bg-[#2c221e] text-[#f7f1e5] shadow-md border-b-4 border-[#b91c1c] sticky top-0 z-40">
@@ -150,14 +149,13 @@
             </div>
         </div>
 
-        <!-- MÀN HÌNH THI (CÓ TÍCH HỢP NÚT GỌI API AI RA ĐỀ) -->
+        <!-- MÀN HÌNH THI (NÚT GỌI AI RA ĐỀ) -->
         <div id="screen-quiz" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 bg-white dark:bg-[#1a1a1a]">
             <div class="flex flex-wrap justify-between items-center border-b dark:border-gray-700 pb-4 gap-2">
                 <div>
                     <span id="quiz-progress" class="text-xs font-bold opacity-70">Câu 1 / 5</span>
                     <h3 id="quiz-topic-name" class="font-bold text-lg">Chủ đề</h3>
                 </div>
-                <!-- Nút Nhờ Mặc Hiên Tiên Sinh AI ra đề -->
                 <button onclick="generateAIQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow flex items-center gap-1.5 transition">
                     ✨ Nhờ Mặc Hiên Tiên Sinh Ra Đề (AI)
                 </button>
@@ -264,7 +262,7 @@
     <div id="apikey-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
         <div class="border max-w-md w-full p-6 rounded-2xl bg-white dark:bg-[#1a1a1a] space-y-3">
             <div class="flex justify-between border-b pb-3"><h3 class="font-bold">🔑 Nhập API Key (Bí Kíp AI)</h3><button onclick="closeApiKeyModal()">✕</button></div>
-            <p class="text-xs opacity-80">Nhập Gemini API Key của bạn để Mặc Hiên tiên sinh có thể linh ứng ra thêm câu hỏi trắc nghiệm ngữ pháp độc quyền.</p>
+            <p class="text-xs opacity-80">Dán định dạng API Key (dạng AQ.Ab...) để Mặc Hiên tiên sinh linh ứng ra đề thi mới.</p>
             <input type="password" id="api-key-input" placeholder="Dán API Key vào đây..." class="w-full p-2 border rounded text-black outline-none text-sm">
             <button onclick="saveApiKey()" class="w-full bg-indigo-700 hover:bg-indigo-800 font-bold text-white py-2 rounded">Lưu Bí Kíp</button>
         </div>
@@ -296,7 +294,7 @@
         window.saveToCloud = async function() {
             if (!db) return;
             try {
-                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV4"), {
+                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV5"), {
                     players: window.playersList,
                     activeId: window.activePlayerId,
                     categories: window.categories
@@ -307,7 +305,7 @@
         window.loadFromCloud = async function() {
             if (!db) { window.initAppData(); return; }
             try {
-                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV4"));
+                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV5"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
                     window.playersList = data.players || window.playersList;
@@ -332,7 +330,6 @@
 
     <!-- SCRIPT CHÍNH -->
     <script>
-        // Hàm thông báo thay thế alert theo yêu cầu "Mặc Hiên tiên sinh cho biết"
         window.showCophongAlert = function(msg) {
             const box = document.getElementById('cophong-alert');
             document.getElementById('alert-msg').innerText = msg;
@@ -617,7 +614,7 @@
             });
         }
 
-        // TÍNH NĂNG GỌI API GEMINI ĐỂ AI TẠO THÊM CÂU HỎI
+        // TÍNH NĂNG GỌI API GEMINI (TƯƠNG THÍCH ĐỊNH DẠNG API KEY AQ.Ab...)
         window.generateAIQuiz = async function() {
             if (!userData.apiKey) {
                 showCophongAlert("Chưa có Bí Kíp! Hãy vào bấm '🔑 Bí Kíp' để nhập API Key của bạn.");
@@ -626,6 +623,17 @@
             }
             showCophongAlert("Mặc Hiên tiên sinh đang vận dụng thiên khí để ra đề mới...");
             try {
+                let apiUrl = "";
+                let headersObj = { 'Content-Type': 'application/json' };
+
+                // Kiểm tra dạng API Key AQ.Ab... (Bearer Token) hay dạng AIzaSy... (API Key URL param)
+                if (userData.apiKey.startsWith("AQ.") || userData.apiKey.length > 50) {
+                    apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`;
+                    headersObj['Authorization'] = `Bearer ${userData.apiKey}`;
+                } else {
+                    apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userData.apiKey}`;
+                }
+
                 const promptText = `Tạo 1 câu hỏi trắc nghiệm tiếng Anh về chủ đề: "${currentTopic.name}". 
                 Trả về kết quả chuẩn định dạng JSON duy nhất, không kèm markdown thừa, theo cấu trúc sau:
                 {
@@ -635,11 +643,15 @@
                   "explanation": "Giải thích chi tiết bằng tiếng Việt"
                 } (lưu ý answer là số từ 0 đến 3 tương ứng vị trí đáp án đúng)`;
 
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userData.apiKey}`, {
+                const response = await fetch(apiUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: headersObj,
                     body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
                 });
+
+                if (!response.ok) {
+                    throw new Error(`Lỗi HTTP: ${response.status}`);
+                }
 
                 const data = await response.json();
                 let textRes = data.candidates[0].content.parts[0].text;
@@ -651,7 +663,7 @@
                 loadQuestion();
             } catch (e) {
                 console.error(e);
-                showCophongAlert("Thiên khí bất ổn, việc ra đề từ AI thất bại. Hãy kiểm tra lại API Key!");
+                showCophongAlert("Thiên khí bất ổn hoặc API Key chưa hợp lệ. Hãy kiểm tra lại bí kíp!");
             }
         }
 
@@ -903,7 +915,7 @@
             reader.readAsDataURL(file);
         }
 
-        // MẶC HƯƠNG TRAI (15 VẬT PHẨM)
+        // MẶC HƯƠNG TRAI
         window.openShop = function() {
             const grid = document.getElementById('shop-items-grid');
             grid.innerHTML = '';
