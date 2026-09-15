@@ -302,28 +302,30 @@
             } catch(e) { console.error("Lỗi khi lưu mây:", e); }
         }
 
-        window.loadFromCloud = async function() {
-            if (!db) { window.initAppData(); return; }
-            try {
-                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV11"));
-                if (docSnap.exists()) {
-                    let data = docSnap.data();
-                    window.playersList = data.players || window.playersList;
-                    window.activePlayerId = data.activeId || window.playersList[0].id;
-                    window.categories = data.categories || window.categories;
-                    window.syncActivePlayerFromList();
-                    window.updateUI();
-                    window.renderCategories();
-                    window.applyTheme();
-                } else {
-                    window.initAppData();
-                    window.saveToCloud();
-                }
-            } catch(e) { 
-                console.error("Lỗi khi tải mây:", e);
-                window.initAppData(); 
-            }
+                window.loadFromCloud = async function() {
+    if (!db) { window.initAppData(); return; }
+    try {
+        const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV11"));
+        if (docSnap.exists()) {
+            let data = docSnap.data();
+            // Chỉ đồng bộ danh sách người chơi và người chơi đang chọn
+            window.playersList = data.players || window.playersList;
+            window.activePlayerId = data.activeId || window.playersList[0].id;
+            
+            // LƯU Ý: Không đè window.categories từ Firebase nữa để tránh mất danh mục
+            window.syncActivePlayerFromList();
+            window.updateUI();
+            window.renderCategories();
+            window.applyTheme();
+        } else {
+            window.initAppData();
+            window.saveToCloud();
         }
+    } catch(e) { 
+        console.error("Lỗi khi tải mây:", e);
+        window.initAppData(); 
+    }
+}
 
         window.loadFromCloud();
     </script>
