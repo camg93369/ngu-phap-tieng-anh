@@ -624,24 +624,22 @@
         }
 
         // TÍNH NĂNG GỌI API GEMINI DÙNG MODEL GEMINI-3.6-FLASH
-       window.generateAIQuiz = async function() {
-    if (!userData.apiKey) {
+window.generateAIQuiz = async function() {
+    if (!userData || !userData.apiKey) {
         alert("Vui lòng nhập Gemini API Key trong phần Cài đặt!");
         return;
     }
 
-    // Giữ nguyên model gemini-3.6-flash của bạn
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
     
-    const existingQuestions = currentTopic.questions ? currentTopic.questions.map(q => q.q).join("\n- ") : "";
+    const existingQuestions = (currentTopic && currentTopic.questions) ? currentTopic.questions.map(q => q.q).join("\n- ") : "";
     const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
 
-    // Prompt siết chặt độ dài cho trình độ A2 - B1 Trung Học
     const promptText = `Bạn là Mặc Hiên tiên sinh. Hãy tạo 1 câu hỏi trắc nghiệm tiếng Anh cho học sinh TRUNG HỌC (Trình độ A2 - B1) thuộc chủ đề: "${currentTopic.name}".
 Mã ngẫu nhiên: [${randomSeed}].
 
 QUY ĐỊNH BẮT BUỘC VỀ ĐỘ DÀI VÀ NGỮ PHÁP:
-1. Trình độ: A2 - B1 (Dùng ngữ pháp trung học đơn giản như thì hiện tại đơn, quá khứ đơn, so sánh, mệnh đề quan hệ ngắn...).
+1. Trình độ: A2 - B1 (Dùng ngữ pháp trung học đơn giản).
 2. Độ dài CỰC KỲ NGẮN GỌN (Bắt buộc):
    - Câu hỏi: Tối đa 10 đến 12 từ.
    - Các lựa chọn A, B, C, D: Chỉ từ 1 đến 3 từ mỗi đáp án.
@@ -649,11 +647,11 @@ QUY ĐỊNH BẮT BUỘC VỀ ĐỘ DÀI VÀ NGỮ PHÁP:
 3. Không lặp lại các câu sau:
 - ${existingQuestions}
 
-Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock \`\`\`json):
+Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
 {"question": "Câu hỏi ngắn...", "options": ["A", "B", "C", "D"], "correct": 0, "explanation": "Giải thích ngắn..."}`;
 
     try {
-        MặcHiênThôngBáo("Mặc Hiên tiên sinh đang tạo đề A2-B1 ngắn gọn...");
+        if (typeof MặcHiênThôngBáo === 'function') MặcHiênThôngBáo("Mặc Hiên tiên sinh đang tạo đề A2-B1...");
 
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -661,7 +659,7 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock \`\
             body: JSON.stringify({
                 contents: [{ parts: [{ text: promptText }] }],
                 generationConfig: {
-                    temperature: 0.2, // Giảm sâu temperature để AI tuân thủ nghiêm ngặt độ dài
+                    temperature: 0.2,
                     topP: 0.8
                 }
             })
@@ -683,28 +681,34 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock \`\
             explanation: aiQuestion.explanation || aiQuestion.e || "Giải thích ngắn gọn."
         };
 
+        // 1. Thêm câu hỏi vào danh mục hiện tại
         if (currentTopic && currentTopic.questions) {
             currentTopic.questions.push(formattedQuestion);
         }
 
-        window.categories.forEach(cat => {
-            let t = cat.topics.find(top => top.id === currentTopic.id);
-            if (t) t.questions = currentTopic.questions;
-        });
+        // 2. Cập nhật mảng categories tổng
+        if (typeof window.categories !== 'undefined') {
+            window.categories.forEach(cat => {
+                let t = cat.topics.find(top => top.id === currentTopic.id);
+                if (t) t.questions = currentTopic.questions;
+            });
+        }
 
+        // 3. LƯU LÊN ĐÁM MÂY FIREBASE (Đảm bảo lưu tức thì)
         if (typeof window.saveToCloud === 'function') {
             await window.saveToCloud();
         }
 
+        // 4. Render lại giao diện thi
         currentQuestions = [...currentTopic.questions];
         currentQIndex = currentQuestions.length - 1;
         loadQuestion();
-        MặcHiênThôngBáo("Đã thêm câu hỏi A2-B1 mới!");
+        if (typeof MặcHiênThôngBáo === 'function') MặcHiênThôngBáo("Đã thêm & lưu câu hỏi mới lên Đám Mây!");
     } catch (error) {
         console.error("Lỗi AI ra đề:", error);
         alert("Lỗi tạo câu hỏi: " + error.message);
     }
-};
+};       
         window.openTheory = function(topicId) {
             for (let cat of categories) {
                 let found = cat.topics.find(t => t.id === topicId);
