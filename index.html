@@ -294,7 +294,7 @@
         window.saveToCloud = async function() {
             if (!db) return;
             try {
-                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV8"), {
+                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV9"), {
                     players: window.playersList,
                     activeId: window.activePlayerId,
                     categories: window.categories
@@ -305,7 +305,7 @@
         window.loadFromCloud = async function() {
             if (!db) { window.initAppData(); return; }
             try {
-                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV8"));
+                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV9"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
                     window.playersList = data.players || window.playersList;
@@ -387,7 +387,6 @@
 
         const petAvatars = ["🐱", "🦊", "🐰", "🐼", "🐯", "🦁", "🐨", "🦉"];
 
-        // 12 THÌ & CÁC CHUYÊN ĐỀ NGỮ PHÁP ĐẦY ĐỦ
         window.categories = [
             {
                 id: 'cat1', title: 'Trường Thi Thứ Nhất: Nhóm Các Thì Hiện Tại (Present Tenses)',
@@ -615,7 +614,7 @@
             });
         }
 
-        // TÍNH NĂNG GỌI API GEMINI (CƠ CHẾ DỰ PHÒNG THÔNG MINH BẢO VỆ TRẢI NGHIỆM THI CỬ)
+        // TÍNH NĂNG GỌI API GEMINI VÀ TỰ ĐỘNG CHUYỂN ĐẾN CÂU HỎI MỚI VỪA TẠO
         window.generateAIQuiz = async function() {
             if (!userData.apiKey) {
                 MặcHiênThôngBáo("Chưa có Bí Kíp! Hãy vào bấm '🔑 Bí Kíp' để nhập API Key của bạn.");
@@ -661,21 +660,24 @@
                 const aiQuestion = JSON.parse(textRes);
 
                 currentQuestions.push(aiQuestion);
-                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã ra thêm 1 câu hỏi mới thành công!");
+                // Tự động nhảy thẳng đến câu hỏi mới tạo vừa rồi
+                currentQIndex = currentQuestions.length - 1;
+                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã ra thêm câu mới và chuyển đến ngay cho sĩ tử!");
                 loadQuestion();
             } catch (e) {
-                console.warn("Cơ chế dự phòng kích hoạt do trình duyệt chặn CORS:", e);
-                // Hệ thống dự phòng thông minh giúp không bao giờ bị đứng web
+                console.warn("Cơ chế dự phòng kích hoạt:", e);
                 const fallbackQuestions = [
                     { 
                         q: `[Mặc Hiên Luyện Tập] Chọn đáp án chính xác cho chuyên đề: ${currentTopic.name}?`, 
                         options: ["Đáp án chuẩn xác A", "Đáp án B", "Đáp án C", "Đáp án D"], 
                         answer: 0, 
-                        explanation: "Do chính sách bảo mật trình duyệt (CORS) hạn chế gọi Token trực tiếp từ client, Mặc Hiên tiên sinh đã khai mở cẩm nang dự phòng để sĩ tử tiếp tục làm bài." 
+                        explanation: "Do chính sách bảo mật trình duyệt (CORS) hạn chế gọi Token trực tiếp, Mặc Hiên tiên sinh đã khai mở cẩm nang dự phòng." 
                     }
                 ];
                 currentQuestions.push(fallbackQuestions[0]);
-                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã khai mở thiên thư và ra thêm câu hỏi dự phòng!");
+                // Tự động nhảy thẳng đến câu hỏi dự phòng
+                currentQIndex = currentQuestions.length - 1;
+                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã khai mở thiên thư dự phòng cho sĩ tử!");
                 loadQuestion();
             }
         }
@@ -946,6 +948,7 @@
                     </div>
                 `;
             });
+            document.getElementById('shop-modal').classList.add('hidden');
             document.getElementById('shop-modal').classList.remove('hidden');
         }
         window.closeShop = () => document.getElementById('shop-modal').classList.add('hidden');
