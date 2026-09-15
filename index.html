@@ -618,83 +618,89 @@
         // TÍNH NĂNG GỌI API GEMINI VÀ ĐỒNG BỘ CÂU HỎI LÊN ĐÁM MÂY (ĐÃ CẬP NHẬT MODEL GEMINI-2.5-FLASH)
        // TÍNH NĂNG GỌI API GEMINI (ĐÃ TỐI ƯU & SỬA LỖI CÚ PHÁP)
 window.generateAIQuiz = async function() {
+    // 1. Kiểm tra API Key
     if (!userData.apiKey) {
-        MặcHiênThôngBáo("Chưa có Bí Kíp! Hãy bấm '🔑 Bí Kíp' để nhập API Key.");
-        openApiKeyModal();
+        alert("Vui lòng nhập Gemini API Key trong phần Cài đặt/Bí kíp trước!");
         return;
     }
-    
-    MặcHiênThôngBáo("Mặc Hiên tiên sinh đang suy ngẫm để vận công ra đề mới...");
-    
-    try {
-        // Sử dụng Endpoint chuẩn Gemini 2.5 Flash
-        // Đoạn mã mới đã sửa:
-const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
 
-// Tạo chuỗi ngẫu nhiên kết hợp giữa thời gian và số ngẫu nhiên
-const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
+    const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
 
-const promptText = `Bạn là Mặc Hiên tiên sinh, một thầy giáo dạy tiếng Anh giỏi.
-Hãy sáng tạo 1 câu hỏi trắc nghiệm tiếng Anh HOÀN TOÀN MỚI, ĐỘC ĐÁO và KHÁC BIỆT với các câu trước đó về chủ đề: "${currentTopic.name}".
+    const promptText = `Bạn là Mặc Hiên tiên sinh, thầy giáo dạy tiếng Anh.
+Hãy sáng tạo 1 câu hỏi trắc nghiệm tiếng Anh HOÀN TOÀN MỚI và ĐỘC ĐÁO về chủ đề: "${currentTopic.name}".
+Mã ngẫu nhiên cho lượt này: [${randomSeed}].
 
-YÊU CẦU BẮT BUỘC:
-- Mắt mã ngẫu nhiên duy nhất cho lượt này: [${randomSeed}]. Hãy dùng mã này để biến đổi ngữ cảnh/nhân vật trong câu hỏi.
-- Mức độ: Cơ bản/trung bình (A2-B1), từ vựng thông dụng, câu ngắn gọn, tình huống gần gũi (trường học, mua sắm, du lịch, gia đình...), tránh dùng từ hàn lâm.
-- Thay đổi cấu trúc câu và từ vựng, không lặp lại các kịch bản cũ.
-- Định dạng output: Chỉ trả về duy nhất 1 chuỗi JSON hợp lệ, KHÔNG sử dụng định dạng Markdown (không ghi \`\`\`json).
+YÊU CẦU:
+- Mức độ: Cơ bản/trung bình (A2-B1), từ vựng thông dụng, tình huống đời sống gần gũi.
+- Chỉ trả về DUY NHẤT 1 chuỗi JSON hợp lệ, KHÔNG dùng Markdown (\`\`\`json).
 
-Cấu trúc JSON bắt buộc:
+Cấu trúc JSON:
 {
   "question": "Nội dung câu hỏi tiếng Anh...",
   "options": ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"],
   "correct": 0,
   "explanation": "Giải thích ngắn gọn bằng tiếng Việt..."
 }`;
+
+    try {
+        // Hiển thị trạng thái đang tải
+        showLoadingSpinner(true);
+
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: { temperature: 0.9 }
+                generationConfig: {
+                    temperature: 1.0, // Độ sáng tạo cao để không bị trùng câu hỏi
+                    responseMimeType: "application/json" // Bắt buộc Gemini trả về chuẩn JSON
+                }
             })
         });
 
-        if (!response.ok) {
-            const errData = await response.json();
-            throw new Error(`Mã lỗi ${response.status}: ${errData.error?.message || 'Không thể kết nối API'}`);
-        }
-
         const data = await response.json();
-        let textRes = data.candidates[0].content.parts[0].text;
         
-        // Làm sạch phản hồi JSON từ AI
-        textRes = textRes.replace(/```json/gi, '').replace(/```/g, '').trim();
-        const aiQuestion = JSON.parse(textRes);
-
-        if (!aiQuestion.q || !Array.isArray(aiQuestion.options) || aiQuestion.options.length !== 4) {
-            throw new Error("Dữ liệu câu hỏi từ AI không đúng định dạng!");
+        if (!response.ok) {
+            throw new Error(data.error?.message || "Lỗi khi gọi AI");
         }
 
-        // CẬP NHẬT CÂU HỎI MỚI VÀO DANH SÁCH (ĐÃ SỬA LỖI)
-        currentQuestions.push(aiQuestion);
-        currentTopic.questions = [...currentQuestions];
-        currentQIndex = currentQuestions.length - 1;
+        let rawText = data.candidates[0].content.parts[0].text;
+        // Làm sạch chuỗi nếu AI lỡ kèm định dạng markdown
+        rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
         
-        MặcHiênThôngBáo("Mặc Hiên tiên sinh đã hoàn thành đề thi mới!");
-        loadQuestion();
-        if (window.saveToCloud) window.saveToCloud();
+        const aiQuestion = JSON.parse(rawText);
 
-    } catch (e) {
-        console.error("Lỗi API Chi Tiết:", e);
-        MặcHiênThôngBáo(`Lỗi ra đề (${e.message}). Đang dùng câu dự phòng!`);
-        
-        // Câu dự phòng động biến đổi theo chủ đề
-        const fallbackQuestion = { 
-            q: `[Dự phòng - ${currentTopic.name}] Choose the correct option for: She (be) _____ studying now.`, 
-            options: ["is", "are", "was", "were"], 
-            answer: 0, 
-            explanation: "Chủ ngữ 'She' chia động từ 'to be' ở hiện tại là 'is'." 
+        // Chuẩn hóa dữ liệu câu hỏi
+        const formattedQuestion = {
+            question: aiQuestion.question,
+            options: aiQuestion.options,
+            correct: aiQuestion.correct,
+            explanation: aiQuestion.explanation || "Mặc Hiên tiên sinh chưa để lại giải thích."
         };
+
+        // 2. Tự động LƯU CÂU HỎI MỚI vào danh mục hiện tại
+        if (currentTopic && currentTopic.questions) {
+            currentTopic.questions.push(formattedQuestion);
+        }
+
+        // 3. ĐỒNG BỘ NGAY LÊN FIREBASE CLOUD (Để F5 không bị mất)
+        if (typeof window.saveToCloud === 'function') {
+            await window.saveToCloud();
+        }
+
+        // 4. Hiển thị câu hỏi mới tạo ra màn hình
+        renderCurrentQuestion(formattedQuestion);
+
+    } catch (error) {
+        console.error("Lỗi AI ra đề:", error);
+        alert("Mặc Hiên tiên sinh bận chút việc, hệ thống sẽ dùng câu dự phòng!");
+        // Nếu AI lỗi mới dùng câu dự phòng
+        useFallbackQuestion();
+    } finally {
+        showLoadingSpinner(false);
+    }
+};
         
         currentQuestions.push(fallbackQuestion);
         currentTopic.questions = [...currentQuestions];
