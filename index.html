@@ -302,30 +302,28 @@
             } catch(e) { console.error("Lỗi khi lưu mây:", e); }
         }
 
-                window.loadFromCloud = async function() {
-    if (!db) { window.initAppData(); return; }
-    try {
-        const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV11"));
-        if (docSnap.exists()) {
-            let data = docSnap.data();
-            // Chỉ đồng bộ danh sách người chơi và người chơi đang chọn
-            window.playersList = data.players || window.playersList;
-            window.activePlayerId = data.activeId || window.playersList[0].id;
-            
-            // LƯU Ý: Không đè window.categories từ Firebase nữa để tránh mất danh mục
-            window.syncActivePlayerFromList();
-            window.updateUI();
-            window.renderCategories();
-            window.applyTheme();
-        } else {
-            window.initAppData();
-            window.saveToCloud();
+        window.loadFromCloud = async function() {
+            if (!db) { window.initAppData(); return; }
+            try {
+                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV11"));
+                if (docSnap.exists()) {
+                    let data = docSnap.data();
+                    window.playersList = data.players || window.playersList;
+                    window.activePlayerId = data.activeId || window.playersList[0].id;
+                    
+                    window.syncActivePlayerFromList();
+                    window.updateUI();
+                    window.renderCategories();
+                    window.applyTheme();
+                } else {
+                    window.initAppData();
+                    window.saveToCloud();
+                }
+            } catch(e) { 
+                console.error("Lỗi khi tải mây:", e);
+                window.initAppData(); 
+            }
         }
-    } catch(e) { 
-        console.error("Lỗi khi tải mây:", e);
-        window.initAppData(); 
-    }
-}
 
         window.loadFromCloud();
     </script>
@@ -615,10 +613,7 @@
             });
         }
 
-        // TÍNH NĂNG GỌI API GEMINI VÀ ĐỒNG BỘ CÂU HỎI LÊN ĐÁM MÂY (ĐÃ CẬP NHẬT MODEL GEMINI-2.5-FLASH)
-       // TÍNH NĂNG GỌI API GEMINI (ĐÃ TỐI ƯU & SỬA LỖI CÚ PHÁP)
-// TÍNH NĂNG GỌI API GEMINI (ĐÃ TỐI ƯU & SỬA LỖI CÚ PHÁP)
-        // TÍNH NĂNG GỌI API GEMINI (ĐÃ SỬA HOÀN TOÀN LỖI CÚ PHÁP)
+        // TÍNH NĂNG GỌI API GEMINI DÙNG MODEL GEMINI-2.5-FLASH
         window.generateAIQuiz = async function() {
             if (!userData.apiKey) {
                 alert("Vui lòng nhập Gemini API Key trong phần Cài đặt!");
@@ -637,7 +632,7 @@ YÊU CẦU:
 {"question": "Câu hỏi...", "options": ["A", "B", "C", "D"], "correct": 0, "explanation": "Giải thích..."}`;
 
             try {
-                if (typeof showLoadingSpinner === 'function') showLoadingSpinner(true);
+                MặcHiênThôngBáo("Mặc Hiên tiên sinh đang linh ứng ra đề...");
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -658,7 +653,6 @@ YÊU CẦU:
 
                 let rawText = data.candidates[0].content.parts[0].text;
                 
-                // BÓC TÁCH JSON THÔNG MINH (Lấy đúng đoạn nằm giữa { và })
                 const jsonMatch = rawText.match(/\{[\s\S]*\}/);
                 if (!jsonMatch) {
                     throw new Error("AI không trả về cấu trúc JSON hợp lệ");
@@ -666,7 +660,6 @@ YÊU CẦU:
                 
                 const aiQuestion = JSON.parse(jsonMatch[0]);
 
-                // Chuẩn hóa dữ liệu cho khớp với hệ thống
                 const formattedQuestion = {
                     q: aiQuestion.question || aiQuestion.q,
                     options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
@@ -674,37 +667,25 @@ YÊU CẦU:
                     explanation: aiQuestion.explanation || aiQuestion.e || "Mặc Hiên tiên sinh chưa để lại giải thích."
                 };
 
-                // Lưu trực tiếp vào danh sách câu hỏi của bài học
                 if (currentTopic && currentTopic.questions) {
                     currentTopic.questions.push(formattedQuestion);
                 }
 
-                // Đồng bộ Đám mây Firebase
                 if (typeof window.saveToCloud === 'function') {
                     await window.saveToCloud();
                 }
 
-                // Hiển thị câu hỏi mới
                 currentQuestions = [...currentTopic.questions];
                 currentQIndex = currentQuestions.length - 1;
                 loadQuestion();
+                MặcHiênThôngBáo("Đã có đề thi mới từ Mặc Hiên tiên sinh!");
 
             } catch (error) {
                 console.error("Lỗi AI ra đề:", error);
                 alert("Lỗi tạo câu hỏi từ AI: " + error.message + "\nVui lòng nhấn thử lại!");
-            } finally {
-                if (typeof showLoadingSpinner === 'function') showLoadingSpinner(false);
-            
+            }
         };
 
-   currentQuestions.push(fallbackQuestion);
-        currentTopic.questions = [...currentQuestions];
-        currentQIndex = currentQuestions.length - 1;
-        
-        loadQuestion();
-        if (window.saveToCloud) window.saveToCloud();
-    }
-}
         window.openTheory = function(topicId) {
             for (let cat of categories) {
                 let found = cat.topics.find(t => t.id === topicId);
@@ -916,7 +897,6 @@ YÊU CẦU:
                         <span class="text-sm font-bold text-gray-300">${pl.exp} EXP</span>
                     </div>
                 `;
-               }
             });
         }
 
