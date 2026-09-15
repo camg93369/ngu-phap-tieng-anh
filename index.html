@@ -20,55 +20,52 @@
         
         .seal-stamp { border: 2px dashed #b91c1c; color: #b91c1c; transform: rotate(-3deg); }
 
-        /* Hiệu ứng khung quan phẩm động (Lửa, Sấm sét, Ánh sáng) */
-        @keyframes fireGlow {
-            0% { box-shadow: 0 0 5px #f59e0b, inset 0 0 5px #ef4444; border-color: #f59e0b; }
-            50% { box-shadow: 0 0 20px #ef4444, inset 0 0 12px #f59e0b; border-color: #ef4444; }
-            100% { box-shadow: 0 0 5px #f59e0b, inset 0 0 5px #ef4444; border-color: #f59e0b; }
+        /* --- HIỆU ỨNG ĐỘNG CHO KHUNG CẤP BẬC (LỬA, SÉT, HÀO QUANG VÀNG, CÂY XANH) --- */
+        @keyframes fireAnim {
+            0% { box-shadow: 0 0 8px #f59e0b, inset 0 0 5px #ef4444; border-color: #f59e0b; transform: scale(1); }
+            50% { box-shadow: 0 0 22px #ef4444, inset 0 0 12px #f59e0b; border-color: #ef4444; transform: scale(1.02); }
+            100% { box-shadow: 0 0 8px #f59e0b, inset 0 0 5px #ef4444; border-color: #f59e0b; transform: scale(1); }
         }
-        @keyframes lightningFlash {
-            0% { box-shadow: 0 0 8px #38bdf8; border-color: #38bdf8; }
-            30% { box-shadow: 0 0 25px #ffffff, inset 0 0 15px #38bdf8; border-color: #ffffff; }
-            100% { box-shadow: 0 0 8px #38bdf8; border-color: #38bdf8; }
+        @keyframes lightningAnim {
+            0% { box-shadow: 0 0 6px #38bdf8; border-color: #38bdf8; }
+            30% { box-shadow: 0 0 20px #ffffff, inset 0 0 10px #38bdf8; border-color: #ffffff; }
+            100% { box-shadow: 0 0 6px #38bdf8; border-color: #38bdf8; }
         }
-        @keyframes royalGold {
-            0% { box-shadow: 0 0 15px #fbbf24; border-color: #fbbf24; }
-            50% { box-shadow: 0 0 30px #facc15, inset 0 0 20px #f59e0b; border-color: #fef08a; }
-            100% { box-shadow: 0 0 15px #fbbf24; border-color: #fbbf24; }
+        @keyframes royalGoldAnim {
+            0% { box-shadow: 0 0 12px #fbbf24; border-color: #fbbf24; }
+            50% { box-shadow: 0 0 28px #facc15, inset 0 0 15px #f59e0b; border-color: #fef08a; }
+            100% { box-shadow: 0 0 12px #fbbf24; border-color: #fbbf24; }
+        }
+        @keyframes leafWindAnim {
+            0% { box-shadow: 0 0 10px #10b981; border-color: #10b981; transform: translateY(0); }
+            50% { box-shadow: 0 0 18px #34d399; border-color: #34d399; transform: translateY(-2px); }
+            100% { box-shadow: 0 0 10px #10b981; border-color: #10b981; transform: translateY(0); }
         }
 
-        .rank-card-fire { animation: fireGlow 3s infinite ease-in-out; }
-        .rank-card-lightning { animation: lightningFlash 2s infinite ease-in-out; }
-        .rank-card-royal { animation: royalGold 2.5s infinite ease-in-out; }
+        .effect-fire { animation: fireAnim 2.5s infinite ease-in-out; }
+        .effect-lightning { animation: lightningAnim 1.8s infinite ease-in-out; }
+        .effect-royal { animation: royalGoldAnim 2s infinite ease-in-out; }
+        .effect-leaf { animation: leafWindAnim 3s infinite ease-in-out; }
 
         /* Khung Đua Top Card */
         .top-card {
-            border-radius: 16px;
-            padding: 16px;
-            position: relative;
-            background: #18191c;
-            border: 2px solid #2d2f36;
-            transition: all 0.3s ease;
+            border-radius: 16px; padding: 16px; position: relative; background: #18191c; border: 2px solid #2d2f36; transition: all 0.3s ease;
         }
         .top-card.rank-1 { border-color: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3), inset 0 0 15px rgba(245, 158, 11, 0.15); }
         .top-card.rank-2 { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1); }
         .top-card.rank-3 { border-color: #b45309; box-shadow: 0 0 15px rgba(180, 83, 9, 0.25), inset 0 0 10px rgba(180, 83, 9, 0.1); }
 
         .rank-badge {
-            position: absolute; top: -12px; left: 12px; width: 28px; height: 28px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 12px; color: #fff;
+            position: absolute; top: -12px; left: 12px; width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; color: #fff;
         }
         .rank-1 .rank-badge { background: #f59e0b; }
         .rank-2 .rank-badge { background: #3b82f6; }
         .rank-3 .rank-badge { background: #b45309; }
 
         .avatar-frame {
-            width: 84px; height: 84px; margin: 0 auto 12px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 40px;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.6) 100%);
-            border: 2px solid rgba(251, 191, 36, 0.5); overflow: hidden; position: relative; cursor: pointer;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            width: 84px; height: 84px; margin: 0 auto 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.6) 100%); border: 2px solid rgba(251, 191, 36, 0.5); overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
         .avatar-frame img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -81,12 +78,10 @@
         }
 
         .sparkle-panel {
-            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(253,230,138,0.3) 100%);
-            border: 2px solid #fbbf24;
+            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(253,230,138,0.3) 100%); border: 2px solid #fbbf24;
         }
         html.dark .sparkle-panel {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2a1a08 100%);
-            border: 2px solid #b45309;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a1a08 100%); border: 2px solid #b45309;
         }
     </style>
 </head>
@@ -120,7 +115,7 @@
         <div id="screen-menu" class="space-y-6">
             <div class="text-center space-y-2 py-4">
                 <h2 class="cophong-title text-3xl sm:text-4xl font-bold">Hành Trình Nắm Vững Ngữ Pháp</h2>
-                <p class="text-sm opacity-80 max-w-xl mx-auto">Các sĩ tử hãy dùi mài kinh sử dưới sự hướng dẫn của Mặc Hiên tiên sinh để thăng quan tiến chức.</p>
+                <p class="text-sm opacity-80 max-w-xl mx-auto">Dưới sự hướng dẫn của Mặc Hiên tiên sinh, các sĩ tử hãy dùi mài kinh sử để thăng quan tiến chức.</p>
                 <div id="firebase-status" class="text-xs font-bold text-red-500 mt-2">Đang kết nối Đám mây...</div>
             </div>
             <div class="space-y-8" id="categories-container"></div>
@@ -178,14 +173,14 @@
         </div>
     </main>
 
-    <!-- BẢNG CÁC CẤP BẬC HỆ THỐNG (25 CẤP BẬC CÓ KHUNG HIỆU ỨNG ĐỘNG LỬA, SÉT, ÁNH SÁNG) -->
+    <!-- BẢNG CÁC CẤP BẬC HỆ THỐNG (25 CẤP VỚI HIỆU ỨNG ĐỘNG LỬA, SÉT, CÂY GIO, HÀO QUANG) -->
     <div id="rank-system-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-4xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative">
             <div class="flex justify-between border-b border-amber-300 pb-3 items-center">
                 <h3 class="cophong-title text-2xl font-bold text-amber-700 dark:text-amber-400">📜 Bảng Quan Phẩm Khoa Cử (25 Cấp Bậc)</h3>
                 <button onclick="closeRankSystemModal()" class="text-2xl font-bold opacity-70 hover:opacity-100">✕</button>
             </div>
-            <p class="text-sm italic text-center mb-4">Đường công danh hiển đạt đang chờ sĩ tử vượt qua các mốc thử thách dưới sự phò tá của Mặc Hiên tiên sinh.</p>
+            <p class="text-sm italic text-center mb-4">Các cấp bậc mang theo uy lực và hiệu ứng độc tôn dưới sự phò tá của Mặc Hiên tiên sinh.</p>
             <div id="rank-system-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-sm"></div>
             <button onclick="closeRankSystemModal()" class="w-full bg-[#2c221e] text-white py-3 rounded-lg mt-4 font-bold">Đóng</button>
         </div>
@@ -215,7 +210,7 @@
         </div>
     </div>
     
-    <!-- MODAL CHỌN AVATAR / TẢI ẢNH LÊN -->
+    <!-- MODAL ĐỔI AVATAR -->
     <div id="avatar-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-md w-full p-6 rounded-2xl space-y-4 text-gray-900 dark:text-white">
             <div class="flex justify-between border-b border-amber-400 pb-2">
@@ -283,7 +278,7 @@
         window.saveToCloud = async function() {
             if (!db) return;
             try {
-                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV2"), {
+                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV3"), {
                     players: window.playersList,
                     activeId: window.activePlayerId,
                     categories: window.categories
@@ -294,7 +289,7 @@
         window.loadFromCloud = async function() {
             if (!db) { window.initAppData(); return; }
             try {
-                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV2"));
+                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV3"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
                     window.playersList = data.players || window.playersList;
@@ -319,33 +314,33 @@
 
     <!-- SCRIPT CHÍNH -->
     <script>
-        // 25 CẤP BẬC VỚI HIỆU ỨNG ĐỘNG (LỬA, SÉT, HÀO QUANG VÀNG)
+        // 25 CẤP BẬC VỚI HIỆU ỨNG ĐỘNG ĐẶC BIỆT RIÊNG CHO TỪNG NHÓM QUAN PHẨM
         const rankList = [ 
             { name: "Sĩ tử", exp: 0, frame: "border-gray-400 bg-gray-500/10 text-gray-700 dark:text-gray-300" }, 
-            { name: "Đồng Sinh", exp: 100, frame: "border-emerald-500 bg-emerald-500/10 text-emerald-600" }, 
-            { name: "Tú Tài", exp: 300, frame: "border-blue-500 bg-blue-500/10 text-blue-500" }, 
-            { name: "Cử Nhân", exp: 600, frame: "border-indigo-500 bg-indigo-500/10 text-indigo-500" }, 
-            { name: "Tiến Sĩ", exp: 1000, frame: "border-purple-500 bg-purple-500/10 text-purple-400" }, 
-            { name: "Tòng Cửu Phẩm", exp: 1500, frame: "border-amber-700 bg-amber-700/10 text-amber-700" }, 
-            { name: "Chánh Cửu Phẩm", exp: 2100, frame: "border-amber-600 bg-amber-600/10 text-amber-600" }, 
-            { name: "Tòng Bát Phẩm", exp: 2800, frame: "border-stone-400 bg-stone-400/10 text-stone-300" }, 
-            { name: "Chánh Bát Phẩm", exp: 3600, frame: "border-stone-300 bg-stone-300/10 text-stone-200" }, 
-            { name: "Tòng Thất Phẩm", exp: 4500, frame: "border-yellow-600 bg-yellow-600/10 text-yellow-600" }, 
-            { name: "Chánh Thất Phẩm", exp: 5500, frame: "border-yellow-500 bg-yellow-500/10 text-yellow-500" }, 
-            { name: "Tòng Lục Phẩm", exp: 6800, frame: "border-teal-500 bg-teal-500/10 text-teal-400" }, 
-            { name: "Chánh Lục Phẩm", exp: 8200, frame: "border-teal-400 bg-teal-400/10 text-teal-300" }, 
-            { name: "Tòng Ngũ Phẩm", exp: 10000, frame: "border-cyan-500 bg-cyan-500/10 text-cyan-400 rank-card-lightning" }, 
-            { name: "Chánh Ngũ Phẩm", exp: 12000, frame: "border-cyan-400 bg-cyan-400/10 text-cyan-300 rank-card-lightning" }, 
-            { name: "Tòng Tứ Phẩm", exp: 15000, frame: "border-rose-500 bg-rose-500/10 text-rose-400 rank-card-fire" }, 
-            { name: "Chánh Tứ Phẩm", exp: 18000, frame: "border-rose-600 bg-rose-600/10 text-rose-300 rank-card-fire" }, 
-            { name: "Tòng Tam Phẩm", exp: 22000, frame: "border-pink-500 bg-pink-500/10 text-pink-400 rank-card-fire" }, 
-            { name: "Chánh Tam Phẩm", exp: 27000, frame: "border-pink-600 bg-pink-600/10 text-pink-300 rank-card-fire" }, 
-            { name: "Tòng Nhị Phẩm", exp: 33000, frame: "border-violet-500 bg-violet-500/10 text-violet-400 rank-card-royal" }, 
-            { name: "Chánh Nhị Phẩm", exp: 40000, frame: "border-violet-600 bg-violet-600/10 text-violet-300 rank-card-royal" }, 
-            { name: "Tòng Nhất Phẩm", exp: 48000, frame: "border-red-500 bg-red-500/10 text-red-500 rank-card-royal" }, 
-            { name: "Chánh Nhất Phẩm", exp: 57000, frame: "border-red-600 bg-red-600/10 text-red-400 rank-card-royal" }, 
-            { name: "Thái Sư", exp: 68000, frame: "border-amber-400 bg-amber-400/20 text-amber-300 font-bold rank-card-royal" }, 
-            { name: "Tể Tướng Đương Triều", exp: 80000, frame: "border-yellow-300 bg-gradient-to-r from-amber-600/30 to-red-600/30 text-yellow-200 font-extrabold rank-card-royal" } 
+            { name: "Đồng Sinh", exp: 100, frame: "border-emerald-500 bg-emerald-500/10 text-emerald-600 effect-leaf" }, 
+            { name: "Tú Tài", exp: 300, frame: "border-blue-500 bg-blue-500/10 text-blue-500 effect-leaf" }, 
+            { name: "Cử Nhân", exp: 600, frame: "border-indigo-500 bg-indigo-500/10 text-indigo-500 effect-leaf" }, 
+            { name: "Tiến Sĩ", exp: 1000, frame: "border-purple-500 bg-purple-500/10 text-purple-400 effect-leaf" }, 
+            { name: "Tòng Cửu Phẩm", exp: 1500, frame: "border-amber-700 bg-amber-700/10 text-amber-700 effect-lightning" }, 
+            { name: "Chánh Cửu Phẩm", exp: 2100, frame: "border-amber-600 bg-amber-600/10 text-amber-600 effect-lightning" }, 
+            { name: "Tòng Bát Phẩm", exp: 2800, frame: "border-stone-400 bg-stone-400/10 text-stone-300 effect-lightning" }, 
+            { name: "Chánh Bát Phẩm", exp: 3600, frame: "border-stone-300 bg-stone-300/10 text-stone-200 effect-lightning" }, 
+            { name: "Tòng Thất Phẩm", exp: 4500, frame: "border-yellow-600 bg-yellow-600/10 text-yellow-600 effect-lightning" }, 
+            { name: "Chánh Thất Phẩm", exp: 5500, frame: "border-yellow-500 bg-yellow-500/10 text-yellow-500 effect-lightning" }, 
+            { name: "Tòng Lục Phẩm", exp: 6800, frame: "border-teal-500 bg-teal-500/10 text-teal-400 effect-fire" }, 
+            { name: "Chánh Lục Phẩm", exp: 8200, frame: "border-teal-400 bg-teal-400/10 text-teal-300 effect-fire" }, 
+            { name: "Tòng Ngũ Phẩm", exp: 10000, frame: "border-cyan-500 bg-cyan-500/10 text-cyan-400 effect-fire" }, 
+            { name: "Chánh Ngũ Phẩm", exp: 12000, frame: "border-cyan-400 bg-cyan-400/10 text-cyan-300 effect-fire" }, 
+            { name: "Tòng Tứ Phẩm", exp: 15000, frame: "border-rose-500 bg-rose-500/10 text-rose-400 effect-fire" }, 
+            { name: "Chánh Tứ Phẩm", exp: 18000, frame: "border-rose-600 bg-rose-600/10 text-rose-300 effect-fire" }, 
+            { name: "Tòng Tam Phẩm", exp: 22000, frame: "border-pink-500 bg-pink-500/10 text-pink-400 effect-fire" }, 
+            { name: "Chánh Tam Phẩm", exp: 27000, frame: "border-pink-600 bg-pink-600/10 text-pink-300 effect-fire" }, 
+            { name: "Tòng Nhị Phẩm", exp: 33000, frame: "border-violet-500 bg-violet-500/10 text-violet-400 effect-royal" }, 
+            { name: "Chánh Nhị Phẩm", exp: 40000, frame: "border-violet-600 bg-violet-600/10 text-violet-300 effect-royal" }, 
+            { name: "Tòng Nhất Phẩm", exp: 48000, frame: "border-red-500 bg-red-500/10 text-red-500 effect-royal" }, 
+            { name: "Chánh Nhất Phẩm", exp: 57000, frame: "border-red-600 bg-red-600/10 text-red-400 effect-royal" }, 
+            { name: "Thái Sư", exp: 68000, frame: "border-amber-400 bg-amber-400/20 text-amber-300 font-bold effect-royal" }, 
+            { name: "Tể Tướng Đương Triều", exp: 80000, frame: "border-yellow-300 bg-gradient-to-r from-amber-600/30 to-red-600/30 text-yellow-200 font-extrabold effect-royal" } 
         ];
         
         const shopItems = [
@@ -368,129 +363,144 @@
 
         const petAvatars = ["🐱", "🦊", "🐰", "🐼", "🐯", "🦁", "🐨", "🦉"];
 
-        // DỮ LIỆU NGỮ PHÁP ĐẦY ĐỦ (CÁC THÌ VÀ NGỮ PHÁP KHÁC KHÔNG BỊ THIẾU SÓT)
+        // HỆ THỐNG NGỮ PHÁP HOÀN CHỈNH: 12 THÌ & TẤT CẢ CHUYÊN ĐỀ BẠN YÊU CẦU
         window.categories = [
             {
-                id: 'cat1', title: 'Trường Thi Thứ Nhất: Nhóm Các Thì Hiện Tại',
+                id: 'cat1', title: 'Trường Thi Thứ Nhất: Nhóm Các Thì Hiện Tại (Present Tenses)',
                 topics: [
                     { 
-                        id: 't_present_simple', 
-                        name: '1. Hiện Tại Đơn (Present Simple)', 
-                        type: 'tense',
-                        formula: {
-                            affirmative: "S + V(s/es) + O  (V thường) | S + am/is/are + N/Adj",
-                            negative: "S + do/does + NOT + V-bare + O | S + am/is/are + NOT + N/Adj",
-                            interrogative: "Do/Does + S + V-bare + O? | Am/Is/Are + S + N/Adj?"
-                        },
-                        signals: "always, usually, often, sometimes, seldom, never, every day/week/month...",
-                        usage: "Diễn tả hành động lặp đi lặp lại theo thói quen, một sự thật hiển nhiên hoặc một chân lý.",
-                        questions: [
-                            { q: "She usually _____ to school by bus.", options: ["go", "goes", "went", "going"], answer: 1, explanation: "Chủ ngữ là 'She' (số ít) và có 'usually' nên động từ thêm 'es'." },
-                            { q: "Earth _____ around the Sun.", options: ["move", "moves", "is moving", "moved"], answer: 1, explanation: "Chân lý sự thật hiển nhiên dùng Thì Hiện tại đơn." }
-                        ] 
+                        id: 't_present_simple', name: '1. Hiện Tại Đơn (Present Simple)', type: 'tense',
+                        formula: { affirmative: "S + V(s/es) + O", negative: "S + do/does + NOT + V-bare", interrogative: "Do/Does + S + V-bare?" },
+                        signals: "always, usually, often, sometimes, every day...",
+                        usage: "Diễn tả thói quen, chân lý, sự thật hiển nhiên.",
+                        questions: [{ q: "She usually _____ to school.", options: ["go", "goes", "went", "going"], answer: 1, explanation: "Chủ ngữ số ít 'She' + 'usually' dùng Hiện tại đơn thêm s/es." }] 
                     },
                     { 
-                        id: 't_present_continuous', 
-                        name: '2. Hiện Tại Tiếp Diễn (Present Continuous)', 
-                        type: 'tense',
-                        formula: {
-                            affirmative: "S + am/is/are + V-ing",
-                            negative: "S + am/is/are + NOT + V-ing",
-                            interrogative: "Am/Is/Are + S + V-ing?"
-                        },
-                        signals: "now, at the moment, at present, Look!, Listen!, Keep silent!...",
-                        usage: "Diễn tả hành động đang diễn ra ngay tại thời điểm nói hoặc xung quanh thời điểm nói.",
-                        questions: [
-                            { q: "Listen! Someone _____ a song.", options: ["sing", "sings", "is singing", "sang"], answer: 2, explanation: "Có câu lệnh 'Listen!' báo hiệu hành động đang xảy ra." }
-                        ] 
+                        id: 't_present_cont', name: '2. Hiện Tại Tiếp Diễn (Present Continuous)', type: 'tense',
+                        formula: { affirmative: "S + am/is/are + V-ing", negative: "S + am/is/are + NOT + V-ing", interrogative: "Am/Is/Are + S + V-ing?" },
+                        signals: "now, at the moment, Look!, Listen!...",
+                        usage: "Diễn tả hành động đang diễn ra ngay lúc nói.",
+                        questions: [{ q: "Listen! They _____ a song.", options: ["sing", "sings", "is singing", "are singing"], answer: 3, explanation: "Chủ ngữ 'They' số nhiều đi với 'are singing'." }] 
                     },
                     { 
-                        id: 't_present_perfect', 
-                        name: '3. Hiện Tại Hoàn Thành (Present Perfect)', 
-                        type: 'tense',
-                        formula: {
-                            affirmative: "S + have/has + V3/ed",
-                            negative: "S + have/has + NOT + V3/ed",
-                            interrogative: "Have/Has + S + V3/ed?"
-                        },
-                        signals: "already, yet, just, ever, never, since, for, so far, recently...",
-                        usage: "Diễn tả hành động bắt đầu trong quá khứ và còn kéo dài đến hiện tại hoặc vừa mới xảy ra.",
-                        questions: [
-                            { q: "I _____ English for 3 years.", options: ["learn", "learned", "have learned", "am learning"], answer: 2, explanation: "Có 'for 3 years' chỉ khoảng thời gian kéo dài dùng Hiện tại hoàn thành." }
-                        ] 
+                        id: 't_present_perf', name: '3. Hiện Tại Hoàn Thành (Present Perfect)', type: 'tense',
+                        formula: { affirmative: "S + have/has + V3/ed", negative: "S + have/has + NOT + V3/ed", interrogative: "Have/Has + S + V3/ed?" },
+                        signals: "just, already, yet, ever, never, since, for...",
+                        usage: "Hành động bắt đầu trong quá khứ kéo dài đến hiện tại hoặc vừa mới xảy ra.",
+                        questions: [{ q: "I _____ English for 3 years.", options: ["learn", "learned", "have learned", "am learning"], answer: 2, explanation: "Có khoảng thời gian 'for 3 years' dùng Hiện tại hoàn thành." }] 
+                    },
+                    { 
+                        id: 't_present_perf_cont', name: '4. Hiện Tại Hoàn Thành Tiếp Diễn (Present Perfect Continuous)', type: 'tense',
+                        formula: { affirmative: "S + have/has + been + V-ing", negative: "S + have/has + NOT + been + V-ing", interrogative: "Have/Has + S + been + V-ing?" },
+                        signals: "all day, all morning, since, for...",
+                        usage: "Nhấn mạnh tính liên tục của hành động bắt đầu từ quá khứ tiếp diễn đến hiện tại.",
+                        questions: [{ q: "It _____ raining all day.", options: ["has been", "have been", "is", "was"], answer: 0, explanation: "'It' dùng 'has been V-ing'." }] 
                     }
                 ]
             },
             {
-                id: 'cat2', title: 'Trường Thi Thứ Hai: Nhóm Các Thì Quá Khứ & Tương Lai',
+                id: 'cat2', title: 'Trường Thi Thứ Hai: Nhóm Các Thì Quá Khứ (Past Tenses)',
                 topics: [
                     { 
-                        id: 't_past_simple', 
-                        name: '4. Quá Khứ Đơn (Past Simple)', 
-                        type: 'tense',
-                        formula: {
-                            affirmative: "S + V2/ed + O | S + was/were + N/Adj",
-                            negative: "S + did + NOT + V-bare + O | S + was/were + NOT + N/Adj",
-                            interrogative: "Did + S + V-bare + O? | Was/Were + S + N/Adj?"
-                        },
-                        signals: "yesterday, ago, in 1990, last night/week/year...",
-                        usage: "Diễn tả hành động đã xảy ra và kết thúc hoàn toàn trong quá khứ.",
-                        questions: [
-                            { q: "They _____ to Paris last summer.", options: ["go", "goes", "went", "gone"], answer: 2, explanation: "Có 'last summer' nên dùng quá khứ đơn 'went'." }
-                        ] 
+                        id: 't_past_simple', name: '5. Quá Khứ Đơn (Past Simple)', type: 'tense',
+                        formula: { affirmative: "S + V2/ed + O", negative: "S + did + NOT + V-bare", interrogative: "Did + S + V-bare?" },
+                        signals: "yesterday, ago, last night, in 2010...",
+                        usage: "Hành động đã xảy ra và chấm dứt trong quá khứ.",
+                        questions: [{ q: "She _____ to London last year.", options: ["go", "goes", "went", "gone"], answer: 2, explanation: "Dấu hiệu 'last year' dùng động từ cột 2 'went'." }] 
                     },
                     { 
-                        id: 't_future_simple', 
-                        name: '5. Tương Lai Đơn (Future Simple)', 
-                        type: 'tense',
-                        formula: {
-                            affirmative: "S + will + V-bare + O",
-                            negative: "S + will + NOT (won't) + V-bare + O",
-                            interrogative: "Will + S + V-bare + O?"
-                        },
-                        signals: "tomorrow, next week/month, in the future, soon...",
-                        usage: "Diễn tả quyết định ngay tại thời điểm nói hoặc một dự đoán trong tương lai.",
-                        questions: [
-                            { q: "I _____ help you with your homework.", options: ["will", "am", "do", "did"], answer: 0, explanation: "Đưa ra lời đề nghị giúp đỡ ngay lúc nói dùng 'will'." }
-                        ] 
+                        id: 't_past_cont', name: '6. Quá Khứ Tiếp Diễn (Past Continuous)', type: 'tense',
+                        formula: { affirmative: "S + was/were + V-ing", negative: "S + was/were + NOT + V-ing", interrogative: "Was/Were + S + V-ing?" },
+                        signals: "at 8 PM yesterday, while, when...",
+                        usage: "Hành động đang diễn ra tại một thời điểm xác định trong quá khứ.",
+                        questions: [{ q: "What _____ you doing at 8 PM yesterday?", options: ["do", "did", "were", "are"], answer: 2, explanation: "Chủ ngữ 'you' đi với 'were' trong quá khứ tiếp diễn." }] 
+                    },
+                    { 
+                        id: 't_past_perf', name: '7. Quá Khứ Hoàn Thành (Past Perfect)', type: 'tense',
+                        formula: { affirmative: "S + had + V3/ed", negative: "S + had + NOT + V3/ed", interrogative: "Had + S + V3/ed?" },
+                        signals: "before, after, by the time, as soon as...",
+                        usage: "Hành động xảy ra trước một hành động khác trong quá khứ.",
+                        questions: [{ q: "They had left before I _____.", options: ["arrive", "arrived", "arriving", "had arrived"], answer: 1, explanation: "Mệnh đề sau 'before' dùng Quá khứ đơn." }] 
+                    },
+                    { 
+                        id: 't_past_perf_cont', name: '8. Quá Khứ Hoàn Thành Tiếp Diễn (Past Perfect Continuous)', type: 'tense',
+                        formula: { affirmative: "S + had + been + V-ing", negative: "S + had + NOT + been + V-ing", interrogative: "Had + S + been + V-ing?" },
+                        signals: "until, before, for, since...",
+                        usage: "Nhấn mạnh hành động diễn ra liên tục trước một mốc thời gian trong quá khứ.",
+                        questions: [{ q: "He _____ working there for 5 years before he retired.", options: ["had been", "has been", "was", "is"], answer: 0, explanation: "Hành động kéo dài liên tục trước một mốc quá khứ." }] 
                     }
                 ]
             },
             {
-                id: 'cat3', title: 'Trường Thi Thứ Ba: Các Ngữ Pháp Nâng Cao Khác',
+                id: 'cat3', title: 'Trường Thi Thứ Ba: Nhóm Các Thì Tương Lai (Future Tenses)',
                 topics: [
                     { 
-                        id: 't_passive_voice', 
-                        name: '6. Câu Bị Động (Passive Voice)', 
-                        type: 'other',
-                        usage: "Dùng khi muốn nhấn mạnh vào đối tượng chịu tác động của hành động thay vì người thực hiện.",
-                        formulaDetails: "Chủ động: S + V + O  ➜  Bị động: S(O) + Be + V3/ed + (by O)",
-                        signals: "Thường có từ 'by' chỉ tác nhân thực hiện hành động.",
-                        questions: [
-                            { q: "This house _____ in 1990.", options: ["built", "was built", "is built", "builds"], answer: 1, explanation: "Căn nhà được xây trong quá khứ nên dùng cấu trúc bị động quá khứ đơn." }
-                        ] 
+                        id: 't_future_simple', name: '9. Tương Lai Đơn (Future Simple)', type: 'tense',
+                        formula: { affirmative: "S + will + V-bare", negative: "S + will not (won't) + V-bare", interrogative: "Will + S + V-bare?" },
+                        signals: "tomorrow, next week, soon, in the future...",
+                        usage: "Quyết định bộc phát tại thời điểm nói hoặc dự đoán.",
+                        questions: [{ q: "I hope she _____ pass the exam.", options: ["will", "is", "does", "did"], answer: 0, explanation: "Dự đoán hy vọng dùng 'will'." }] 
                     },
                     { 
-                        id: 't_relative_clauses', 
-                        name: '7. Mệnh Đề Quan Hệ (Relative Clauses)', 
-                        type: 'other',
-                        usage: "Dùng để nối hai câu có chung danh từ, bổ nghĩa cho danh từ đứng trước bằng các đại từ quan hệ như who, which, that, whose...",
-                        formulaDetails: "Who (chỉ người - chủ ngữ), Whom (chỉ người - tân ngữ), Which (chỉ vật), That (thay thế trong mệnh đề xác định).",
-                        signals: "Các đại từ quan hệ đứng ngay sau danh từ cần bổ nghĩa.",
-                        questions: [
-                            { q: "The man _____ spoke to you is my teacher.", options: ["which", "who", "where", "whose"], answer: 1, explanation: "'The man' là chỉ người và đóng vai trò chủ ngữ nên dùng 'who'." }
-                        ] 
+                        id: 't_future_cont', name: '10. Tương Lai Tiếp Diễn (Future Continuous)', type: 'tense',
+                        formula: { affirmative: "S + will be + V-ing", negative: "S + will not be + V-ing", interrogative: "Will + S + be + V-ing?" },
+                        signals: "at this time tomorrow...",
+                        usage: "Hành động đang diễn ra tại một thời điểm cụ thể trong tương lai.",
+                        questions: [{ q: "At this time tomorrow, we _____ English.", options: ["will study", "will be studying", "study", "studied"], answer: 1, explanation: "Thời điểm xác định trong tương lai dùng Tương lai tiếp diễn." }] 
                     },
                     { 
-                        id: 't_conditionals', 
-                        name: '8. Câu Điều Kiện (Conditional Sentences)', 
-                        type: 'other',
-                        usage: "Dùng để nêu lên một giả thiết về một sự việc chỉ có thể xảy ra khi điều kiện cho trước thỏa mãn.",
-                        formulaDetails: "Loại 1: If + HTĐ, S + will + V-bare | Loại 2: If + QKĐ, S + would + V-bare",
-                        signals: "Có từ 'If' nằm trong mệnh đề điều kiện.",
-                        questions: [
-                            { q: "If it rains, I _____ at home.", options: ["stay", "will stay", "stayed", "would stay"], answer: 1, explanation: "Câu điều kiện loại 1 diễn tả khả năng xảy ra ở hiện tại hoặc tương lai." }
-                        ] 
+                        id: 't_future_perf', name: '11. Tương Lai Hoàn Thành (Future Perfect)', type: 'tense',
+                        formula: { affirmative: "S + will have + V3/ed", negative: "S + will not have + V3/ed", interrogative: "Will + S + have + V3/ed?" },
+                        signals: "by next year, by this time next week...",
+                        usage: "Hành động hoàn thành trước một mốc thời gian trong tương lai.",
+                        questions: [{ q: "By next month, I _____ finish this project.", options: ["will have finished", "will finish", "finished", "finish"], answer: 0, explanation: "Có 'by next month' dùng Tương lai hoàn thành." }] 
+                    },
+                    { 
+                        id: 't_future_perf_cont', name: '12. Tương Lai Hoàn Thành Tiếp Diễn (Future Perfect Continuous)', type: 'tense',
+                        formula: { affirmative: "S + will have been + V-ing", negative: "S + will not have been + V-ing", interrogative: "Will + S + have been + V-ing?" },
+                        signals: "by next year for...",
+                        usage: "Hành động kéo dài liên tục đến một mốc thời gian trong tương lai.",
+                        questions: [{ q: "By 2030, she _____ working here for 10 years.", options: ["will have been", "will be", "has been", "had been"], answer: 0, explanation: "Diễn tả tính liên tục đến mốc tương lai." }] 
+                    }
+                ]
+            },
+            {
+                id: 'cat4', title: 'Trường Thi Thứ Tư: Các Chuyên Đề Ngữ Pháp Nâng Cao',
+                topics: [
+                    { 
+                        id: 't_modal_verbs', name: '13. Động Từ Khiếm Khuyết (Modal Verbs: Advice, Necessity, Obligation)', type: 'other',
+                        usage: "Diễn đạt lời khuyên (should, ought to), sự cần thiết (need, must), sự bắt buộc (must, have to).",
+                        formulaDetails: "S + Modal Verb + V-bare (Ví dụ: You should study hard; You must submit on time).",
+                        signals: "should, must, have to, need to, ought to.",
+                        questions: [{ q: "You _____ wear a helmet when riding a motorbike. It's the law.", options: ["should", "must", "can", "may"], answer: 1, explanation: "Luật lệ quy định sự bắt buộc dùng 'must'." }] 
+                    },
+                    { 
+                        id: 't_gerund_infinitive', name: '14. Danh Động Từ và Động Từ Nguyên Mẫu (Gerunds & Infinitives)', type: 'other',
+                        usage: "Sử dụng dạng V-ing hoặc To V / V-bare làm chủ ngữ, tân ngữ hoặc sau các động từ đặc biệt.",
+                        formulaDetails: "Enjoy, mind, finish + V-ing | Want, hope, decide + to V | Let, make + V-bare.",
+                        signals: "enjoy doing, want to do, make someone do...",
+                        questions: [{ q: "She enjoys _____ books in her free time.", options: ["read", "to read", "reading", "readed"], answer: 2, explanation: "Sau động từ 'enjoy' luôn là danh động từ (V-ing)." }] 
+                    },
+                    { 
+                        id: 't_be_going_to_will', name: '15. Cấu Trúc Be Going To và Will', type: 'other',
+                        usage: "Phân biệt cách diễn đạt tương lai: 'Will' cho quyết định bộc phát/dự đoán; 'Be going to' cho dự định có sẵn hoặc có căn cứ.",
+                        formulaDetails: "S + am/is/are going to + V-bare  VS  S + will + V-bare",
+                        signals: "Look at the dark clouds! It's going to rain.",
+                        questions: [{ q: "Look at those dark clouds! It _____ rain.", options: ["will", "is going to", "shall", "can"], answer: 1, explanation: "Dự đoán có căn cứ trước mắt (mây đen) dùng 'is going to'." }] 
+                    },
+                    { 
+                        id: 't_noun_phrases_articles', name: '16. Cụm Danh Từ và Mạo Từ (Noun Phrases & Articles)', type: 'other',
+                        usage: "Cụm danh từ làm cốt lõi câu; Mạo từ 'a, an, the' hoặc từ hạn định dùng xác định danh từ.",
+                        formulaDetails: "Article + (Adjectives) + Noun (Ví dụ: The beautiful old wooden house).",
+                        signals: "a/an (chưa xác định), the (đã xác định/duy nhất), zero article.",
+                        questions: [{ q: "Sun rises in _____ east.", options: ["a / an", "the / the", "an / a", "Ø / the"], answer: 1, explanation: "Vật thể duy nhất 'Sun' và phương hướng 'east' đi với mạo từ 'the'." }] 
+                    },
+                    { 
+                        id: 't_reported_speech', name: '17. Câu Tường Thuật & Các Thì Trong Đối Thoại (Reported Speech)', type: 'other',
+                        usage: "Thuật lại lời nói của người khác, lùi một thì so với câu trực tiếp và đổi đại từ/trạng từ chỉ thời gian.",
+                        formulaDetails: "Direct: 'I am tired' ➜ Reported: He said that he was tired.",
+                        signals: "said, told, asked, if/whether, wh- words.",
+                        questions: [{ q: "He said, 'I work hard.' ➜ He said that he _____ hard.", options: ["work", "worked", "has worked", "working"], answer: 1, explanation: "Lùi thì từ Hiện tại đơn sang Quá khứ đơn ('worked')." }] 
                     }
                 ]
             }
@@ -687,7 +697,7 @@
             renderCategories();
         }
 
-        // BẢNG 25 CẤP BẬC QUAN PHẨM (MỖI CẤP CÓ KHUNG HIỆU ỨNG ĐỘNG RIÊNG)
+        // BẢNG 25 CẤP BẬC QUAN PHẨM VỚI HIỆU ỨNG ĐỘNG LỬA, SÉT, HÀO QUANG
         window.openRankSystemModal = function() {
             const list = document.getElementById('rank-system-list');
             list.innerHTML = '';
