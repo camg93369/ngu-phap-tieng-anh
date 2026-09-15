@@ -613,14 +613,14 @@
             });
         }
 
-        // TÍNH NĂNG GỌI API GEMINI DÙNG MODEL GEMINI-2.5-FLASH
+        // TÍNH NĂNG GỌI API GEMINI DÙNG MODEL GEMINI-3.6-FLASH
         window.generateAIQuiz = async function() {
             if (!userData.apiKey) {
                 alert("Vui lòng nhập Gemini API Key trong phần Cài đặt!");
                 return;
             }
 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${userData.apiKey}`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
             const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
 
             const promptText = `Bạn là Mặc Hiên tiên sinh. Hãy tạo 1 câu hỏi trắc nghiệm tiếng Anh cho chủ đề: "${currentTopic.name}".
