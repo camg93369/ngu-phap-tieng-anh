@@ -630,9 +630,9 @@ window.generateAIQuiz = async function() {
         // Sử dụng Endpoint chuẩn Gemini 2.5 Flash
         // Đoạn mã mới đã sửa:
 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
-        const randomSeed = Date.now();
-        const promptText = `Bạn là Mặc Hiên tiên sinh, một thầy giáo dạy tiếng Anh giỏi. 
-const prompt = `Hãy sáng tạo 1 câu hỏi trắc nghiệm tiếng Anh hoàn toàn MỚI và ĐỘC ĐÁO (mã ngẫu nhiên: ${randomSeed}) về chủ đề: "${currentTopic.name}".
+const randomSeed = Date.now();
+const promptText = `Bạn là Mặc Hiên tiên sinh, một thầy giáo dạy tiếng Anh giỏi.
+Hãy sáng tạo 1 câu hỏi trắc nghiệm tiếng Anh hoàn toàn MỚI và ĐỘC ĐÁO (mã ngẫu nhiên: ${randomSeed}) về chủ đề: "${currentTopic.name}".
 
 YÊU CẦU BẮT BUỘC:
 - Mức độ: Cơ bản/trung bình (A2-B1), từ vựng thông dụng, câu ngắn gọn, tình huống gần gũi với đời sống, tránh dùng từ hàn lâm hay câu quá phức tạp.
@@ -645,6 +645,7 @@ Cấu trúc JSON bắt buộc:
   "correct": 0,
   "explanation": "Giải thích ngắn gọn bằng tiếng Việt vì sao chọn đáp án này..."
 }`;
+
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
