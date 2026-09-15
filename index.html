@@ -632,19 +632,19 @@ window.generateAIQuiz = async function() {
 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
         const randomSeed = Date.now();
         const promptText = `Bạn là Mặc Hiên tiên sinh, một thầy giáo dạy tiếng Anh giỏi. 
-Hãy sáng tạo 1 câu hỏi trắc nghiệm tiếng Anh hoàn toàn MỚI và ĐỘC ĐÁO (mã ngẫu nhiên: ${randomSeed}) về chủ đề: "${currentTopic.name}".
+const prompt = `Hãy sáng tạo 1 câu hỏi trắc nghiệm tiếng Anh hoàn toàn MỚI và ĐỘC ĐÁO (mã ngẫu nhiên: ${randomSeed}) về chủ đề: "${currentTopic.name}".
 
 YÊU CẦU BẮT BUỘC:
-- Chỉ trả về duy nhất 1 chuỗi JSON hợp lệ.
-- Không sử dụng định dạng Markdown (không ghi \`\`\`json).
-- Cấu trúc JSON phải chính xác như sau:
-{
-  "q": "Nội dung câu hỏi tiếng Anh?",
-  "options": ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"],
-  "answer": 0,
-  "explanation": "Giải thích chi tiết lý do chọn đáp án bằng tiếng Việt"
-}`;
+- Mức độ: Cơ bản/trung bình (A2-B1), từ vựng thông dụng, câu ngắn gọn, tình huống gần gũi với đời sống, tránh dùng từ hàn lâm hay câu quá phức tạp.
+- Định dạng output: Chỉ trả về duy nhất 1 chuỗi JSON hợp lệ, KHÔNG sử dụng định dạng Markdown (không ghi \`\`\`json).
 
+Cấu trúc JSON bắt buộc:
+{
+  "question": "Nội dung câu hỏi tiếng Anh...",
+  "options": ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"],
+  "correct": 0,
+  "explanation": "Giải thích ngắn gọn bằng tiếng Việt vì sao chọn đáp án này..."
+}`;
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
