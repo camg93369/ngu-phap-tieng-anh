@@ -59,7 +59,7 @@
         <div id="screen-menu" class="space-y-6">
             <div class="text-center space-y-2 py-4">
                 <h2 class="cophong-title text-3xl sm:text-4xl font-bold">Hành Trình Nắm Vững Ngữ Pháp</h2>
-                <p class="text-sm opacity-80 max-w-xl mx-auto">Chọn từng lớp học nhỏ để ôn tập kỹ lý thuyết cấu trúc, khẳng định, phủ định, nghi vấn và dấu hiệu nhận biết trước khi vào trường thi.</p>
+                <p class="text-sm opacity-80 max-w-xl mx-auto">Các sĩ tử hãy dùi mài kinh sử để lên cấp bậc cao hơn bước lên con đường thăng quan tiến chức.</p>
             </div>
 
             <!-- DANH MỤC CÁC TRƯỜNG THI & LỚP HỌC NHỎ -->
@@ -69,7 +69,7 @@
         </div>
 
         <!-- MÀN HÌNH ÔN TẬP LÝ THUYẾT CẤP TỐC -->
-        <div id="screen-theory" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 theme-card bg-white dark:bg-[#181818]">
+        <div id="screen-theory" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 bg-white dark:bg-[#1a1a1a] text-[#2c221e] dark:text-gray-100">
             <div class="border-b pb-4 flex justify-between items-center">
                 <div>
                     <span class="text-xs font-bold uppercase tracking-widest text-red-600">Phao Cứu Sinh Cấp Tốc</span>
@@ -90,7 +90,7 @@
         </div>
 
         <!-- MÀN HÌNH LÀM BÀI THI -->
-        <div id="screen-quiz" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 theme-card bg-white dark:bg-[#181818]">
+        <div id="screen-quiz" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 bg-white dark:bg-[#1a1a1a] text-[#2c221e] dark:text-gray-100">
             <div class="flex justify-between items-center border-b pb-4">
                 <div>
                     <span id="quiz-progress" class="text-xs font-bold opacity-70">Câu 1 / 5</span>
@@ -120,7 +120,7 @@
         </div>
 
         <!-- MÀN HÌNH KẾT QUẢ THI -->
-        <div id="screen-result" class="hidden border p-8 rounded-2xl shadow-sm text-center space-y-6 theme-card bg-white dark:bg-[#181818]">
+        <div id="screen-result" class="hidden border p-8 rounded-2xl shadow-sm text-center space-y-6 bg-white dark:bg-[#1a1a1a] text-[#2c221e] dark:text-gray-100">
             <div class="inline-block seal-stamp text-xl font-bold px-6 py-2 mb-2">ĐẠT KHOA THI</div>
             <h2 class="cophong-title text-3xl font-bold">Kết Quả Xếp Hạng</h2>
             <div class="flex justify-center gap-6 sm:gap-10 text-base sm:text-lg">
@@ -145,22 +145,22 @@
         <div class="border-4 border-amber-400 bg-gradient-to-b from-amber-50 to-amber-100 dark:from-[#2a2416] dark:to-[#1a160d] max-w-md w-full p-8 rounded-3xl text-center space-y-4 gold-animation shadow-2xl">
             <div class="text-5xl">👑</div>
             <span class="text-xs font-bold uppercase tracking-widest text-amber-700 dark:text-amber-400">Trường Thi Xướng Danh</span>
-            <h3 id="rankup-title" class="cophong-title text-2xl sm:text-3xl font-bold text-amber-900 dark:text-amber-200">Chúc mừng sĩ tử đã đậu bậc...</h3>
-            <p id="rankup-desc" class="text-sm text-gray-700 dark:text-gray-300">Danh vọng vang dội, hãy tiếp tục cố gắng trên con đường khoa cử!</p>
+            <h3 id="rankup-title" class="cophong-title text-2xl sm:text-3xl font-bold text-amber-900 dark:text-amber-200">Chúc mừng sĩ tử đã thăng quan...</h3>
+            <p id="rankup-desc" class="text-sm text-gray-700 dark:text-gray-300">Danh vọng vang dội, hãy tiếp tục cố gắng trên con đường thăng quan tiến chức!</p>
             <div class="pt-2">
                 <button onclick="closeRankUpModal()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg transition">Tạ ơn Thầy Đồ</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL BẢNG VÀNG KHOA CỬ -->
+    <!-- MODAL BẢNG VÀNG KHOA CỬ (CHUẨN CỬU PHẨM -> NHẤT PHẨM -> TỂ TƯỚNG) -->
     <div id="ranks-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-        <div class="border max-w-md w-full p-6 rounded-2xl space-y-4 shadow-2xl theme-card bg-white dark:bg-[#181818] max-h-[85vh] overflow-y-auto">
+        <div class="border max-w-md w-full p-6 rounded-2xl space-y-4 shadow-2xl bg-white dark:bg-[#1a1a1a] text-[#2c221e] dark:text-gray-100 max-h-[85vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3 sticky top-0 bg-inherit z-10">
-                <h3 class="cophong-title text-xl font-bold">🏆 Bảng Vàng Khoa Cử</h3>
+                <h3 class="cophong-title text-xl font-bold">🏆 Bảng Vàng Thăng Quan Tiến Chức</h3>
                 <button onclick="closeRanksModal()" class="opacity-60 hover:opacity-100 font-bold text-lg">✕</button>
             </div>
-            <p class="text-xs opacity-80">Tích lũy điểm Kinh nghiệm (EXP) qua các bài thi để thăng tiến trên con đường quan lộ.</p>
+            <p class="text-xs opacity-80">Tích lũy điểm Kinh nghiệm (EXP) qua các bài thi để thăng tiến từ Sĩ tử lên Tể Tướng.</p>
             <div id="ranks-list-container" class="space-y-2 text-sm">
                 <!-- Danh sách cấp bậc render bằng JS -->
             </div>
@@ -172,7 +172,7 @@
 
     <!-- MODAL MẶC HƯƠNG TRAI (15 MÓN ĐỒ) -->
     <div id="shop-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-        <div class="border max-w-2xl w-full p-6 rounded-2xl space-y-4 shadow-2xl theme-card bg-white dark:bg-[#181818] max-h-[85vh] overflow-y-auto">
+        <div class="border max-w-2xl w-full p-6 rounded-2xl space-y-4 shadow-2xl bg-white dark:bg-[#1a1a1a] text-[#2c221e] dark:text-gray-100 max-h-[85vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3 sticky top-0 bg-inherit z-10">
                 <h3 class="cophong-title text-xl font-bold">🏮 Mặc Hương Trai (Cửa Hàng Văn Phòng Tứ Bảo)</h3>
                 <button onclick="closeShop()" class="opacity-60 hover:opacity-100 font-bold text-lg">✕</button>
@@ -191,7 +191,7 @@
 
     <!-- MODAL BÍ KÍP (NHẬP GEMINI API KEY) -->
     <div id="apikey-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-        <div class="border max-w-md w-full p-6 rounded-2xl space-y-4 shadow-2xl theme-card bg-white dark:bg-[#181818]">
+        <div class="border max-w-md w-full p-6 rounded-2xl space-y-4 shadow-2xl bg-white dark:bg-[#1a1a1a] text-[#2c221e] dark:text-gray-100">
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="cophong-title text-xl font-bold">🔑 Tàng Thư Các - Nhập Bí Kíp (API Key)</h3>
                 <button onclick="closeApiKeyModal()" class="opacity-60 hover:opacity-100 font-bold text-lg">✕</button>
@@ -211,27 +211,39 @@
 
     <!-- SCRIPT XỬ LÝ TOÀN BỘ LOGIC -->
     <script>
+        // HỆ THỐNG CẤP BẬC QUAN CHẾ (SĨ TỬ -> CỬU PHẨM ĐẾN NHẤT PHẨM -> TỂ TƯỚNG)
         const rankList = [
             { name: "Sĩ tử", exp: 0 },
             { name: "Đồng Sinh", exp: 10 },
-            { name: "Tú Tài", exp: 30 },
-            { name: "Cử Nhân", exp: 60 },
-            { name: "Tiến Sĩ", exp: 100 },
-            { name: "Thám Hoa", exp: 150 },
-            { name: "Bảng Nhãn", exp: 220 },
-            { name: "Trạng Nguyên", exp: 300 },
-            { name: "Hàn Lâm Viện Biên Khảo", exp: 400 },
-            { name: "Đông Khát Học Sĩ", exp: 520 },
-            { name: "Thái Tử Thiếu Bảo", exp: 660 },
-            { name: "Đại Học Sỹ", exp: 820 },
-            { name: "Thái Phó", exp: 1000 },
-            { name: "Tể Tướng Đương Trào", exp: 1250 }
+            { name: "Tú Tài", exp: 25 },
+            { name: "Cử Nhân", exp: 45 },
+            { name: "Tiến Sĩ", exp: 70 },
+            { name: "Tòng Cửu Phẩm", exp: 100 },
+            { name: "Chánh Cửu Phẩm", exp: 135 },
+            { name: "Tòng Bát Phẩm", exp: 175 },
+            { name: "Chánh Bát Phẩm", exp: 220 },
+            { name: "Tòng Thất Phẩm", exp: 270 },
+            { name: "Chánh Thất Phẩm", exp: 325 },
+            { name: "Tòng Lục Phẩm", exp: 385 },
+            { name: "Chánh Lục Phẩm", exp: 450 },
+            { name: "Tòng Ngũ Phẩm", exp: 520 },
+            { name: "Chánh Ngũ Phẩm", exp: 595 },
+            { name: "Tòng Tứ Phẩm", exp: 675 },
+            { name: "Chánh Tứ Phẩm", exp: 760 },
+            { name: "Tòng Tam Phẩm", exp: 850 },
+            { name: "Chánh Tam Phẩm", exp: 945 },
+            { name: "Tòng Nhị Phẩm", exp: 1045 },
+            { name: "Chánh Nhị Phẩm", exp: 1150 },
+            { name: "Tòng Nhất Phẩm", exp: 1260 },
+            { name: "Chánh Nhất Phẩm", exp: 1375 },
+            { name: "Tam Súc (Thái Sư / Thái Bảo)", exp: 1500 },
+            { name: "Tể Tướng Đương Triều", exp: 1650 }
         ];
 
         const shopItems = [
             { id: 1, name: "Bút Lông Sói Thượng Hạng", desc: "Tăng 20% trí tuệ khi giải đề.", price: 30, icon: "🖌️" },
             { id: 2, name: "Nghiên Mực Hoàng Sơn", desc: "Giúp nét chữ thêm phần tinh anh.", price: 45, icon: "🪨" },
-            { id: 3, name: "Giấy Xuyến Chỉ Thượng Đẳng", desc: "Giấy thơm viết văn không sai sót.", price: 25, icon: "📜" },
+            { id: 3, name: "Giấy Tuyên Chỉ Thượng Đẳng", desc: "Giấy thơm viết văn không sai sót.", price: 25, icon: "📜" },
             { id: 4, name: "Tráp Đựng Sách Gỗ Trắc", desc: "Gọn gàng kinh thư, ôn bài nhanh chóng.", price: 60, icon: "🧰" },
             { id: 5, name: "Đèn Khổng Minh Soi Sáng", desc: "Xua tan bóng tối khi học ban đêm.", price: 80, icon: "🏮" },
             { id: 6, name: "Quạt Giấy Thơ Đề", desc: "Tăng phong thái tiêu dao sĩ tử.", price: 50, icon: "🪭" },
@@ -243,126 +255,200 @@
             { id: 12, name: "Hài Thêu Chỉ Vàng", desc: "Bước đi vững chãi trên đường quan lộ.", price: 150, icon: "👞" },
             { id: 13, name: "Bức Tranh Tùng Hạc Diên Niên", desc: "Treo phòng học tăng cường tĩnh tâm.", price: 180, icon: "🖼️" },
             { id: 14, name: "Kính Lúp Phố Cổ", desc: "Soi kỹ từng lỗi nhỏ ngữ pháp tiếng Anh.", price: 95, icon: "🔍" },
-            { id: 15, name: "Thượng Phương Bảo Kiếm", desc: "Vật phẩm uy quyền bậc nhất của Trạng Nguyên.", price: 500, icon: "⚔️" }
+            { id: 15, name: "Thượng Phương Bảo Kiếm", desc: "Vật phẩm uy quyền bậc nhất triều đình.", price: 500, icon: "⚔️" }
         ];
 
+        // ĐẦY ĐỦ 12 THÌ TIẾNG ANH VÀ CÁC CHỦ ĐIỂM NGỮ PHÁP
         const categories = [
             {
                 id: 'cat1',
-                title: 'Trường Thi Thứ Nhất: 12 Thì Cơ Bản & Nâng Cao',
+                title: 'Trường Thi Thứ Nhất: Nhóm 4 Thì Hiện Tại',
                 topics: [
                     {
                         id: 't_present_simple',
                         name: '1. Hiện Tại Đơn (Present Simple)',
-                        theory: `<b>📖 Lý thuyết chi tiết - Hiện Tại Đơn:</b><br><br>
-                        • <b>1. Khẳng định (+):</b> S + V(s/es) + O<br>
-                        <i>(Ví dụ: She <b>works</b> hard everyday.)</i><br><br>
-                        • <b>2. Phủ định (-):</b> S + do/does + not + V_bare + O<br>
-                        <i>(Ví dụ: They <b>do not (don't) like</b> fish.)</i><br><br>
-                        • <b>3. Nghi vấn (?):</b> Do/Does + S + V_bare + O?<br>
-                        <i>(Ví dụ: <b>Do</b> you <b>speak</b> English?)</i><br><br>
-                        • <b>🎯 Dấu hiệu nhận biết:</b> always, usually, often, sometimes, never, every day/week/month,...`,
+                        theory: `<b>📖 Lý thuyết - Hiện Tại Đơn:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + V(s/es) + O<br>
+                        • <b>Phủ định (-):</b> S + do/does + not + V_bare + O<br>
+                        • <b>Nghi vấn (?):</b> Do/Does + S + V_bare + O?<br>
+                        • <b>🎯 Dấu hiệu:</b> always, usually, often, sometimes, every day...`,
                         questions: [
-                            { q: "She usually _____ to school by bus.", options: ["go", "goes", "went", "is going"], answer: 1, explanation: "Có dấu hiệu 'usually' và chủ ngữ 'She' (ngôi số 3 số ít), ta dùng động từ thêm 'es' là 'goes'." },
-                            { q: "Water _____ at 100 degrees Celsius.", options: ["boil", "boils", "boiled", "is boiling"], answer: 1, explanation: "Diễn tả một chân lý, sự thật hiển nhiên, ta dùng thì Hiện tại đơn." },
-                            { q: "They _____ play football on Sundays.", options: ["doesn't", "don't", "aren't", "isn't"], answer: 1, explanation: "Chủ ngữ 'They' đi với trợ động từ phủ định là 'don't'." }
+                            { q: "She usually _____ to school by bus.", options: ["go", "goes", "went", "is going"], answer: 1, explanation: "Chủ ngữ 'She' (ngôi số 3 số ít) đi với động từ thêm 'es' trong thì Hiện tại đơn." },
+                            { q: "Water _____ at 100 degrees Celsius.", options: ["boil", "boils", "boiled", "is boiling"], answer: 1, explanation: "Chân lý hiển nhiên dùng Hiện tại đơn." }
                         ]
                     },
                     {
                         id: 't_present_continuous',
                         name: '2. Hiện Tại Tiếp Diễn (Present Continuous)',
-                        theory: `<b>📖 Lý thuyết chi tiết - Hiện Tại Tiếp Diễn:</b><br><br>
-                        • <b>1. Khẳng định (+):</b> S + am/is/are + V-ing + O<br>
-                        • <b>2. Phủ định (-):</b> S + am/is/are + not + V-ing + O<br>
-                        • <b>3. Nghi vấn (?):</b> Am/Is/Are + S + V-ing + O?<br>
-                        • <b>🎯 Dấu hiệu nhận biết:</b> Now, right now, at the moment, Look!, Listen!...`,
+                        theory: `<b>📖 Lý thuyết - Hiện Tại Tiếp Diễn:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + am/is/are + V-ing + O<br>
+                        • <b>Phủ định (-):</b> S + am/is/are + not + V-ing + O<br>
+                        • <b>Nghi vấn (?):</b> Am/Is/Are + S + V-ing + O?<br>
+                        • <b>🎯 Dấu hiệu:</b> Now, right now, at the moment, Look!, Listen!...`,
                         questions: [
-                            { q: "Listen! Someone _____ a song.", options: ["sing", "sings", "is singing", "sang"], answer: 2, explanation: "Có từ cảm thán 'Listen!' chỉ hành động đang diễn ra tại thời điểm nói, dùng 'is singing'." },
-                            { q: "What _____ you _____ at the moment?", options: ["do / do", "are / doing", "did / do", "will / do"], answer: 1, explanation: "Trạng ngữ 'at the moment' chỉ hành động đang diễn ra, dùng cấu trúc 'are you doing'." }
+                            { q: "Listen! Someone _____ a song.", options: ["sing", "sings", "is singing", "sang"], answer: 2, explanation: "Có từ 'Listen!' chỉ hành động đang diễn ra, dùng Hiện tại tiếp diễn." }
                         ]
                     },
                     {
                         id: 't_present_perfect',
                         name: '3. Hiện Tại Hoàn Thành (Present Perfect)',
-                        theory: `<b>📖 Lý thuyết chi tiết - Hiện Tại Hoàn Thành:</b><br><br>
-                        • <b>1. Khẳng định (+):</b> S + have/has + V3/ed + O<br>
-                        • <b>2. Phủ định (-):</b> S + have/has + not + V3/ed + O<br>
-                        • <b>3. Nghi vấn (?):</b> Have/Has + S + V3/ed + O?<br>
-                        • <b>🎯 Dấu hiệu nhận biết:</b> already, yet, just, ever, never, since, for, so far...`,
+                        theory: `<b>📖 Lý thuyết - Hiện Tại Hoàn Thành:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + have/has + V3/ed + O<br>
+                        • <b>Phủ định (-):</b> S + have/has + not + V3/ed + O<br>
+                        • <b>Nghi vấn (?):</b> Have/Has + S + V3/ed + O?<br>
+                        • <b>🎯 Dấu hiệu:</b> already, yet, just, ever, never, since, for...`,
                         questions: [
-                            { q: "I _____ English for 3 years.", options: ["learn", "learned", "have learned", "am learning"], answer: 2, explanation: "Có giới từ 'for' chỉ khoảng thời gian, dùng thì Hiện tại hoàn thành." },
-                            { q: "She _____ finished her report yet.", options: ["hasn't", "haven't", "didn't", "wasn't"], answer: 0, explanation: "Dấu hiệu 'yet' dùng trong câu phủ định của hiện tại hoàn thành với chủ ngữ 'She'." }
+                            { q: "I _____ English for 3 years.", options: ["learn", "learned", "have learned", "am learning"], answer: 2, explanation: "Có 'for 3 years' chỉ khoảng thời gian, dùng Hiện tại hoàn thành." }
                         ]
                     },
                     {
-                        id: 't_past_simple',
-                        name: '4. Quá Khứ Đơn (Past Simple)',
-                        theory: `<b>📖 Lý thuyết chi tiết - Quá Khứ Đơn:</b><br><br>
-                        • <b>1. Khẳng định (+):</b> S + V2/ed + O<br>
-                        • <b>2. Phủ định (-):</b> S + didn't + V_bare + O<br>
-                        • <b>3. Nghi vấn (?):</b> Did + S + V_bare + O?<br>
-                        • <b>🎯 Dấu hiệu nhận biết:</b> Yesterday, last week, ago, in 1990...`,
+                        id: 't_present_perfect_continuous',
+                        name: '4. Hiện Tại Hoàn Thành Tiếp Diễn (Present Perfect Continuous)',
+                        theory: `<b>📖 Lý thuyết - HTHT Tiếp Diễn:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + have/has + been + V-ing + O<br>
+                        • <b>Phủ định (-):</b> S + have/has + not + been + V-ing + O<br>
+                        • <b>Nghi vấn (?):</b> Have/Has + S + been + V-ing + O?<br>
+                        • <b>🎯 Dấu hiệu:</b> all day, all night, since, for (nhấn mạnh tính liên tục của hành động).`,
                         questions: [
-                            { q: "Where _____ you go yesterday?", options: ["do", "did", "were", "have"], answer: 1, explanation: "Dấu hiệu 'yesterday' trong câu hỏi quá khứ đơn, ta dùng trợ động từ 'did'." },
-                            { q: "She _____ a new car two days ago.", options: ["buy", "buys", "bought", "buying"], answer: 2, explanation: "Dấu hiệu 'two days ago', động từ bất quy tắc 'buy' chuyển thành 'bought'." }
-                        ]
-                    },
-                    {
-                        id: 't_future_will_goingto',
-                        name: '5. Tương Lai (Will & Be going to)',
-                        theory: `<b>📖 Lý thuyết chi tiết - Tương Lai:</b><br><br>
-                        • <b>1. Be going to:</b> Kế hoạch có sẵn hoặc dự đoán có căn cứ (S + am/is/are + going to + V).<br>
-                        • <b>2. Will:</b> Quyết định bộc phát, lời hứa (S + will + V).<br>
-                        • <b>🎯 Dấu hiệu nhận biết:</b> Tomorrow, next week, soon...`,
-                        questions: [
-                            { q: "Look at those dark clouds! It _____ rain.", options: ["will", "is going to", "is raining", "rains"], answer: 1, explanation: "Dự đoán có căn cứ rõ ràng trước mắt (mây đen), ta dùng 'is going to'." },
-                            { q: "I feel thirsty. I _____ get a glass of water.", options: ["am going to", "will", "going to", "shall to"], answer: 1, explanation: "Quyết định ngay tại thời điểm nói, ta dùng 'will'." }
+                            { q: "It _____ all day and the streets are wet.", options: ["rains", "rained", "has been raining", "is raining"], answer: 2, explanation: "Nhấn mạnh hành động kéo dài liên tục từ quá khứ đến hiện tại có kết quả hiện rõ, dùng HTHT Tiếp diễn." }
                         ]
                     }
                 ]
             },
             {
                 id: 'cat2',
-                title: 'Trường Thi Thứ Hai: Cấu Trúc & Từ Loại Cơ Bản',
+                title: 'Trường Thi Thứ Hai: Nhóm 4 Thì Quá Khứ',
                 topics: [
                     {
-                        id: 't_modal_verbs',
-                        name: '1. Động Từ Khiếm Khuyết (Modal Verbs)',
-                        theory: `<b>📖 Lý thuyết chi tiết - Modal Verbs:</b><br><br>
-                        • <b>1. Lời khuyên:</b> should / ought to<br>
-                        • <b>2. Sự cần thiết:</b> need / have to<br>
-                        • <b>3. Sự bắt buộc:</b> must / have to`,
+                        id: 't_past_simple',
+                        name: '5. Quá Khứ Đơn (Past Simple)',
+                        theory: `<b>📖 Lý thuyết - Quá Khứ Đơn:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + V2/ed + O<br>
+                        • <b>Phủ định (-):</b> S + didn't + V_bare + O<br>
+                        • <b>Nghi vấn (?):</b> Did + S + V_bare + O?<br>
+                        • <b>🎯 Dấu hiệu:</b> Yesterday, last week, ago, in 1990...`,
                         questions: [
-                            { q: "You _____ drive on the left when you are in London. It's the traffic rule.", options: ["should", "must", "can", "may"], answer: 1, explanation: "Quy định luật lệ giao thông bắt buộc, dùng 'must'." },
-                            { q: "You look exhausted. You _____ take a few days off.", options: ["must", "should", "have to", "can't"], answer: 1, explanation: "Đưa ra lời khuyên thân thiện, dùng 'should'." }
+                            { q: "She _____ a new car two days ago.", options: ["buy", "buys", "bought", "buying"], answer: 2, explanation: "Dấu hiệu 'two days ago', dùng động từ cột 2 'bought'." }
                         ]
                     },
                     {
-                        id: 't_gerund_infinitive',
-                        name: '2. Danh Động Từ & Động Từ Nguyên Mẫu (Gerund & Infinitive)',
-                        theory: `<b>📖 Lý thuyết chi tiết - V-ing & to-V:</b><br><br>
-                        • <b>Sau V-ing:</b> enjoy, mind, finish, practice...<br>
-                        • <b>Sau to-V:</b> want, decide, hope, promise...`,
+                        id: 't_past_continuous',
+                        name: '6. Quá Khứ Tiếp Diễn (Past Continuous)',
+                        theory: `<b>📖 Lý thuyết - Quá Khứ Tiếp Diễn:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + was/were + V-ing + O<br>
+                        • <b>Phủ định (-):</b> S + was/were + not + V-ing + O<br>
+                        • <b>Nghi vấn (?):</b> Was/Were + S + V-ing + O?<br>
+                        • <b>🎯 Dấu hiệu:</b> At 8 PM yesterday, while, when...`,
                         questions: [
-                            { q: "Would you mind _____ the window?", options: ["open", "to open", "opening", "opened"], answer: 2, explanation: "Sau cụm từ 'Would you mind' luôn đi với danh động từ (V-ing)." },
-                            { q: "She promised _____ back before 10 PM.", options: ["come", "coming", "to come", "came"], answer: 2, explanation: "Sau động từ 'promise' luôn đi với động từ nguyên mẫu có 'to'." }
+                            { q: "While I _____ dinner, the phone rang.", options: ["cook", "cooked", "was cooking", "is cooking"], answer: 2, explanation: "Hành động đang xảy ra (while) thì hành động khác chêm vào." }
+                        ]
+                    },
+                    {
+                        id: 't_past_perfect',
+                        name: '7. Quá Khứ Hoàn Thành (Past Perfect)',
+                        theory: `<b>📖 Lý thuyết - Quá Khứ Hoàn Thành:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + had + V3/ed + O<br>
+                        • <b>Phủ định (-):</b> S + hadn't + V3/ed + O<br>
+                        • <b>Nghi vấn (?):</b> Had + S + V3/ed + O?<br>
+                        • <b>🎯 Dấu hiệu:</b> By the time, before, after, already...`,
+                        questions: [
+                            { q: "When we arrived at the station, the train _____.", options: ["left", "had left", "has left", "leaves"], answer: 1, explanation: "Hành động xảy ra trước một hành động khác trong quá khứ, dùng Quá khứ hoàn thành." }
+                        ]
+                    },
+                    {
+                        id: 't_past_perfect_continuous',
+                        name: '8. Quá Khứ Hoàn Thành Tiếp Diễn (Past Perfect Continuous)',
+                        theory: `<b>📖 Lý thuyết - QKHT Tiếp Diễn:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + had + been + V-ing + O<br>
+                        • <b>Phủ định (-):</b> S + hadn't + been + V-ing + O<br>
+                        • <b>Nghi vấn (?):</b> Had + S + been + V-ing + O?<br>
+                        • <b>🎯 Dấu hiệu:</b> Nhấn mạnh quá trình kéo dài trước một mốc thời gian trong quá khứ.`,
+                        questions: [
+                            { q: "They _____ for 2 hours before it started to rain.", options: ["have played", "played", "had been playing", "were playing"], answer: 2, explanation: "Nhấn mạnh quá trình chơi kéo dài liên tục trước một thời điểm trong quá khứ." }
                         ]
                     }
                 ]
             },
             {
                 id: 'cat3',
-                title: 'Trường Thi Thứ Ba: Câu Tường Thuật & Mẫu Đối Thoại',
+                title: 'Trường Thi Thứ Ba: Nhóm 4 Thì Tương Lai',
                 topics: [
                     {
-                        id: 't_reported_speech',
-                        name: '1. Câu Tường Thuật (Reported Speech)',
-                        theory: `<b>📖 Lý thuyết chi tiết - Câu Tường Thuật:</b><br><br>
-                        • Lùi 1 bậc thì (Hiện tại $\rightarrow$ Quá khứ)<br>
-                        • Đổi trạng từ chỉ thời gian, nơi chốn (now $\rightarrow$ then, yesterday $\rightarrow$ the day before).`,
+                        id: 't_future_simple',
+                        name: '9. Tương Lai Đơn (Future Simple - Will)',
+                        theory: `<b>📖 Lý thuyết - Tương Lai Đơn:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + will + V_bare + O<br>
+                        • <b>Phủ định (-):</b> S + won't + V_bare + O<br>
+                        • <b>Nghi vấn (?):</b> Will + S + V_bare + O?<br>
+                        • <b>🎯 Dấu hiệu:</b> Tomorrow, next week, soon, I think, probably...`,
                         questions: [
-                            { q: "He said, 'I am learning English now.' $\rightarrow$ He said that he _____ English then.", options: ["is learning", "was learning", "learned", "has learned"], answer: 1, explanation: "Lùi thì Hiện tại tiếp diễn sang Quá khứ tiếp diễn ('was learning')." },
-                            { q: "She said to me, 'I met your brother yesterday.' $\rightarrow$ She told me that she _____ my brother the day before.", options: ["met", "had met", "has met", "meets"], answer: 1, explanation: "Lùi thì Quá khứ đơn sang Quá khứ hoàn thành ('had met')." }
+                            { q: "I promise I _____ you tomorrow.", options: ["help", "will help", "am helping", "helped"], answer: 1, explanation: "Lời hứa hẹn dùng 'will'." }
+                        ]
+                    },
+                    {
+                        id: 't_future_continuous',
+                        name: '10. Tương Lai Tiếp Diễn (Future Continuous)',
+                        theory: `<b>📖 Lý thuyết - Tương Lai Tiếp Diễn:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + will + be + V-ing + O<br>
+                        • <b>🎯 Dấu hiệu:</b> At this time tomorrow, at 8 PM next Monday...`,
+                        questions: [
+                            { q: "At this time tomorrow, we _____ on the beach.", options: ["will relax", "will be relaxing", "relaxed", "are relaxing"], answer: 1, explanation: "Hành động đang diễn ra tại một thời điểm xác định trong tương lai." }
+                        ]
+                    },
+                    {
+                        id: 't_future_perfect',
+                        name: '11. Tương Lai Hoàn Thành (Future Perfect)',
+                        theory: `<b>📖 Lý thuyết - Tương Lai Hoàn Thành:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + will + have + V3/ed + O<br>
+                        • <b>🎯 Dấu hiệu:</b> By next year, by this time next month...`,
+                        questions: [
+                            { q: "By next month, she _____ her project.", options: ["will finish", "will have finished", "finishes", "finished"], answer: 1, explanation: "Hành động hoàn thành trước một mốc thời gian trong tương lai." }
+                        ]
+                    },
+                    {
+                        id: 't_future_perfect_continuous',
+                        name: '12. Tương Lai Hoàn Thành Tiếp Diễn (Future Perfect Continuous)',
+                        theory: `<b>📖 Lý thuyết - TLHT Tiếp Diễn:</b><br><br>
+                        • <b>Khẳng định (+):</b> S + will + have + been + V-ing + O<br>
+                        • <b>🎯 Dấu hiệu:</b> By next year, we will have been living here for 10 years.`,
+                        questions: [
+                            { q: "By 2030, he _____ here for 20 years.", options: ["will work", "will have been working", "works", "worked"], answer: 1, explanation: "Hành động kéo dài liên tục tính đến một mốc trong tương lai." }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'cat4',
+                title: 'Trường Thi Thứ Tư: Chuyên Sâu Ngữ Pháp Khác',
+                topics: [
+                    {
+                        id: 't_modal_verbs',
+                        name: '1. Động Từ Khiếm Khuyết (Modal Verbs)',
+                        theory: `<b>📖 Lý thuyết - Modal Verbs:</b><br><br>
+                        • <b>Lời khuyên:</b> should / ought to<br>
+                        • <b>Sự cần thiết:</b> need / have to<br>
+                        • <b>Sự bắt buộc:</b> must / have to`,
+                        questions: [
+                            { q: "You _____ wear a helmet. It's the law.", options: ["should", "must", "can", "may"], answer: 1, explanation: "Luật lệ bắt buộc dùng 'must'." }
+                        ]
+                    },
+                    {
+                        id: 't_gerund_infinitive',
+                        name: '2. Danh Động Từ & Động Từ Nguyên Mẫu (V-ing & to-V)',
+                        theory: `<b>📖 Lý thuyết - V-ing & to-V:</b><br><br>
+                        • <b>Sau V-ing:</b> enjoy, mind, finish, avoid...<br>
+                        • <b>Sau to-V:</b> want, decide, hope, promise...`,
+                        questions: [
+                            { q: "She promised _____ back early.", options: ["come", "coming", "to come", "came"], answer: 2, explanation: "Sau 'promise' đi với động từ nguyên mẫu có 'to'." }
+                        ]
+                    },
+                    {
+                        id: 't_reported_speech',
+                        name: '3. Câu Tường Thuật (Reported Speech)',
+                        theory: `<b>📖 Lý thuyết - Câu Tường Thuật:</b><br><br>
+                        • Lùi 1 bậc thì và đổi trạng từ chỉ thời gian, nơi chốn tương ứng.`,
+                        questions: [
+                            { q: "He said, 'I am happy.' $\rightarrow$ He said he _____ happy.", options: ["is", "was", "were", "has been"], answer: 1, explanation: "Lùi thì Hiện tại ('am') sang Quá khứ ('was')." }
                         ]
                     }
                 ]
@@ -432,7 +518,7 @@
                 let topicsHtml = '';
                 cat.topics.forEach(t => {
                     topicsHtml += `
-                        <div onclick="openTheory('${t.id}')" class="border p-4 rounded-xl cursor-pointer hover:border-amber-500 transition flex justify-between items-center bg-white dark:bg-[#1a1a1a] shadow-xs">
+                        <div onclick="openTheory('${t.id}')" class="border p-4 rounded-xl cursor-pointer hover:border-amber-500 transition flex justify-between items-center bg-white dark:bg-[#202020] shadow-xs">
                             <div>
                                 <h4 class="font-bold text-sm sm:text-base">${t.name}</h4>
                                 <span class="text-xs opacity-60">📚 Kho câu hỏi: ${t.questions.length} câu + AI sinh thêm</span>
@@ -443,7 +529,7 @@
                 });
 
                 container.innerHTML += `
-                    <div class="border p-5 sm:p-6 rounded-2xl shadow-sm space-y-4 theme-card bg-[#fffdfa] dark:bg-[#181818]">
+                    <div class="border p-5 sm:p-6 rounded-2xl shadow-sm space-y-4 bg-[#fffdfa] dark:bg-[#181818]">
                         <h3 class="cophong-title font-bold text-xl text-red-700 dark:text-red-400 border-b pb-2">${cat.title}</h3>
                         <div class="space-y-3">
                             ${topicsHtml}
@@ -525,7 +611,6 @@
 
             if (selectedIndex === q.answer) {
                 score++;
-                // Hiệu ứng tự động chuyển câu sau 1.2 giây khi làm đúng
                 setTimeout(() => {
                     currentQIndex++;
                     if (currentQIndex < currentQuestions.length) {
@@ -535,7 +620,6 @@
                     }
                 }, 1200);
             } else {
-                // Nếu sai, hiện lời giải và nút bấm thủ công sang câu tiếp
                 document.getElementById('explanation-text').innerText = q.explanation;
                 document.getElementById('explanation-box').classList.remove('hidden');
                 document.getElementById('next-btn').classList.remove('hidden');
@@ -570,11 +654,10 @@
             document.getElementById('res-coins').innerText = `+${earnedCoins} 🪙`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // Kiểm tra nếu thăng cấp bậc mới -> Bật bảng vàng lấp lánh chúc mừng
             if (oldRank !== newRank) {
                 setTimeout(() => {
-                    document.getElementById('rankup-title').innerText = `Trường thi chúc mừng bạn đã đậu ${newRank}!`;
-                    document.getElementById('rankup-desc').innerText = `Vượt qua cửa ải thành công, triều đình ghi nhận tài năng của sĩ tử lên hàng ${newRank}.`;
+                    document.getElementById('rankup-title').innerText = `Chúc mừng sĩ tử đã thăng quan lên bậc ${newRank}!`;
+                    document.getElementById('rankup-desc').innerText = `Vượt qua cửa ải thành công, triều đình chính thức sắc phong sĩ tử lên hàng ${newRank}.`;
                     document.getElementById('rankup-modal').classList.remove('hidden');
                 }, 500);
             }
@@ -642,8 +725,8 @@
                 
                 if (oldRank !== newRank) {
                     closeShop();
-                    document.getElementById('rankup-title').innerText = `Trường thi chúc mừng bạn đã đậu ${newRank}!`;
-                    document.getElementById('rankup-desc').innerText = `Nhờ thỉnh bảo vật Mặc Hương Trai, đạo hạnh tinh tiến, chính thức bước lên bậc ${newRank}.`;
+                    document.getElementById('rankup-title').innerText = `Chúc mừng sĩ tử đã thăng quan lên bậc ${newRank}!`;
+                    document.getElementById('rankup-desc').innerText = `Nhờ thỉnh bảo vật Mặc Hương Trai, triều đình sắc phong sĩ tử lên bậc ${newRank}.`;
                     document.getElementById('rankup-modal').classList.remove('hidden');
                 } else {
                     openShop();
