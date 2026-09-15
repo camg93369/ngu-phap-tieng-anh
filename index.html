@@ -20,13 +20,39 @@
         
         .seal-stamp { border: 2px dashed #b91c1c; color: #b91c1c; transform: rotate(-3deg); }
         
-        /* Hiệu ứng lấp lánh cho NÚT */
-        @keyframes goldGlow {
-            0% { box-shadow: 0 0 5px #f59e0b; transform: scale(1); }
-            50% { box-shadow: 0 0 20px #fbbf24, 0 0 30px #f59e0b; transform: scale(1.05); }
-            100% { box-shadow: 0 0 5px #f59e0b; transform: scale(1); }
+        /* HIỆU ỨNG LẤP LÁNH PHÂN CẤP BẬC */
+        /* Cấp 1-4: Sơ cấp (Xanh ngọc - nhẹ nhàng) */
+        @keyframes glowTier1 {
+            0% { box-shadow: 0 0 5px #34d399; transform: scale(1); }
+            50% { box-shadow: 0 0 15px #10b981; transform: scale(1.02); }
+            100% { box-shadow: 0 0 5px #34d399; transform: scale(1); }
         }
-        .btn-glow { animation: goldGlow 2s infinite ease-in-out; }
+        .rank-tier-1 { animation: glowTier1 3s infinite ease-in-out; border-color: #34d399 !important; }
+
+        /* Cấp 5-12: Trung cấp (Vàng Hổ Phách - sang trọng) */
+        @keyframes glowTier2 {
+            0% { box-shadow: 0 0 8px #f59e0b; transform: scale(1); }
+            50% { box-shadow: 0 0 22px #fbbf24, inset 0 0 10px #fef3c7; transform: scale(1.03); }
+            100% { box-shadow: 0 0 8px #f59e0b; transform: scale(1); }
+        }
+        .rank-tier-2 { animation: glowTier2 2.5s infinite ease-in-out; border-color: #fbbf24 !important; }
+
+        /* Cấp 13-20: Cao cấp (Đỏ tía / Tím quyền uy) */
+        @keyframes glowTier3 {
+            0% { box-shadow: 0 0 10px #ec4899, inset 0 0 5px #fbcfe8; transform: scale(1); }
+            50% { box-shadow: 0 0 30px #d946ef, inset 0 0 15px #f5d0fe; transform: scale(1.04); }
+            100% { box-shadow: 0 0 10px #ec4899, inset 0 0 5px #fbcfe8; transform: scale(1); }
+        }
+        .rank-tier-3 { animation: glowTier3 2s infinite ease-in-out; border-color: #d946ef !important; }
+
+        /* Cấp 21-25: Bậc Vương Triều / Tể Tướng (Hào quang cầu vồng / Kim cương rực rỡ) */
+        @keyframes glowTier4 {
+            0% { box-shadow: 0 0 15px #f59e0b, 0 0 30px #ef4444; filter: brightness(1); transform: scale(1); }
+            33% { box-shadow: 0 0 20px #3b82f6, 0 0 35px #8b5cf6; filter: brightness(1.1); transform: scale(1.03); }
+            66% { box-shadow: 0 0 20px #10b981, 0 0 35px #f59e0b; filter: brightness(1.1); transform: scale(1.03); }
+            100% { box-shadow: 0 0 15px #f59e0b, 0 0 30px #ef4444; filter: brightness(1); transform: scale(1); }
+        }
+        .rank-tier-4 { animation: glowTier4 1.8s infinite ease-in-out; border-color: #ef4444 !important; background: linear-gradient(135deg, rgba(254,243,199,0.9) 0%, rgba(254,202,202,0.6) 100%) !important; }
 
         @keyframes shine { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
         .btn-shine { position: relative; overflow: hidden; }
@@ -63,12 +89,13 @@
             </div>
             
             <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+                <div>Sĩ tử: <span id="current-player-name" class="font-bold text-yellow-200 underline">Ẩn Sĩ</span></div>
                 <div>Cấp: <span id="user-rank" class="font-bold text-amber-400">Sĩ tử</span></div>
                 <div>EXP: <span id="user-exp" class="font-bold text-amber-400">0</span></div>
                 <div>Ngân lượng: <span id="user-coins" class="font-bold text-yellow-300">50</span> 🪙</div>
                 
                 <div class="flex items-center gap-1.5">
-                    <button onclick="openRanksModal()" class="btn-glow bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-md font-bold transition border border-amber-300">Bảng Vàng ✨</button>
+                    <button onclick="openRanksModal()" id="rank-badge-btn" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-md font-bold transition border border-amber-300">Bảng Vàng ✨</button>
                     <button onclick="openShop()" class="btn-shine bg-[#b91c1c] hover:bg-red-800 text-white px-3 py-1.5 rounded-md font-bold transition">Mặc Hương Trai</button>
                     <button onclick="openApiKeyModal()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-2.5 py-1.5 rounded-md font-bold transition">🔑 Bí Kíp</button>
                     <button onclick="toggleDarkMode()" id="dark-mode-btn" class="bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1.5 rounded-md font-bold transition">🌙</button>
@@ -137,19 +164,35 @@
         </div>
     </main>
 
-    <!-- BẢNG VÀNG ĐÃ ĐƯỢC LÀM LẤP LÁNH -->
+    <!-- BẢNG VÀNG & XẾP HẠNG DƯỚI 5 NGƯỜI CHƠI -->
     <div id="ranks-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
-        <div class="sparkle-panel max-w-md w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative">
-            <div class="flex justify-between border-b border-amber-300 pb-3">
-                <h3 class="cophong-title text-xl font-bold text-amber-700 dark:text-amber-400">🏆 Bảng Vàng Thăng Quan</h3>
+        <div class="sparkle-panel max-w-lg w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative">
+            <div class="flex justify-between border-b border-amber-300 pb-3 items-center">
+                <h3 class="cophong-title text-xl font-bold text-amber-700 dark:text-amber-400">🏆 Bảng Vàng Đua Top Sĩ Tử (<span id="player-count">1</span>/5 người)</h3>
                 <button onclick="closeRanksModal()" class="text-xl font-bold opacity-70 hover:opacity-100">✕</button>
             </div>
-            <div id="ranks-list-container" class="space-y-2 text-sm text-[#2c221e] dark:text-gray-200"></div>
+            
+            <!-- Phần quản lý người chơi (Tối đa 5 người) -->
+            <div class="bg-amber-100/60 dark:bg-[#251f15] p-3 rounded-xl border border-amber-300 space-y-2">
+                <p class="text-xs font-bold text-amber-900 dark:text-amber-300">📜 Chọn hoặc thêm sĩ tử tham gia thi đấu (Tối đa 5 người):</p>
+                <div class="flex gap-2">
+                    <input type="text" id="new-player-input" placeholder="Tên sĩ tử mới..." class="flex-grow px-3 py-1 text-xs border rounded-md dark:bg-black dark:border-gray-600 outline-none">
+                    <button onclick="addNewPlayer()" class="bg-amber-700 hover:bg-amber-800 text-white text-xs px-3 py-1 rounded-md font-bold transition">Nạp Sĩ Tử</button>
+                </div>
+                <div id="players-selector-list" class="flex flex-wrap gap-1.5 pt-1"></div>
+            </div>
+
+            <!-- Danh sách Xếp hạng cao thấp -->
+            <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-red-700 dark:text-red-400">Bảng Xếp Hạng Kỳ Thi:</h4>
+                <div id="ranks-list-container" class="space-y-2 text-sm text-[#2c221e] dark:text-gray-200"></div>
+            </div>
+
             <button onclick="closeRanksModal()" class="w-full bg-[#2c221e] text-white py-2 rounded-lg mt-2 font-bold">Đóng Bảng Vàng</button>
         </div>
     </div>
     
-    <!-- MẶC HƯƠNG TRAI ĐÃ ĐƯỢC LÀM LẤP LÁNH -->
+    <!-- MẶC HƯƠNG TRAI -->
     <div id="shop-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-2xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto">
             <div class="flex justify-between border-b border-amber-300 pb-3">
@@ -164,14 +207,13 @@
     <!-- Các Modal khác -->
     <div id="apikey-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50"><div class="border max-w-md w-full p-6 rounded-2xl bg-white dark:bg-[#1a1a1a]"><div class="flex justify-between border-b pb-3"><h3 class="font-bold">🔑 Nhập API Key</h3><button onclick="closeApiKeyModal()">✕</button></div><input type="password" id="api-key-input" class="w-full mt-4 p-2 border rounded text-black outline-none"><button onclick="saveApiKey()" class="w-full bg-indigo-700 hover:bg-indigo-800 font-bold text-white py-2 rounded mt-4">Lưu Bí Kíp</button></div></div>
 
-    <div id="rankup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"><div class="border-4 border-amber-400 bg-amber-50 dark:bg-[#2a2416] w-full max-w-md p-8 rounded-3xl text-center btn-glow"><div class="text-5xl">👑</div><h3 id="rankup-title" class="cophong-title text-2xl font-bold text-amber-900 dark:text-amber-200 mt-2">Thăng quan!</h3><p id="rankup-desc" class="mt-2 text-sm">Chúc mừng!</p><button onclick="closeRankUpModal()" class="mt-4 bg-amber-600 text-white px-6 py-2 rounded-xl font-bold">Tạ ơn</button></div></div>
+    <div id="rankup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"><div class="border-4 border-amber-400 bg-amber-50 dark:bg-[#2a2416] w-full max-w-md p-8 rounded-3xl text-center"><div class="text-5xl">👑</div><h3 id="rankup-title" class="cophong-title text-2xl font-bold text-amber-900 dark:text-amber-200 mt-2">Thăng quan!</h3><p id="rankup-desc" class="mt-2 text-sm">Chúc mừng!</p><button onclick="closeRankUpModal()" class="mt-4 bg-amber-600 text-white px-6 py-2 rounded-xl font-bold">Tạ ơn</button></div></div>
 
     <!-- MODULE FIREBASE VÀ LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // MÃ CẤU HÌNH CỦA BẠN ĐÃ ĐƯỢC CHÈN VÀO ĐÂY
         const firebaseConfig = {
           apiKey: "AIzaSyDJSfaGfY_9iXyShM3Z4CMp0mfuxJRQY-M",
           authDomain: "khoa-cu-ngu-phap.firebaseapp.com",
@@ -184,9 +226,7 @@
 
         let db = null;
         try {
-            if (firebaseConfig.apiKey.includes("DÁN_API_KEY")) {
-                console.warn("Chưa cấu hình Firebase. Đang chạy Local.");
-            } else {
+            if (!firebaseConfig.apiKey.includes("DÁN_API_KEY")) {
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 document.getElementById('firebase-status').innerText = "🟢 Đã kết nối Đám mây (Đồng bộ Bật)";
@@ -197,43 +237,69 @@
         window.saveToCloud = async function() {
             if (!db) return;
             try {
-                await setDoc(doc(db, "UsersData", "MySĩTử"), {
-                    userData: window.userData,
+                await setDoc(doc(db, "UsersData", "MultiPlayersKhoaCu"), {
+                    players: window.playersList,
+                    activeId: window.activePlayerId,
                     categories: window.categories
                 });
             } catch(e) { console.error("Lỗi khi lưu mây:", e); }
         }
 
         window.loadFromCloud = async function() {
-            if (!db) { window.renderCategories(); return; }
+            if (!db) { window.initAppData(); return; }
             try {
-                const docSnap = await getDoc(doc(db, "UsersData", "MySĩTử"));
+                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCu"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
-                    window.userData = data.userData;
-                    window.categories = data.categories; 
+                    window.playersList = data.players || window.playersList;
+                    window.activePlayerId = data.activeId || window.playersList[0].id;
+                    window.categories = data.categories || window.categories;
+                    window.syncActivePlayerFromList();
                     window.updateUI();
                     window.renderCategories();
                     window.applyTheme();
                 } else {
-                    // Lần đầu chạy trên Cloud, lưu dữ liệu mặc định lên
+                    window.initAppData();
                     window.saveToCloud();
-                    window.renderCategories();
                 }
             } catch(e) { 
                 console.error("Lỗi khi tải mây:", e);
-                window.renderCategories(); 
+                window.initAppData(); 
             }
         }
 
-        // Tải dữ liệu
         window.loadFromCloud();
     </script>
 
     <!-- SCRIPT CHÍNH (LOGIC GAME VÀ GIAO DIỆN) -->
     <script>
-        // TRẢ LẠI ĐẦY ĐỦ DỮ LIỆU
-        const rankList = [ { name: "Sĩ tử", exp: 0 }, { name: "Đồng Sinh", exp: 10 }, { name: "Tú Tài", exp: 25 }, { name: "Cử Nhân", exp: 45 }, { name: "Tiến Sĩ", exp: 70 }, { name: "Tòng Cửu Phẩm", exp: 100 }, { name: "Chánh Cửu Phẩm", exp: 135 }, { name: "Tòng Bát Phẩm", exp: 175 }, { name: "Chánh Bát Phẩm", exp: 220 }, { name: "Tòng Thất Phẩm", exp: 270 }, { name: "Chánh Thất Phẩm", exp: 325 }, { name: "Tòng Lục Phẩm", exp: 385 }, { name: "Chánh Lục Phẩm", exp: 450 }, { name: "Tòng Ngũ Phẩm", exp: 520 }, { name: "Chánh Ngũ Phẩm", exp: 595 }, { name: "Tòng Tứ Phẩm", exp: 675 }, { name: "Chánh Tứ Phẩm", exp: 760 }, { name: "Tòng Tam Phẩm", exp: 850 }, { name: "Chánh Tam Phẩm", exp: 945 }, { name: "Tòng Nhị Phẩm", exp: 1045 }, { name: "Chánh Nhị Phẩm", exp: 1150 }, { name: "Tòng Nhất Phẩm", exp: 1260 }, { name: "Chánh Nhất Phẩm", exp: 1375 }, { name: "Tam Súc (Thái Sư / Thái Bảo)", exp: 1500 }, { name: "Tể Tướng Đương Triều", exp: 1650 } ];
+        const rankList = [ 
+            { name: "Sĩ tử", exp: 0, tier: 1 }, 
+            { name: "Đồng Sinh", exp: 10, tier: 1 }, 
+            { name: "Tú Tài", exp: 25, tier: 1 }, 
+            { name: "Cử Nhân", exp: 45, tier: 1 }, 
+            { name: "Tiến Sĩ", exp: 70, tier: 2 }, 
+            { name: "Tòng Cửu Phẩm", exp: 100, tier: 2 }, 
+            { name: "Chánh Cửu Phẩm", exp: 135, tier: 2 }, 
+            { name: "Tòng Bát Phẩm", exp: 175, tier: 2 }, 
+            { name: "Chánh Bát Phẩm", exp: 220, tier: 2 }, 
+            { name: "Tòng Thất Phẩm", exp: 270, tier: 2 }, 
+            { name: "Chánh Thất Phẩm", exp: 325, tier: 2 }, 
+            { name: "Tòng Lục Phẩm", exp: 385, tier: 2 }, 
+            { name: "Chánh Lục Phẩm", exp: 450, tier: 3 }, 
+            { name: "Tòng Ngũ Phẩm", exp: 520, tier: 3 }, 
+            { name: "Chánh Ngũ Phẩm", exp: 595, tier: 3 }, 
+            { name: "Tòng Tứ Phẩm", exp: 675, tier: 3 }, 
+            { name: "Chánh Tứ Phẩm", exp: 760, tier: 3 }, 
+            { name: "Tòng Tam Phẩm", exp: 850, tier: 3 }, 
+            { name: "Chánh Tam Phẩm", exp: 945, tier: 3 }, 
+            { name: "Tòng Nhị Phẩm", exp: 1045, tier: 3 }, 
+            { name: "Chánh Nhị Phẩm", exp: 1150, tier: 4 }, 
+            { name: "Tòng Nhất Phẩm", exp: 1260, tier: 4 }, 
+            { name: "Chánh Nhất Phẩm", exp: 1375, tier: 4 }, 
+            { name: "Tam Súc (Thái Sư / Thái Bảo)", exp: 1500, tier: 4 }, 
+            { name: "Tể Tướng Đương Triều", exp: 1650, tier: 4 } 
+        ];
         
         const shopItems = [ { id: 1, name: "Bút Lông Sói Thượng Hạng", desc: "Tăng 20% trí tuệ khi giải đề.", price: 30, icon: "🖌️" }, { id: 2, name: "Nghiên Mực Hoàng Sơn", desc: "Giúp nét chữ thêm phần tinh anh.", price: 45, icon: "🪨" }, { id: 3, name: "Giấy Tuyên Chỉ Thượng Đẳng", desc: "Giấy thơm viết văn không sai sót.", price: 25, icon: "📜" }, { id: 4, name: "Tráp Đựng Sách Gỗ Trắc", desc: "Gọn gàng kinh thư, ôn bài nhanh.", price: 60, icon: "🧰" }, { id: 5, name: "Đèn Khổng Minh Soi Sáng", desc: "Xua tan bóng tối khi học ban đêm.", price: 80, icon: "🏮" }, { id: 6, name: "Quạt Giấy Thơ Đề", desc: "Tăng phong thái tiêu dao sĩ tử.", price: 50, icon: "🪭" }, { id: 7, name: "Hồ Lô Rượu Thơm", desc: "Giải tỏa căng thẳng sau giờ học.", price: 70, icon: "🍾" }, { id: 8, name: "Gối Sứ Trúc Quân Tử", desc: "Giúp ngủ ngon, minh mẫn khi thi cử.", price: 90, icon: "🛌" }, { id: 9, name: "Triện Son Khắc Chữ", desc: "Đóng dấu xác nhận bài thi xuất sắc.", price: 110, icon: "🟥" }, { id: 10, name: "Áo Tràng Nguyên Gấm Vóc", desc: "Trang phục vinh quy bái tổ rực rỡ.", price: 200, icon: "👘" }, { id: 11, name: "Mũ Ô Sa Quan Phẩm", desc: "Uy nghiêm chốn triều đình.", price: 250, icon: "🎩" }, { id: 12, name: "Hài Thêu Chỉ Vàng", desc: "Bước đi vững chãi trên đường quan lộ.", price: 150, icon: "👞" }, { id: 13, name: "Bức Tranh Tùng Hạc", desc: "Treo phòng học tăng cường tĩnh tâm.", price: 180, icon: "🖼️" }, { id: 14, name: "Kính Lúp Phố Cổ", desc: "Soi kỹ từng lỗi nhỏ ngữ pháp.", price: 95, icon: "🔍" }, { id: 15, name: "Thượng Phương Bảo Kiếm", desc: "Vật phẩm uy quyền bậc nhất triều đình.", price: 500, icon: "⚔️" } ];
 
@@ -277,25 +343,71 @@
             }
         ];
 
+        // Quản lý tối đa 5 người chơi
+        window.playersList = JSON.parse(localStorage.getItem("khoacu_players")) || [
+            { id: "p1", name: "Sĩ tử Cẩm Giang", exp: 0, coins: 50 },
+            { id: "p2", name: "Đồng Sinh Minh Triết", exp: 15, coins: 65 },
+            { id: "p3", name: "Tú Tài Gia Hân", exp: 30, coins: 90 }
+        ];
+        window.activePlayerId = localStorage.getItem("khoacu_active_id") || "p1";
+        
         window.userData = {
-            exp: parseInt(localStorage.getItem("user_exp")) || 0,
-            coins: parseInt(localStorage.getItem("user_coins")) || 50,
             apiKey: localStorage.getItem("gemini_api_key") || "",
             darkMode: localStorage.getItem("dark_mode") === "true"
         };
 
         let currentTopic = null, currentQuestions = [], currentQIndex = 0, score = 0;
 
+        window.initAppData = function() {
+            window.syncActivePlayerFromList();
+            window.renderCategories();
+        }
+
+        window.getActivePlayer = function() {
+            let p = window.playersList.find(x => x.id === window.activePlayerId);
+            if (!p && window.playersList.length > 0) {
+                p = window.playersList[0];
+                window.activePlayerId = p.id;
+            }
+            return p;
+        }
+
+        window.syncActivePlayerFromList = function() {
+            let p = window.getActivePlayer();
+            if(p) {
+                document.getElementById('current-player-name').innerText = p.name;
+            }
+        }
+
         window.updateUI = function() {
-            document.getElementById('user-exp').innerText = userData.exp;
-            document.getElementById('user-coins').innerText = userData.coins;
+            let p = window.getActivePlayer();
+            if (!p) return;
+
+            document.getElementById('user-exp').innerText = p.exp;
+            document.getElementById('user-coins').innerText = p.coins;
+            document.getElementById('current-player-name').innerText = p.name;
             
             let currentRank = "Sĩ tử";
-            for (let i = rankList.length - 1; i >= 0; i--) { if (userData.exp >= rankList[i].exp) { currentRank = rankList[i].name; break; } }
+            let currentTier = 1;
+            for (let i = rankList.length - 1; i >= 0; i--) { 
+                if (p.exp >= rankList[i].exp) { 
+                    currentRank = rankList[i].name; 
+                    currentTier = rankList[i].tier;
+                    break; 
+                } 
+            }
             document.getElementById('user-rank').innerText = currentRank;
 
-            localStorage.setItem("user_exp", userData.exp);
-            localStorage.setItem("user_coins", userData.coins);
+            // Áp dụng hiệu ứng lấp lánh phân cấp bậc cho nút Bảng Vàng
+            const rankBtn = document.getElementById('rank-badge-btn');
+            rankBtn.className = "px-3 py-1.5 rounded-md font-bold transition border text-white ";
+            if(currentTier === 1) rankBtn.classList.add('rank-tier-1', 'bg-emerald-700');
+            else if(currentTier === 2) rankBtn.classList.add('rank-tier-2', 'bg-amber-600');
+            else if(currentTier === 3) rankBtn.classList.add('rank-tier-3', 'bg-fuchsia-700');
+            else if(currentTier === 4) rankBtn.classList.add('rank-tier-4', 'bg-red-700', 'text-amber-100');
+
+            localStorage.setItem("khoacu_players", JSON.stringify(window.playersList));
+            localStorage.setItem("khoacu_active_id", window.activePlayerId);
             
             if(window.saveToCloud) window.saveToCloud(); 
         }
@@ -390,7 +502,12 @@
         window.finishQuiz = function() {
             document.getElementById('screen-quiz').classList.add('hidden');
             document.getElementById('screen-result').classList.remove('hidden');
-            userData.exp += score * 5; userData.coins += score * 10;
+            
+            let p = window.getActivePlayer();
+            if(p) {
+                p.exp += score * 5; 
+                p.coins += score * 10;
+            }
             updateUI();
             document.getElementById('res-score').innerText = `${score} / ${currentQuestions.length}`;
             document.getElementById('res-exp').innerText = `+${score*5}`;
@@ -427,24 +544,102 @@
             } catch (err) { alert("Lỗi khi kết nối AI!"); }
         }
 
-        // HÀM HIỂN THỊ ĐẦY ĐỦ BẢNG VÀNG
+        // HÀM QUẢN LÝ DƯỚI 5 NGƯỜI CHƠI & BẢNG VÀNG
         window.openRanksModal = function() {
-            const listContainer = document.getElementById('ranks-list-container');
-            listContainer.innerHTML = '';
-            rankList.forEach((r, idx) => {
-                let unlocked = userData.exp >= r.exp;
-                listContainer.innerHTML += `
-                    <div class="flex justify-between items-center p-2.5 rounded-lg border ${unlocked ? 'border-amber-500 bg-amber-500/20 font-bold shadow-sm' : 'opacity-50 border-gray-500'}">
-                        <div><span>#${idx + 1}. ${r.name}</span></div>
-                        <div><span class="text-xs text-amber-600 dark:text-amber-400">${r.exp} EXP</span> ${unlocked ? '✅' : '🔒'}</div>
-                    </div>
-                `;
-            });
+            renderPlayersSelector();
+            renderRanksList();
             document.getElementById('ranks-modal').classList.remove('hidden');
         }
         window.closeRanksModal = () => document.getElementById('ranks-modal').classList.add('hidden');
 
-        // HÀM HIỂN THỊ ĐẦY ĐỦ MẶC HƯƠNG TRAI
+        window.renderPlayersSelector = function() {
+            const selectorList = document.getElementById('players-selector-list');
+            document.getElementById('player-count').innerText = window.playersList.length;
+            selectorList.innerHTML = '';
+            
+            window.playersList.forEach(pl => {
+                let isActive = pl.id === window.activePlayerId;
+                selectorList.innerHTML += `
+                    <button onclick="switchPlayer('${pl.id}')" class="px-2.5 py-1 text-xs rounded-lg font-bold border transition ${isActive ? 'bg-amber-600 text-white border-amber-500 shadow-sm' : 'bg-white dark:bg-black opacity-80 border-amber-300'}">
+                        ${pl.name} ${isActive ? '👑' : ''}
+                    </button>
+                `;
+            });
+        }
+
+        window.switchPlayer = function(id) {
+            window.activePlayerId = id;
+            updateUI();
+            renderPlayersSelector();
+            renderRanksList();
+        }
+
+        window.addNewPlayer = function() {
+            if (window.playersList.length >= 5) {
+                alert("Đạo quán chỉ tối đa 5 sĩ tử đồng hành thi đấu cùng lúc!");
+                return;
+            }
+            const input = document.getElementById('new-player-input');
+            const name = input.value.trim();
+            if (!name) {
+                alert("Vui lòng nhập tên sĩ tử!");
+                return;
+            }
+            const newId = 'p_' + Date.now();
+            window.playersList.push({ id: newId, name: name, exp: 0, coins: 50 });
+            window.activePlayerId = newId;
+            input.value = '';
+            updateUI();
+            renderPlayersSelector();
+            renderRanksList();
+            alert(`Đã kết nạp sĩ tử "${name}" vào trường thi!`);
+        }
+
+        window.renderRanksList = function() {
+            const listContainer = document.getElementById('ranks-list-container');
+            listContainer.innerHTML = '';
+
+            // Sắp xếp danh sách người chơi theo EXP giảm dần (Bảng xếp hạng dưới 5 người)
+            let sortedPlayers = [...window.playersList].sort((a, b) => b.exp - a.exp);
+
+            sortedPlayers.forEach((pl, idx) => {
+                let pRankName = "Sĩ tử";
+                let pTier = 1;
+                for (let i = rankList.length - 1; i >= 0; i--) { 
+                    if (pl.exp >= rankList[i].exp) { 
+                        pRankName = rankList[i].name; 
+                        pTier = rankList[i].tier;
+                        break; 
+                    } 
+                }
+
+                let badgeClass = "border-gray-300 bg-white/40 dark:bg-black/20";
+                if(pTier === 1) badgeClass = "border-emerald-400 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300";
+                else if(pTier === 2) badgeClass = "border-amber-400 bg-amber-500/10 text-amber-800 dark:text-amber-300";
+                else if(pTier === 3) badgeClass = "border-fuchsia-400 bg-fuchsia-500/10 text-fuchsia-800 dark:text-fuchsia-300";
+                else if(pTier === 4) badgeClass = "border-red-500 bg-red-500/10 text-red-800 dark:text-red-300 font-bold";
+
+                let isCurrent = pl.id === window.activePlayerId;
+
+                listContainer.innerHTML += `
+                    <div class="flex justify-between items-center p-2.5 rounded-xl border ${badgeClass} ${isCurrent ? 'ring-2 ring-amber-500 shadow-sm' : ''}">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-xs px-1.5 py-0.5 rounded bg-black/10 dark:bg-white/10">#${idx + 1}</span>
+                            <div>
+                                <span class="font-bold">${pl.name}</span> ${isCurrent ? '(Đang học)' : ''}
+                                <div class="text-xs opacity-80">Phẩm vị: <b>${pRankName}</b></div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-bold text-amber-600 dark:text-amber-400">${pl.exp} EXP</span>
+                            <div class="text-xs text-yellow-600">${pl.coins} 🪙</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // MẶC HƯƠNG TRAI
         window.openShop = function() {
             const grid = document.getElementById('shop-items-grid');
             grid.innerHTML = '';
@@ -468,12 +663,15 @@
         window.closeShop = () => document.getElementById('shop-modal').classList.add('hidden');
 
         window.buyItem = function(price, itemName) {
-            if (userData.coins >= price) {
-                userData.coins -= price; userData.exp += 15;
+            let p = window.getActivePlayer();
+            if (!p) return;
+            if (p.coins >= price) {
+                p.coins -= price; 
+                p.exp += 15;
                 updateUI();
-                alert(`Thỉnh thành công "${itemName}"! Nhận +15 EXP.`);
-                openShop(); // Tải lại shop
-            } else { alert("Ngân lượng không đủ!"); }
+                alert(`Sĩ tử ${p.name} thỉnh thành công "${itemName}"! Nhận +15 EXP.`);
+                openShop();
+            } else { alert("Ngân lượng của sĩ tử này không đủ!"); }
         }
 
         window.openApiKeyModal = () => { document.getElementById('api-key-input').value = userData.apiKey; document.getElementById('apikey-modal').classList.remove('hidden'); }
