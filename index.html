@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khoa Cử Ngữ Pháp - Luyện Thi Tiếng Anh Cổ Phong</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Google Fonts: Inter & Playfair Display (giả lập nét cổ phong) -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fcf8f2; color: #2c221e; }
+        .cophong-title { font-family: 'Playfair Display', serif; }
+        .paper-bg { background-color: #f7f1e5; background-image: radial-gradient(#e5d9c5 0.75px, transparent 0.75px); background-size: 15px 15px; }
+        .seal-stamp { border: 2px dashed #b91c1c; color: #b91c1c; transform: rotate(-3deg); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between paper-bg">
+
+    <!-- HEADER / THANH TRẠNG THÁI SĨ TỬ -->
+    <header class="bg-[#2c221e] text-[#f7f1e5] shadow-md border-b-4 border-[#b91c1c]">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl">📜</span>
+                <h1 class="cophong-title text-xl font-bold tracking-wider">KHOA CỬ NGỮ PHÁP</h1>
+            </div>
+            <div class="flex items-center space-x-6 text-sm">
+                <div>Cấp bậc: <span id="user-rank" class="font-bold text-amber-400">Sĩ tử</span></div>
+                <div>EXP: <span id="user-exp" class="font-bold text-amber-400">0</span></div>
+                <div>Ngân lượng: <span id="user-coins" class="font-bold text-yellow-300">50</span> 🪙</div>
+                <button onclick="openShop()" class="bg-[#b91c1c] hover:bg-red-800 text-white px-3 py-1 rounded text-xs font-bold transition">Mặc Hương Trai</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- NỘI DUNG CHÍNH -->
+    <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
+
+        <!-- MÀN HÌNH CHỌN CHỦ ĐỀ -->
+        <div id="screen-menu" class="space-y-6">
+            <div class="text-center space-y-2">
+                <h2 class="cophong-title text-3xl font-bold text-[#2c221e]">Hành Trình Lều Chõng Thi Cử</h2>
+                <p class="text-gray-600">Chọn một chủ điểm ngữ pháp để ôn luyện và tiến bước trên con đường danh vọng.</p>
+            </div>
+
+            <!-- Cài đặt API Key cá nhân hóa -->
+            <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+                <div class="text-xs text-amber-900">
+                    💡 <b>Tạo câu hỏi bằng AI:</b> Nhập Gemini API Key của bạn để hệ thống tự động sinh thêm vô hạn câu hỏi theo ý muốn!
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <input type="password" id="api-key-input" placeholder="Dán Gemini API Key..." class="text-xs px-3 py-1.5 border border-amber-300 rounded bg-white w-full sm:w-48 outline-none">
+                    <button onclick="saveApiKey()" class="bg-amber-700 hover:bg-amber-800 text-white text-xs px-3 py-1.5 rounded font-medium shrink-0">Lưu</button>
+                </div>
+            </div>
+
+            <!-- Danh sách chủ đề -->
+            <div id="topic-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Được render bằng JavaScript -->
+            </div>
+        </div>
+
+        <!-- MÀN HÌNH ÔN TẬP LÝ THUYẾT CẤP TỐC -->
+        <div id="screen-theory" class="hidden bg-white border border-[#e5d9c5] p-6 rounded-2xl shadow-sm space-y-6">
+            <div class="border-b pb-4 flex justify-between items-center">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-red-700">Phao Cứu Sinh Cấp Tốc</span>
+                    <h2 id="theory-title" class="cophong-title text-2xl font-bold text-[#2c221e]">Tên Chủ Đề</h2>
+                </div>
+                <button onclick="backToMenu()" class="text-sm text-gray-500 hover:text-black">← Quay lại</button>
+            </div>
+            <div id="theory-content" class="prose text-gray-700 text-sm leading-relaxed space-y-3">
+                <!-- Nội dung lý thuyết -->
+            </div>
+            <div class="flex justify-end pt-4 border-t">
+                <button onclick="startQuiz()" class="bg-[#2c221e] hover:bg-black text-white px-6 py-2.5 rounded-lg font-bold shadow transition">Vào Trường Thi ➔</button>
+            </div>
+        </div>
+
+        <!-- MÀN HÌNH LÀM BÀI THI -->
+        <div id="screen-quiz" class="hidden bg-white border border-[#e5d9c5] p-6 rounded-2xl shadow-sm space-y-6">
+            <div class="flex justify-between items-center border-b pb-4">
+                <div>
+                    <span id="quiz-progress" class="text-xs font-bold text-gray-500">Câu 1 / 5</span>
+                    <h3 id="quiz-topic-name" class="font-bold text-lg text-[#2c221e]">Chủ đề</h3>
+                </div>
+                <div id="ai-gen-btn-container">
+                    <!-- Nút gọi AI tạo thêm câu hỏi -->
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h4 id="question-text" class="text-lg font-semibold text-[#2c221e]">Nội dung câu hỏi ở đây?</h4>
+                <div id="options-container" class="space-y-3">
+                    <!-- Các lựa chọn A, B, C, D -->
+                </div>
+            </div>
+
+            <div id="explanation-box" class="hidden p-4 rounded-xl text-sm bg-amber-50 border border-amber-200 space-y-1">
+                <p class="font-bold text-amber-900">💡 Lời giải từ Thầy Đồ:</p>
+                <p id="explanation-text" class="text-amber-800"></p>
+            </div>
+
+            <div class="flex justify-between pt-4 border-t">
+                <button onclick="backToMenu()" class="text-sm text-gray-500 hover:text-black">Bỏ thi</button>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-[#b91c1c] hover:bg-red-800 text-white px-6 py-2 rounded-lg font-bold shadow transition">Câu tiếp theo</button>
+            </div>
+        </div>
+
+        <!-- MÀN HÌNH KẾT QUẢ THI -->
+        <div id="screen-result" class="hidden bg-white border border-[#e5d9c5] p-8 rounded-2xl shadow-sm text-center space-y-6">
+            <div class="inline-block p-4 rounded-full bg-red-50 seal-stamp text-2xl font-bold px-6 py-2 mb-2">ĐẠT KHOA THI</div>
+            <h2 class="cophong-title text-3xl font-bold">Kết Quả Xếp Hạng</h2>
+            <div class="flex justify-center gap-8 text-lg">
+                <div>Số câu đúng: <span id="res-score" class="font-bold text-green-600">0/5</span></div>
+                <div>EXP nhận: <span id="res-exp" class="font-bold text-amber-600">+0</span></div>
+                <div>Ngân lượng: <span id="res-coins" class="font-bold text-yellow-600">+0 🪙</span></div>
+            </div>
+            <div class="pt-4">
+                <button onclick="backToMenu()" class="bg-[#2c221e] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition">Trở về Sảnh Thi</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL CỬA HÀNG MẶC HƯƠNG TRAI -->
+    <div id="shop-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white max-w-md w-full p-6 rounded-2xl space-y-4 shadow-xl border-2 border-amber-200">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="cophong-title text-xl font-bold">🏮 Mặc Hương Trai (Cửa Hàng)</h3>
+                <button onclick="closeShop()" class="text-gray-400 hover:text-black font-bold">✕</button>
+            </div>
+            <p class="text-xs text-gray-600">Dùng ngân lượng để thỉnh các văn phòng tứ bảo hỗ trợ học tập.</p>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between p-3 border rounded-xl bg-amber-50/50">
+                    <div>
+                        <h4 class="font-bold text-sm">🖌️ Bút Long Thượng Hạng</h4>
+                        <p class="text-xs text-gray-500">Tăng x2 EXP nhận được trong 1 trận.</p>
+                    </div>
+                    <button onclick="buyItem(30)" class="bg-amber-700 hover:bg-amber-800 text-white text-xs px-3 py-1.5 rounded font-bold">30 🪙</button>
+                </div>
+            </div>
+            <div class="text-right pt-2">
+                <button onclick="closeShop()" class="text-xs text-gray-500 hover:underline">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT XỬ LÝ TOÀN BỘ LOGIC -->
+    <script>
+        // Dữ liệu chủ đề & lý thuyết & câu hỏi mặc định
+        const topics = [
+            {
+                id: 't1',
+                name: '12 Thì Cơ Bản & Nâng Cao',
+                theory: '<b>Tổng quan 12 thì:</b> Chia làm 3 mốc (Hiện tại, Quá khứ, Tương lai) kết hợp 4 thể (Đơn, Tiếp diễn, Hoàn thành, Hoàn thành tiếp diễn). Hãy nhớ kỹ cấu trúc trợ động từ và dấu hiệu nhận biết như *yesterday, already, since, for, by next year*.',
+                questions: [
+                    { q: "She _____ to the market yesterday.", options: ["go", "goes", "went", "gone"], answer: 2, explanation: "Có dấu hiệu 'yesterday' (quá khứ) và chủ ngữ 'She', ta dùng động từ cột 2 là 'went'." },
+                    { q: "I have lived in this city _____ 5 years.", options: ["since", "for", "in", "from"], answer: 1, explanation: "Khoảng thời gian (5 years) đi với giới từ 'for', mốc thời gian cụ thể đi với 'since'." },
+                    { q: "Look! The train _____.", options: ["comes", "is coming", "came", "has come"], answer: 1, explanation: "Có từ cảm thán 'Look!' chỉ hành động đang diễn ra tại thời điểm nói, dùng Hiện tại tiếp diễn." }
+                ]
+            },
+            {
+                id: 't2',
+                name: 'Động Từ Khiếm Khuyết (Modal Verbs)',
+                theory: '<b>Modal Verbs:</b> <br>• Lời khuyên: <i>should / ought to</i>.<br>• Sự cần thiết: <i>need / have to</i>.<br>• Sự bắt buộc: <i>must / have to</i>.',
+                questions: [
+                    { q: "You _____ wear a helmet when riding a motorbike. It's the law.", options: ["should", "must", "can", "may"], answer: 1, explanation: "Đây là luật pháp quy định sự bắt buộc mạnh mẽ, ta dùng 'must'." },
+                    { q: "You look tired. You _____ take a rest.", options: ["must", "should", "have to", "can"], answer: 1, explanation: "Đưa ra lời khuyên nhẹ nhàng, thân thiện, dùng 'should'." }
+                ]
+            },
+            {
+                id: 't3',
+                name: 'Gerund (-ing) & Infinitive (to V)',
+                theory: '<b>V-ing và to-V:</b> <br>• Sau các động từ như *enjoy, mind, finish* + V-ing.<br>• Sau các động từ như *want, decide, hope* + to-V.',
+                questions: [
+                    { q: "She enjoys _____ books in her free time.", options: ["read", "to read", "reading", "reads"], answer: 2, explanation: "Sau động từ 'enjoy' luôn đi với danh động từ (V-ing)." },
+                    { q: "He decided _____ a new car.", options: ["buy", "buying", "to buy", "bought"], answer: 2, explanation: "Sau động từ 'decide' luôn đi với động từ nguyên mẫu có 'to'." }
+                ]
+            },
+            {
+                id: 't4',
+                name: 'Câu Tường Thuật (Reported Speech)',
+                theory: '<b>Tường thuật:</b> Khi chuyển sang câu gián tiếp, ta thường phải lùi một thì (Hiện tại đơn $\rightarrow$ Quá khứ đơn) và thay đổi các trạng ngữ chỉ thời gian/nơi chốn.',
+                questions: [
+                    { q: "He said, 'I am happy.' $\rightarrow$ He said that he _____ happy.", options: ["is", "was", "were", "has been"], answer: 1, explanation: "Câu trực tiếp dùng thì hiện tại ('am'), khi lùi thì trong câu gián tiếp với chủ ngữ 'he' ta dùng 'was'." }
+                ]
+            }
+        ];
+
+        // Trạng thái người chơi
+        let userData = {
+            exp: 0,
+            coins: 50,
+            rank: "Sĩ tử",
+            apiKey: localStorage.getItem("gemini_api_key") || ""
+        };
+
+        let currentTopic = null;
+        let currentQuestions = [];
+        let currentQIndex = 0;
+        let score = 0;
+
+        document.getElementById('api-key-input').value = userData.apiKey;
+
+        function updateUI() {
+            document.getElementById('user-exp').innerText = userData.exp;
+            document.getElementById('user-coins').innerText = userData.coins;
+            
+            // Xếp hạng khoa cử
+            if (userData.exp >= 300) userData.rank = "Trạng Nguyên 👑";
+            else if (userData.exp >= 200) userData.rank = "Bảng Nhãn 🥈";
+            else if (userData.exp >= 130) userData.rank = "Thám Hoa 🥉";
+            else if (userData.exp >= 80) userData.rank = "Tiến Sĩ 🎓";
+            else if (userData.exp >= 40) userData.rank = "Cử Nhân 📜";
+            else if (userData.exp >= 20) userData.rank = "Tú Tài 🏮";
+            else if (userData.exp >= 10) userData.rank = "Đồng Sinh 📖";
+            else userData.rank = "Sĩ tử";
+
+            document.getElementById('user-rank').innerText = userData.rank;
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('api-key-input').value.trim();
+            localStorage.setItem("gemini_api_key", key);
+            userData.apiKey = key;
+            alert("Đã lưu API Key thành công!");
+        }
+
+        // Render danh sách chủ đề ra màn hình chính
+        function renderTopics() {
+            const list = document.getElementById('topic-list');
+            list.innerHTML = '';
+            topics.forEach(t => {
+                list.innerHTML += `
+                    <div onclick="openTheory('${t.id}')" class="bg-white border border-[#e5d9c5] p-5 rounded-xl shadow-sm hover:shadow-md hover:border-amber-400 cursor-pointer transition flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-xs text-red-700 font-bold uppercase tracking-wider">Trường thi</span>
+                            <h3 class="cophong-title font-bold text-lg text-[#2c221e] mt-1">${t.name}</h3>
+                        </div>
+                        <div class="text-xs text-gray-500 flex justify-between items-center">
+                            <span>📚 Kho câu hỏi: ${t.questions.length} câu</span>
+                            <span class="text-amber-700 font-bold">Vào ôn tập ➔</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openTheory(topicId) {
+            currentTopic = topics.find(t => t.id === topicId);
+            document.getElementById('theory-title').innerText = currentTopic.name;
+            document.getElementById('theory-content').innerHTML = currentTopic.theory;
+            
+            document.getElementById('screen-menu').classList.add('hidden');
+            document.getElementById('screen-theory').classList.remove('hidden');
+        }
+
+        function startQuiz() {
+            currentQuestions = [...currentTopic.questions];
+            currentQIndex = 0;
+            score = 0;
+
+            document.getElementById('screen-theory').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('quiz-topic-name').innerText = currentTopic.name;
+
+            // Render nút gọi AI nếu đã có API Key
+            const aiContainer = document.getElementById('ai-gen-btn-container');
+            if (userData.apiKey) {
+                aiContainer.innerHTML = `<button onclick="generateMoreQuestions()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded font-bold transition">✨ AI Tạo Thêm Câu Hỏi</button>`;
+            } else {
+                aiContainer.innerHTML = `<span class="text-xs text-gray-400">Nhập API Key ở sảnh để mở khóa AI</span>`;
+            }
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = currentQuestions[currentQIndex];
+            document.getElementById('quiz-progress').innerText = `Câu ${currentQIndex + 1} / ${currentQuestions.length}`;
+            document.getElementById('question-text').innerText = q.q;
+            
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                optContainer.innerHTML += `
+                    <button onclick="selectAnswer(${idx})" class="option-btn w-full text-left p-3 rounded-xl border border-gray-200 hover:bg-amber-50 hover:border-amber-400 text-sm transition font-medium">
+                        <b>${String.fromCharCode(65 + idx)}.</b> ${opt}
+                    </button>
+                `;
+            });
+
+            document.getElementById('explanation-box').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function selectAnswer(selectedIndex) {
+            const q = currentQuestions[currentQIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === q.answer) {
+                    btn.classList.add('bg-green-100', 'border-green-500', 'text-green-900');
+                } else if (idx === selectedIndex) {
+                    btn.classList.add('bg-red-100', 'border-red-500', 'text-red-900');
+                }
+            });
+
+            if (selectedIndex === q.answer) {
+                score++;
+            }
+
+            document.getElementById('explanation-text').innerText = q.explanation;
+            document.getElementById('explanation-box').classList.remove('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+            const earnedExp = score * 5;
+            const earnedCoins = score * 10;
+
+            userData.exp += earnedExp;
+            userData.coins += earnedCoins;
+            updateUI();
+
+            document.getElementById('res-score').innerText = `${score} / ${currentQuestions.length}`;
+            document.getElementById('res-exp').innerText = `+${earnedExp}`;
+            document.getElementById('res-coins').innerText = `+${earnedCoins} 🪙`;
+        }
+
+        function backToMenu() {
+            document.getElementById('screen-theory').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-menu').classList.remove('hidden');
+            renderTopics();
+        }
+
+        function openShop() { document.getElementById('shop-modal').classList.remove('hidden'); }
+        function closeShop() { document.getElementById('shop-modal').classList.add('hidden'); }
+
+        function buyItem(cost) {
+            if (userData.coins >= cost) {
+                userData.coins -= cost;
+                userData.exp += 20; // Thưởng thêm chút EXP khi mua vật phẩm
+                updateUI();
+                alert("Đã thỉnh thành công Văn phòng tứ bảo! (+20 EXP)");
+                closeShop();
+            } else {
+                alert("Ngân lượng của bạn không đủ để thỉnh vật phẩm này!");
+            }
+        }
+
+        // Tích hợp gọi Google Gemini API trực tiếp từ trình duyệt để sinh thêm câu hỏi
+        async function generateMoreQuestions() {
+            if (!userData.apiKey) {
+                alert("Vui lòng nhập Gemini API Key ở sảnh chính trước!");
+                return;
+            }
+
+            alert("Đang thỉnh ý Thầy Đồ AI để tạo thêm câu hỏi...");
+
+            const prompt = `Tạo giúp tôi 3 câu hỏi trắc nghiệm tiếng Anh về chủ đề: "${currentTopic.name}". 
+            Yêu cầu trả về DUY NHẤT một mảng JSON hợp lệ theo cấu trúc sau, không kèm markdown code block khác nếu có thể, hoặc chuẩn định dạng JSON:
+            [
+              {
+                "q": "Nội dung câu hỏi tiếng Anh có chỗ trống điền từ?",
+                "options": ["đáp án A", "đáp án B", "đáp án C", "đáp án D"],
+                "answer": 0,
+                "explanation": "Giải thích chi tiết bằng tiếng Việt vì sao chọn đáp án đó."
+              }
+            ]`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userData.apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+                let textResult = data.candidates[0].content.parts[0].text;
+                
+                // Làm sạch text nếu AI trả về bọc trong markdown ```json ... ```
+                textResult = textResult.replace(/```json/g, '').replace(/```/g, '').trim();
+                const newQs = JSON.parse(textResult);
+
+                currentQuestions.push(...newQs);
+                alert(`Thành công! Đã thêm ${newQs.length} câu hỏi mới vào bài thi hiện tại.`);
+                loadQuestion();
+            } catch (err) {
+                console.error(err);
+                alert("Có lỗi khi tạo câu hỏi qua AI. Hãy kiểm tra lại API Key của bạn!");
+            }
+        }
+
+        // Khởi chạy ban đầu
+        renderTopics();
+        updateUI();
+    </script>
+</body>
+</html>
