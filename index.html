@@ -660,20 +660,31 @@ YÊU CẦU:
                 
                 const aiQuestion = JSON.parse(jsonMatch[0]);
 
-                const formattedQuestion = {
-                    q: aiQuestion.question || aiQuestion.q,
-                    options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
-                    answer: typeof aiQuestion.correct !== 'undefined' ? aiQuestion.correct : aiQuestion.c,
-                    explanation: aiQuestion.explanation || aiQuestion.e || "Mặc Hiên tiên sinh chưa để lại giải thích."
-                };
+           // CODE MỚI ĐÃ SỬA
+const formattedQuestion = {
+    q: aiQuestion.question || aiQuestion.q,
+    options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
+    answer: typeof aiQuestion.correct !== 'undefined' ? aiQuestion.correct : aiQuestion.c,
+    explanation: aiQuestion.explanation || aiQuestion.e || "Mặc Hiên tiên sinh chưa để lại giải thích."
+};
 
-                if (currentTopic && currentTopic.questions) {
-                    currentTopic.questions.push(formattedQuestion);
-                }
+// 1. Thêm câu hỏi mới vào Topic hiện tại
+if (currentTopic && currentTopic.questions) {
+    currentTopic.questions.push(formattedQuestion);
+}
 
-                if (typeof window.saveToCloud === 'function') {
-                    await window.saveToCloud();
-                }
+// 2. CẬP NHẬT LẠI VÀO BIẾN DỮ LIỆU TỔNG (Tránh lỗi mất dữ liệu trên điện thoại)
+window.categories.forEach(cat => {
+    let t = cat.topics.find(top => top.id === currentTopic.id);
+    if (t) {
+        t.questions = currentTopic.questions;
+    }
+});
+
+// 3. ĐẨY LÊN ĐÁM MÂY (FIRESTORE)
+if (typeof window.saveToCloud === 'function') {
+    await window.saveToCloud();
+}
 
                 currentQuestions = [...currentTopic.questions];
                 currentQIndex = currentQuestions.length - 1;
