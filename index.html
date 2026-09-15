@@ -619,89 +619,97 @@
 
         // TÍNH NĂNG GỌI API GEMINI DÙNG MODEL GEMINI-3.6-FLASH
         window.generateAIQuiz = async function() {
-            if (!userData.apiKey) {
-                alert("Vui lòng nhập Gemini API Key trong phần Cài đặt!");
-                return;
-            }
+    if (!userData.apiKey) {
+        alert("Vui lòng nhập Gemini API Key trong phần Cài đặt!");
+        return;
+    }
 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
-            const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
+    
+    // 1. Lấy danh sách câu hỏi cũ của topic này để AI biết và né tránh trùng lặp
+    const existingQuestions = currentTopic.questions ? currentTopic.questions.map(q => q.q).join("\n- ") : "";
+    
+    // 2. Tạo seed ngẫu nhiên & bối cảnh đa dạng
+    const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+    const contexts = ["du lịch", "công việc văn phòng", "sở thích cá nhân", "thời tiết", "ẩm thực", "thể thao", "cuộc sống gia đình", "học tập"];
+    const randomContext = contexts[Math.floor(Math.random() * contexts.length)];
 
-            const promptText = `Bạn là Mặc Hiên tiên sinh. Hãy tạo 1 câu hỏi trắc nghiệm tiếng Anh cho chủ đề: "${currentTopic.name}".
-Mã ngẫu nhiên: [${randomSeed}].
+    const promptText = `Bạn là Mặc Hiên tiên sinh. Hãy tạo 1 câu hỏi trắc nghiệm tiếng Anh cho chủ đề ngữ pháp: "${currentTopic.name}".
+Bối cảnh câu hỏi: Hãy viết về chủ đề "${randomContext}".
+Mã ngẫu nhiên duy nhất: [${randomSeed}].
+
+CÁC CÂU HỎI ĐÃ CÓ TRONG HỆ THỐNG (TUYỆT ĐỐI KHÔNG TẠO CÂU TƯƠNG TỰ HOẶC TRÙNG LẶP NỘI DUNG/TỪ VỰNG CÁC CÂU NÀY):
+- ${existingQuestions}
 
 YÊU CẦU:
-- Mức độ: Cơ bản/trung bình (A2-B1), ngắn gọn, từ vựng thông dụng.
-- CHỈ trả về đúng 1 chuỗi JSON thuần túy có dạng:
+- Mức độ: A2 - B1.
+- Tự do sáng tạo nhân vật, hành động, từ vựng mới lạ để tránh lặp lại cấu trúc quen thuộc.
+- CHỈ trả về đúng 1 chuỗi JSON thuần túy theo định dạng:
 {"question": "Câu hỏi...", "options": ["A", "B", "C", "D"], "correct": 0, "explanation": "Giải thích..."}`;
 
-            try {
-                MặcHiênThôngBáo("Mặc Hiên tiên sinh đang linh ứng ra đề...");
+    try {
+        MặcHiênThôngBáo("Mặc Hiên tiên sinh đang sáng tạo đề thi mới...");
 
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: promptText }] }],
-                        generationConfig: {
-                            temperature: 1.0
-                        }
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error?.message || "Lỗi kết nối API");
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: promptText }] }],
+                generationConfig: {
+                    temperature: 1.2, // Tăng nhẹ độ ngẫu nhiên và sáng tạo
+                    topP: 0.95
                 }
+            })
+        });
 
-                let rawText = data.candidates[0].content.parts[0].text;
-                
-                const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-                if (!jsonMatch) {
-                    throw new Error("AI không trả về cấu trúc JSON hợp lệ");
-                }
-                
-                const aiQuestion = JSON.parse(jsonMatch[0]);
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error?.message || "Lỗi kết nối API");
+        }
 
-           // CODE MỚI ĐÃ SỬA
-// Thay thế đoạn lưu câu hỏi trong hàm generateAIQuiz() bằng đoạn sau:
+        let rawText = data.candidates[0].content.parts[0].text;
+        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+            throw new Error("AI không trả về cấu trúc JSON hợp lệ");
+        }
+        
+        const aiQuestion = JSON.parse(jsonMatch[0]);
 
-const formattedQuestion = {
-    q: aiQuestion.question || aiQuestion.q,
-    options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
-    answer: typeof aiQuestion.correct !== 'undefined' ? aiQuestion.correct : aiQuestion.c,
-    explanation: aiQuestion.explanation || aiQuestion.e || "Mặc Hiên tiên sinh chưa để lại giải thích."
-};
-
-// 1. Thêm vào topic hiện tại
-if (currentTopic && currentTopic.questions) {
-    currentTopic.questions.push(formattedQuestion);
-}
-
-// 2. Cập nhật câu hỏi vào categories gốc
-window.categories.forEach(cat => {
-    let t = cat.topics.find(top => top.id === currentTopic.id);
-    if (t) {
-        t.questions = currentTopic.questions;
-    }
-});
-
-// 3. Lưu toàn bộ lên Đám Mây (Firestore)
-if (typeof window.saveToCloud === 'function') {
-    await window.saveToCloud();
-}
-
-currentQuestions = [...currentTopic.questions];
-currentQIndex = currentQuestions.length - 1;
-loadQuestion();
-MặcHiênThôngBáo("Đã lưu đề thi mới từ Mặc Hiên tiên sinh lên Đám mây!");
-            } catch (error) {
-                console.error("Lỗi AI ra đề:", error);
-                alert("Lỗi tạo câu hỏi từ AI: " + error.message + "\nVui lòng nhấn thử lại!");
-            }
+        const formattedQuestion = {
+            q: aiQuestion.question || aiQuestion.q,
+            options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
+            answer: typeof aiQuestion.correct !== 'undefined' ? aiQuestion.correct : aiQuestion.c,
+            explanation: aiQuestion.explanation || aiQuestion.e || "Mặc Hiên tiên sinh chưa để lại giải thích."
         };
 
+        // Thêm vào danh sách câu hỏi
+        if (currentTopic && currentTopic.questions) {
+            currentTopic.questions.push(formattedQuestion);
+        }
+
+        // Cập nhật categories gốc
+        window.categories.forEach(cat => {
+            let t = cat.topics.find(top => top.id === currentTopic.id);
+            if (t) {
+                t.questions = currentTopic.questions;
+            }
+        });
+
+        // Đồng bộ Đám mây
+        if (typeof window.saveToCloud === 'function') {
+            await window.saveToCloud();
+        }
+
+        currentQuestions = [...currentTopic.questions];
+        currentQIndex = currentQuestions.length - 1;
+        loadQuestion();
+        MặcHiênThôngBáo("Đã lưu đề thi mới độc đáo từ Mặc Hiên tiên sinh!");
+    } catch (error) {
+        console.error("Lỗi AI ra đề:", error);
+        alert("Lỗi tạo câu hỏi từ AI: " + error.message + "\nVui lòng nhấn thử lại!");
+    }
+};
         window.openTheory = function(topicId) {
             for (let cat of categories) {
                 let found = cat.topics.find(t => t.id === topicId);
