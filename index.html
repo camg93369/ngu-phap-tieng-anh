@@ -617,16 +617,17 @@
 
         // TÍNH NĂNG GỌI API GEMINI VÀ ĐỒNG BỘ CÂU HỎI LÊN ĐÁM MÂY (ĐÃ CẬP NHẬT MODEL GEMINI-2.5-FLASH)
        // TÍNH NĂNG GỌI API GEMINI (ĐÃ TỐI ƯU & SỬA LỖI CÚ PHÁP)
-window.generateAIQuiz = async function() {
-    if (!userData.apiKey) {
-        alert("Vui lòng nhập Gemini API Key trong phần Cài đặt!");
-        return;
-    }
+// TÍNH NĂNG GỌI API GEMINI (ĐÃ TỐI ƯU & SỬA LỖI CÚ PHÁP)
+        window.generateAIQuiz = async function() {
+            if (!userData.apiKey) {
+                alert("Vui lòng nhập Gemini API Key trong phần Cài đặt!");
+                return;
+            }
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
-    const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${userData.apiKey}`;
+            const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
 
-    const promptText = `Bạn là Mặc Hiên tiên sinh. Hãy tạo 1 câu hỏi trắc nghiệm tiếng Anh cho chủ đề: "${currentTopic.name}".
+            const promptText = `Bạn là Mặc Hiên tiên sinh. Hãy tạo 1 câu hỏi trắc nghiệm tiếng Anh cho chủ đề: "${currentTopic.name}".
 Mã ngẫu nhiên: [${randomSeed}].
 
 YÊU CẦU:
@@ -634,69 +635,68 @@ YÊU CẦU:
 - CHỈ trả về đúng 1 chuỗi JSON thuần túy có dạng:
 {"question": "Câu hỏi...", "options": ["A", "B", "C", "D"], "correct": 0, "explanation": "Giải thích..."}`;
 
-    try {
-        if (typeof showLoadingSpinner === 'function') showLoadingSpinner(true);
+            try {
+                if (typeof showLoadingSpinner === 'function') showLoadingSpinner(true);
 
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: {
-                    temperature: 1.0
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }] }],
+                        generationConfig: {
+                            temperature: 1.0
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error?.message || "Lỗi kết nối API");
                 }
-            })
-        });
 
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.error?.message || "Lỗi kết nối API");
-        }
+                let rawText = data.candidates[0].content.parts[0].text;
+                
+                // BÓC TÁCH JSON THÔNG MINH (Lấy đúng đoạn nằm giữa { và })
+                const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) {
+                    throw new Error("AI không trả về cấu trúc JSON hợp lệ");
+                }
+                
+                const aiQuestion = JSON.parse(jsonMatch[0]);
 
-        let rawText = data.candidates[0].content.parts[0].text;
-        
-        // BÓC TÁCH JSON THÔNG MINH (Lấy đúng đoạn nằm giữa { và })
-        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) {
-            throw new Error("AI không trả về cấu trúc JSON hợp lệ");
-        }
-        
-        const aiQuestion = JSON.parse(jsonMatch[0]);
+                // Chuẩn hóa dữ liệu cho khớp với hệ thống
+                const formattedQuestion = {
+                    q: aiQuestion.question || aiQuestion.q,
+                    options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
+                    answer: typeof aiQuestion.correct !== 'undefined' ? aiQuestion.correct : aiQuestion.c,
+                    explanation: aiQuestion.explanation || aiQuestion.e || "Mặc Hiên tiên sinh chưa để lại giải thích."
+                };
 
-        // Chuẩn hóa dữ liệu cho khớp với hệ thống của bạn
-        const formattedQuestion = {
-            question: aiQuestion.question || aiQuestion.q,
-            options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
-            correct: typeof aiQuestion.correct !== 'undefined' ? aiQuestion.correct : aiQuestion.c,
-            explanation: aiQuestion.explanation || aiQuestion.e || "Mặc Hiên tiên sinh chưa để lại giải thích."
+                // Lưu trực tiếp vào danh sách câu hỏi của bài học
+                if (currentTopic && currentTopic.questions) {
+                    currentTopic.questions.push(formattedQuestion);
+                }
+
+                // Đồng bộ Đám mây Firebase
+                if (typeof window.saveToCloud === 'function') {
+                    await window.saveToCloud();
+                }
+
+                // Hiển thị câu hỏi mới
+                currentQuestions = [...currentTopic.questions];
+                currentQIndex = currentQuestions.length - 1;
+                loadQuestion();
+
+            } catch (error) {
+                console.error("Lỗi AI ra đề:", error);
+                alert("Lỗi tạo câu hỏi từ AI: " + error.message + "\nVui lòng nhấn thử lại!");
+            } finally {
+                if (typeof showLoadingSpinner === 'function') showLoadingSpinner(false);
+            }
         };
 
-        // Lưu trực tiếp vào danh sách câu hỏi của bài học
-        if (currentTopic && currentTopic.questions) {
-            currentTopic.questions.push(formattedQuestion);
-        }
-
-        // Đồng bộ Đám mây Firebase
-        if (typeof window.saveToCloud === 'function') {
-            await window.saveToCloud();
-        }
-
-        // Hiển thị trực tiếp câu hỏi mới
-        if (typeof renderCurrentQuestion === 'function') {
-            renderCurrentQuestion(formattedQuestion);
-        } else if (typeof renderQuiz === 'function') {
-            renderQuiz();
-        }
-
-    } catch (error) {
-        console.error("Lỗi AI ra đề:", error);
-        // BỎ CÂU DỰ PHÒNG: Báo lỗi trực tiếp cho người dùng biết thay vì nhảy sang câu dự phòng
-        alert("Lỗi tạo câu hỏi từ AI: " + error.message + "\nVui lòng nhấn thử lại!");
-    } finally {
-        if (typeof showLoadingSpinner === 'function') showLoadingSpinner(false);
-    }
-};        currentQuestions.push(fallbackQuestion);
+   currentQuestions.push(fallbackQuestion);
         currentTopic.questions = [...currentQuestions];
         currentQIndex = currentQuestions.length - 1;
         
