@@ -617,7 +617,7 @@
        // TÍNH NĂNG GỌI API GEMINI (ĐÃ TỐI ƯU & SỬA LỖI CÚ PHÁP)
 window.generateAIQuiz = async function() {
     if (!userData.apiKey) {
-        MặcHiênThôngBáo("Chưa có Bí Kíp! Hãy vào bấm '🔑 Bí Kíp' để nhập API Key của bạn.");
+        MặcHiênThôngBáo("Chưa có Bí Kíp! Hãy bấm '🔑 Bí Kíp' để nhập API Key.");
         openApiKeyModal();
         return;
     }
@@ -625,6 +625,7 @@ window.generateAIQuiz = async function() {
     MặcHiênThôngBáo("Mặc Hiên tiên sinh đang suy ngẫm để vận công ra đề mới...");
     
     try {
+        // Sử dụng Endpoint chuẩn Gemini 2.5 Flash
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${userData.apiKey}`;
         const randomSeed = Date.now();
         const promptText = `Bạn là Mặc Hiên tiên sinh, một thầy giáo dạy tiếng Anh giỏi. 
@@ -632,7 +633,7 @@ Hãy sáng tạo 1 câu hỏi trắc nghiệm tiếng Anh hoàn toàn MỚI và 
 
 YÊU CẦU BẮT BUỘC:
 - Chỉ trả về duy nhất 1 chuỗi JSON hợp lệ.
-- Không sử dụng Markdown format (không ghi \`\`\`json).
+- Không sử dụng định dạng Markdown (không ghi \`\`\`json).
 - Cấu trúc JSON phải chính xác như sau:
 {
   "q": "Nội dung câu hỏi tiếng Anh?",
@@ -658,6 +659,7 @@ YÊU CẦU BẮT BUỘC:
         const data = await response.json();
         let textRes = data.candidates[0].content.parts[0].text;
         
+        // Làm sạch phản hồi JSON từ AI
         textRes = textRes.replace(/```json/gi, '').replace(/```/g, '').trim();
         const aiQuestion = JSON.parse(textRes);
 
@@ -665,6 +667,7 @@ YÊU CẦU BẮT BUỘC:
             throw new Error("Dữ liệu câu hỏi từ AI không đúng định dạng!");
         }
 
+        // CẬP NHẬT CÂU HỎI MỚI VÀO DANH SÁCH (ĐÃ SỬA LỖI)
         currentQuestions.push(aiQuestion);
         currentTopic.questions = [...currentQuestions];
         currentQIndex = currentQuestions.length - 1;
@@ -675,28 +678,24 @@ YÊU CẦU BẮT BUỘC:
 
     } catch (e) {
         console.error("Lỗi API Chi Tiết:", e);
-        MặcHiênThôngBáo(`Lỗi ra đề: ${e.message}`);
+        MặcHiênThôngBáo(`Lỗi ra đề (${e.message}). Đang dùng câu dự phòng!`);
+        
+        // Câu dự phòng động biến đổi theo chủ đề
+        const fallbackQuestion = { 
+            q: `[Dự phòng - ${currentTopic.name}] Choose the correct option for: She (be) _____ studying now.`, 
+            options: ["is", "are", "was", "were"], 
+            answer: 0, 
+            explanation: "Chủ ngữ 'She' chia động từ 'to be' ở hiện tại là 'is'." 
+        };
+        
+        currentQuestions.push(fallbackQuestion);
+        currentTopic.questions = [...currentQuestions];
+        currentQIndex = currentQuestions.length - 1;
+        
+        loadQuestion();
+        if (window.saveToCloud) window.saveToCloud();
     }
 }
-                
-                // Mã dự phòng linh hoạt theo chủ đề hiện tại
-                const fallbackQuestion = { 
-                    q: `[Dự phòng - ${currentTopic.name}] Chọn dạng đúng của động từ: She usually (go) _____ to school on time.`, 
-                    options: ["go", "goes", "went", "is going"], 
-                    answer: 1, 
-                    explanation: "Chủ ngữ số ít 'She' kết hợp dấu hiệu 'usually' chia Thì hiện tại đơn (thêm -es vào động từ go)." 
-                };
-                
-                currentQuestions.push(fallbackQuestion);
-                currentTopic.questions = [...currentQuestions];
-                currentQIndex = currentQuestions.length - 1;
-                
-                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã mở cẩm nang dự phòng theo đúng chủ đề!");
-                loadQuestion();
-                if(window.saveToCloud) window.saveToCloud();
-            }
-        }
-
         window.openTheory = function(topicId) {
             for (let cat of categories) {
                 let found = cat.topics.find(t => t.id === topicId);
