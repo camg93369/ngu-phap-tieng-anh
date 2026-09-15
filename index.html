@@ -18,6 +18,13 @@
         .paper-bg-dark { background-color: #121212; background-image: radial-gradient(#262626 0.75px, transparent 0.75px); background-size: 15px 15px; color: #e5e5e5; }
         
         .seal-stamp { border: 2px dashed #b91c1c; color: #b91c1c; transform: rotate(-3deg); }
+        
+        @keyframes goldGlow {
+            0% { box-shadow: 0 0 10px #f59e0b; transform: scale(0.95); }
+            50% { box-shadow: 0 0 30px #f59e0b, 0 0 50px #fbbf24; transform: scale(1.02); }
+            100% { box-shadow: 0 0 10px #f59e0b; transform: scale(1); }
+        }
+        .gold-animation { animation: goldGlow 2s infinite; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between paper-bg-light" id="body-theme">
@@ -30,16 +37,16 @@
                 <h1 class="cophong-title text-lg sm:text-xl font-bold tracking-wider">KHOA CỬ NGỮ PHÁP</h1>
             </div>
             
-            <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm">
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm">
                 <div>Cấp: <span id="user-rank" class="font-bold text-amber-400">Sĩ tử</span></div>
                 <div>EXP: <span id="user-exp" class="font-bold text-amber-400">0</span></div>
                 <div>Ngân lượng: <span id="user-coins" class="font-bold text-yellow-300">50</span> 🪙</div>
                 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5">
                     <button onclick="openRanksModal()" class="bg-amber-700 hover:bg-amber-800 text-white px-2.5 py-1 rounded font-bold transition">Bảng Vàng</button>
                     <button onclick="openShop()" class="bg-[#b91c1c] hover:bg-red-800 text-white px-2.5 py-1 rounded font-bold transition">Mặc Hương Trai</button>
                     <button onclick="openApiKeyModal()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-2.5 py-1 rounded font-bold transition">🔑 Bí Kíp</button>
-                    <button onclick="toggleDarkMode()" id="dark-mode-btn" class="bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1 rounded font-bold transition" title="Đổi giao diện sáng/tối">🌙</button>
+                    <button onclick="toggleDarkMode()" id="dark-mode-btn" class="bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1 rounded font-bold transition">🌙</button>
                 </div>
             </div>
         </div>
@@ -62,7 +69,7 @@
         </div>
 
         <!-- MÀN HÌNH ÔN TẬP LÝ THUYẾT CẤP TỐC -->
-        <div id="screen-theory" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 theme-card">
+        <div id="screen-theory" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 theme-card bg-white dark:bg-[#181818]">
             <div class="border-b pb-4 flex justify-between items-center">
                 <div>
                     <span class="text-xs font-bold uppercase tracking-widest text-red-600">Phao Cứu Sinh Cấp Tốc</span>
@@ -83,7 +90,7 @@
         </div>
 
         <!-- MÀN HÌNH LÀM BÀI THI -->
-        <div id="screen-quiz" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 theme-card">
+        <div id="screen-quiz" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 theme-card bg-white dark:bg-[#181818]">
             <div class="flex justify-between items-center border-b pb-4">
                 <div>
                     <span id="quiz-progress" class="text-xs font-bold opacity-70">Câu 1 / 5</span>
@@ -113,7 +120,7 @@
         </div>
 
         <!-- MÀN HÌNH KẾT QUẢ THI -->
-        <div id="screen-result" class="hidden border p-8 rounded-2xl shadow-sm text-center space-y-6 theme-card">
+        <div id="screen-result" class="hidden border p-8 rounded-2xl shadow-sm text-center space-y-6 theme-card bg-white dark:bg-[#181818]">
             <div class="inline-block seal-stamp text-xl font-bold px-6 py-2 mb-2">ĐẠT KHOA THI</div>
             <h2 class="cophong-title text-3xl font-bold">Kết Quả Xếp Hạng</h2>
             <div class="flex justify-center gap-6 sm:gap-10 text-base sm:text-lg">
@@ -133,10 +140,23 @@
         Khoa Cử Ngữ Pháp - Nền tảng ôn thi tiếng Anh cổ phong trực tuyến © 2026
     </footer>
 
-    <!-- MODAL BẢNG VÀNG KHOA CỬ (CẤP BẬC) -->
+    <!-- MODAL THÔNG BÁO LẤP LÁNH KHI LÊN CẤP -->
+    <div id="rankup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+        <div class="border-4 border-amber-400 bg-gradient-to-b from-amber-50 to-amber-100 dark:from-[#2a2416] dark:to-[#1a160d] max-w-md w-full p-8 rounded-3xl text-center space-y-4 gold-animation shadow-2xl">
+            <div class="text-5xl">👑</div>
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-700 dark:text-amber-400">Trường Thi Xướng Danh</span>
+            <h3 id="rankup-title" class="cophong-title text-2xl sm:text-3xl font-bold text-amber-900 dark:text-amber-200">Chúc mừng sĩ tử đã đậu bậc...</h3>
+            <p id="rankup-desc" class="text-sm text-gray-700 dark:text-gray-300">Danh vọng vang dội, hãy tiếp tục cố gắng trên con đường khoa cử!</p>
+            <div class="pt-2">
+                <button onclick="closeRankUpModal()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg transition">Tạ ơn Thầy Đồ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BẢNG VÀNG KHOA CỬ -->
     <div id="ranks-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-        <div class="border max-w-md w-full p-6 rounded-2xl space-y-4 shadow-2xl theme-card max-h-[85vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3 sticky top-0 bg-inherit">
+        <div class="border max-w-md w-full p-6 rounded-2xl space-y-4 shadow-2xl theme-card bg-white dark:bg-[#181818] max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3 sticky top-0 bg-inherit z-10">
                 <h3 class="cophong-title text-xl font-bold">🏆 Bảng Vàng Khoa Cử</h3>
                 <button onclick="closeRanksModal()" class="opacity-60 hover:opacity-100 font-bold text-lg">✕</button>
             </div>
@@ -150,17 +170,17 @@
         </div>
     </div>
 
-    <!-- MODAL MẶC HƯƠNG TRAI (15-20 MÓN ĐỒ) -->
+    <!-- MODAL MẶC HƯƠNG TRAI (15 MÓN ĐỒ) -->
     <div id="shop-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-        <div class="border max-w-2xl w-full p-6 rounded-2xl space-y-4 shadow-2xl theme-card max-h-[85vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3 sticky top-0 bg-inherit">
+        <div class="border max-w-2xl w-full p-6 rounded-2xl space-y-4 shadow-2xl theme-card bg-white dark:bg-[#181818] max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3 sticky top-0 bg-inherit z-10">
                 <h3 class="cophong-title text-xl font-bold">🏮 Mặc Hương Trai (Cửa Hàng Văn Phòng Tứ Bảo)</h3>
                 <button onclick="closeShop()" class="opacity-60 hover:opacity-100 font-bold text-lg">✕</button>
             </div>
             <p class="text-xs opacity-80">Dùng ngân lượng kiếm được từ các bài thi để thỉnh các bảo vật hỗ trợ việc học tập.</p>
             
             <div id="shop-items-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <!-- Render 15-20 món đồ bằng JS -->
+                <!-- Render 15 món đồ bằng JS -->
             </div>
 
             <div class="text-right pt-2 border-t">
@@ -171,7 +191,7 @@
 
     <!-- MODAL BÍ KÍP (NHẬP GEMINI API KEY) -->
     <div id="apikey-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-        <div class="border max-w-md w-full p-6 rounded-2xl space-y-4 shadow-2xl theme-card">
+        <div class="border max-w-md w-full p-6 rounded-2xl space-y-4 shadow-2xl theme-card bg-white dark:bg-[#181818]">
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="cophong-title text-xl font-bold">🔑 Tàng Thư Các - Nhập Bí Kíp (API Key)</h3>
                 <button onclick="closeApiKeyModal()" class="opacity-60 hover:opacity-100 font-bold text-lg">✕</button>
@@ -191,7 +211,6 @@
 
     <!-- SCRIPT XỬ LÝ TOÀN BỘ LOGIC -->
     <script>
-        // DANH SÁCH CẤP BẬC KHOA CỬ CHI TIẾT (Càng nhiều cấp càng tốt)
         const rankList = [
             { name: "Sĩ tử", exp: 0 },
             { name: "Đồng Sinh", exp: 10 },
@@ -209,7 +228,6 @@
             { name: "Tể Tướng Đương Trào", exp: 1250 }
         ];
 
-        // 15-20 MÓN ĐỒ TRONG MẶC HƯƠNG TRAI
         const shopItems = [
             { id: 1, name: "Bút Lông Sói Thượng Hạng", desc: "Tăng 20% trí tuệ khi giải đề.", price: 30, icon: "🖌️" },
             { id: 2, name: "Nghiên Mực Hoàng Sơn", desc: "Giúp nét chữ thêm phần tinh anh.", price: 45, icon: "🪨" },
@@ -220,7 +238,7 @@
             { id: 7, name: "Hồ Lô Rượu Thơm", desc: "Giải tỏa căng thẳng sau giờ học.", price: 70, icon: "🍾" },
             { id: 8, name: "Gối Sứ Trúc Quân Tử", desc: "Giúp ngủ ngon, minh mẫn khi thi cử.", price: 90, icon: "🛌" },
             { id: 9, name: "Triện Son Khắc Chữ", desc: "Đóng dấu xác nhận bài thi xuất sắc.", price: 110, icon: "🟥" },
-            { id: 10, name: "Áo Tràng Nguyên Gấm Vóc", desc: "Trang phục vinh归故里 rực rỡ.", price: 200, icon: "👘" },
+            { id: 10, name: "Áo Tràng Nguyên Gấm Vóc", desc: "Trang phục vinh quy bái tổ rực rỡ.", price: 200, icon: "👘" },
             { id: 11, name: "Mũ Ô Sa Quan Phẩm", desc: "Uy nghiêm chốn triều đình.", price: 250, icon: "🎩" },
             { id: 12, name: "Hài Thêu Chỉ Vàng", desc: "Bước đi vững chãi trên đường quan lộ.", price: 150, icon: "👞" },
             { id: 13, name: "Bức Tranh Tùng Hạc Diên Niên", desc: "Treo phòng học tăng cường tĩnh tâm.", price: 180, icon: "🖼️" },
@@ -228,7 +246,6 @@
             { id: 15, name: "Thượng Phương Bảo Kiếm", desc: "Vật phẩm uy quyền bậc nhất của Trạng Nguyên.", price: 500, icon: "⚔️" }
         ];
 
-        // 4 TRƯỜNG THI LỚN CHIA THÀNH CÁC LỚP NHỎ CÓ ĐẦY ĐỦ LÝ THUYẾT CHI TIẾT
         const categories = [
             {
                 id: 'cat1',
@@ -244,7 +261,7 @@
                         <i>(Ví dụ: They <b>do not (don't) like</b> fish.)</i><br><br>
                         • <b>3. Nghi vấn (?):</b> Do/Does + S + V_bare + O?<br>
                         <i>(Ví dụ: <b>Do</b> you <b>speak</b> English?)</i><br><br>
-                        • <b>🎯 Dấu hiệu nhận biết:</b> always, usually, often, sometimes, never, every day/week/month, once a week,...`,
+                        • <b>🎯 Dấu hiệu nhận biết:</b> always, usually, often, sometimes, never, every day/week/month,...`,
                         questions: [
                             { q: "She usually _____ to school by bus.", options: ["go", "goes", "went", "is going"], answer: 1, explanation: "Có dấu hiệu 'usually' và chủ ngữ 'She' (ngôi số 3 số ít), ta dùng động từ thêm 'es' là 'goes'." },
                             { q: "Water _____ at 100 degrees Celsius.", options: ["boil", "boils", "boiled", "is boiling"], answer: 1, explanation: "Diễn tả một chân lý, sự thật hiển nhiên, ta dùng thì Hiện tại đơn." },
@@ -256,12 +273,9 @@
                         name: '2. Hiện Tại Tiếp Diễn (Present Continuous)',
                         theory: `<b>📖 Lý thuyết chi tiết - Hiện Tại Tiếp Diễn:</b><br><br>
                         • <b>1. Khẳng định (+):</b> S + am/is/are + V-ing + O<br>
-                        <i>(Ví dụ: Look! He <b>is running</b>.)</i><br><br>
                         • <b>2. Phủ định (-):</b> S + am/is/are + not + V-ing + O<br>
-                        <i>(Ví dụ: We <b>are not studying</b> now.)</i><br><br>
                         • <b>3. Nghi vấn (?):</b> Am/Is/Are + S + V-ing + O?<br>
-                        <i>(Ví dụ: <b>Are</b> you <b>listening</b>?)</i><br><br>
-                        • <b>🎯 Dấu hiệu nhận biết:</b> Now, right now, at the moment, at present, Look!, Listen!, Be quiet!...`,
+                        • <b>🎯 Dấu hiệu nhận biết:</b> Now, right now, at the moment, Look!, Listen!...`,
                         questions: [
                             { q: "Listen! Someone _____ a song.", options: ["sing", "sings", "is singing", "sang"], answer: 2, explanation: "Có từ cảm thán 'Listen!' chỉ hành động đang diễn ra tại thời điểm nói, dùng 'is singing'." },
                             { q: "What _____ you _____ at the moment?", options: ["do / do", "are / doing", "did / do", "will / do"], answer: 1, explanation: "Trạng ngữ 'at the moment' chỉ hành động đang diễn ra, dùng cấu trúc 'are you doing'." }
@@ -272,15 +286,12 @@
                         name: '3. Hiện Tại Hoàn Thành (Present Perfect)',
                         theory: `<b>📖 Lý thuyết chi tiết - Hiện Tại Hoàn Thành:</b><br><br>
                         • <b>1. Khẳng định (+):</b> S + have/has + V3/ed + O<br>
-                        <i>(Ví dụ: I <b>have finished</b> my homework.)</i><br><br>
                         • <b>2. Phủ định (-):</b> S + have/has + not + V3/ed + O<br>
-                        <i>(Ví dụ: She <b>has not seen</b> that movie.)</i><br><br>
                         • <b>3. Nghi vấn (?):</b> Have/Has + S + V3/ed + O?<br>
-                        <i>(Ví dụ: <b>Have</b> you ever <b>been</b> to Hue?)</i><br><br>
-                        • <b>🎯 Dấu hiệu nhận biết:</b> already, yet, just, ever, never, since, for, so far, recently, up to now...`,
+                        • <b>🎯 Dấu hiệu nhận biết:</b> already, yet, just, ever, never, since, for, so far...`,
                         questions: [
-                            { q: "I _____ English for 3 years.", options: ["learn", "learned", "have learned", "am learning"], answer: 2, explanation: "Có giới từ 'for' chỉ khoảng thời gian kéo dài từ quá khứ đến hiện tại, dùng thì Hiện tại hoàn thành." },
-                            { q: "She _____ finished her report yet.", options: ["hasn't", "haven't", "didn't", "wasn't"], answer: 0, explanation: "Dấu hiệu 'yet' dùng trong câu phủ định của hiện tại hoàn thành với chủ ngữ 'She' (hasn't)." }
+                            { q: "I _____ English for 3 years.", options: ["learn", "learned", "have learned", "am learning"], answer: 2, explanation: "Có giới từ 'for' chỉ khoảng thời gian, dùng thì Hiện tại hoàn thành." },
+                            { q: "She _____ finished her report yet.", options: ["hasn't", "haven't", "didn't", "wasn't"], answer: 0, explanation: "Dấu hiệu 'yet' dùng trong câu phủ định của hiện tại hoàn thành với chủ ngữ 'She'." }
                         ]
                     },
                     {
@@ -288,29 +299,24 @@
                         name: '4. Quá Khứ Đơn (Past Simple)',
                         theory: `<b>📖 Lý thuyết chi tiết - Quá Khứ Đơn:</b><br><br>
                         • <b>1. Khẳng định (+):</b> S + V2/ed + O<br>
-                        <i>(Ví dụ: They <b>went</b> to Da Nang last week.)</i><br><br>
-                        • <b>2. Phủ định (-):</b> S + did not (didn't) + V_bare + O<br>
-                        <i>(Ví dụ: He <b>didn't come</b> yesterday.)</i><br><br>
+                        • <b>2. Phủ định (-):</b> S + didn't + V_bare + O<br>
                         • <b>3. Nghi vấn (?):</b> Did + S + V_bare + O?<br>
-                        <i>(Ví dụ: <b>Did</b> you <b>meet</b> him last night?)</i><br><br>
-                        • <b>🎯 Dấu hiệu nhận biết:</b> Yesterday, last week/month/year, ago, in 1990...`,
+                        • <b>🎯 Dấu hiệu nhận biết:</b> Yesterday, last week, ago, in 1990...`,
                         questions: [
                             { q: "Where _____ you go yesterday?", options: ["do", "did", "were", "have"], answer: 1, explanation: "Dấu hiệu 'yesterday' trong câu hỏi quá khứ đơn, ta dùng trợ động từ 'did'." },
-                            { q: "She _____ a new car two days ago.", options: ["buy", "buys", "bought", "buying"], answer: 2, explanation: "Dấu hiệu 'two days ago' (quá khứ đơn), động từ bất quy tắc 'buy' chuyển thành 'bought'." }
+                            { q: "She _____ a new car two days ago.", options: ["buy", "buys", "bought", "buying"], answer: 2, explanation: "Dấu hiệu 'two days ago', động từ bất quy tắc 'buy' chuyển thành 'bought'." }
                         ]
                     },
                     {
                         id: 't_future_will_goingto',
                         name: '5. Tương Lai (Will & Be going to)',
                         theory: `<b>📖 Lý thuyết chi tiết - Tương Lai:</b><br><br>
-                        • <b>1. Be going to:</b> Diễn đạt ý định, kế hoạch đã có sẵn hoặc dự đoán có căn cứ.<br>
-                        <i>(Cấu trúc: S + am/is/are + going to + V_bare)</i><br><br>
-                        • <b>2. Will:</b> Diễn đạt quyết định ngay tại thời điểm nói, lời hứa, hoặc dự đoán không có căn cứ.<br>
-                        <i>(Cấu trúc: S + will + V_bare)</i><br><br>
-                        • <b>🎯 Dấu hiệu nhận biết:</b> Tomorrow, next week/month, in the future, soon...`,
+                        • <b>1. Be going to:</b> Kế hoạch có sẵn hoặc dự đoán có căn cứ (S + am/is/are + going to + V).<br>
+                        • <b>2. Will:</b> Quyết định bộc phát, lời hứa (S + will + V).<br>
+                        • <b>🎯 Dấu hiệu nhận biết:</b> Tomorrow, next week, soon...`,
                         questions: [
                             { q: "Look at those dark clouds! It _____ rain.", options: ["will", "is going to", "is raining", "rains"], answer: 1, explanation: "Dự đoán có căn cứ rõ ràng trước mắt (mây đen), ta dùng 'is going to'." },
-                            { q: "I feel thirsty. I _____ get a glass of water.", options: ["am going to", "will", "going to", "shall to"], answer: 1, explanation: "Quyết định bộc phát ngay tại thời điểm nói khi cảm thấy khát, ta dùng 'will'." }
+                            { q: "I feel thirsty. I _____ get a glass of water.", options: ["am going to", "will", "going to", "shall to"], answer: 1, explanation: "Quyết định ngay tại thời điểm nói, ta dùng 'will'." }
                         ]
                     }
                 ]
@@ -323,25 +329,20 @@
                         id: 't_modal_verbs',
                         name: '1. Động Từ Khiếm Khuyết (Modal Verbs)',
                         theory: `<b>📖 Lý thuyết chi tiết - Modal Verbs:</b><br><br>
-                        • <b>1. Lời khuyên (Should / Ought to):</b> Dùng để khuyên bảo ai đó nên làm gì.<br>
-                        <i>(Ví dụ: You <b>should</b> study harder.)</i><br><br>
-                        • <b>2. Sự cần thiết (Need / Have to):</b> Diễn đạt việc cần phải làm.<br>
-                        <i>(Ví dụ: I <b>have to</b> finish this task.)</i><br><br>
-                        • <b>3. Sự bắt buộc (Must / Have to):</b> Bắt buộc tuân thủ nội quy, luật lệ.<br>
-                        <i>(Ví dụ: Students <b>must</b> wear uniforms.)</i>`,
+                        • <b>1. Lời khuyên:</b> should / ought to<br>
+                        • <b>2. Sự cần thiết:</b> need / have to<br>
+                        • <b>3. Sự bắt buộc:</b> must / have to`,
                         questions: [
                             { q: "You _____ drive on the left when you are in London. It's the traffic rule.", options: ["should", "must", "can", "may"], answer: 1, explanation: "Quy định luật lệ giao thông bắt buộc, dùng 'must'." },
-                            { q: "You look exhausted. You _____ take a few days off.", options: ["must", "should", "have to", "can't"], answer: 1, explanation: "Đưa ra lời khuyên chân thành, thân thiện, dùng 'should'." }
+                            { q: "You look exhausted. You _____ take a few days off.", options: ["must", "should", "have to", "can't"], answer: 1, explanation: "Đưa ra lời khuyên thân thiện, dùng 'should'." }
                         ]
                     },
                     {
                         id: 't_gerund_infinitive',
                         name: '2. Danh Động Từ & Động Từ Nguyên Mẫu (Gerund & Infinitive)',
                         theory: `<b>📖 Lý thuyết chi tiết - V-ing & to-V:</b><br><br>
-                        • <b>1. Sau V-ing:</b> enjoy, mind, finish, practice, avoid, consider, keep...<br>
-                        <i>(Ví dụ: She enjoys <b>reading</b> books.)</i><br><br>
-                        • <b>2. Sau to-V:</b> want, decide, hope, expect, plan, promise, refuse...<br>
-                        <i>(Ví dụ: He wants <b>to buy</b> a new house.)</i>`,
+                        • <b>Sau V-ing:</b> enjoy, mind, finish, practice...<br>
+                        • <b>Sau to-V:</b> want, decide, hope, promise...`,
                         questions: [
                             { q: "Would you mind _____ the window?", options: ["open", "to open", "opening", "opened"], answer: 2, explanation: "Sau cụm từ 'Would you mind' luôn đi với danh động từ (V-ing)." },
                             { q: "She promised _____ back before 10 PM.", options: ["come", "coming", "to come", "came"], answer: 2, explanation: "Sau động từ 'promise' luôn đi với động từ nguyên mẫu có 'to'." }
@@ -357,21 +358,17 @@
                         id: 't_reported_speech',
                         name: '1. Câu Tường Thuật (Reported Speech)',
                         theory: `<b>📖 Lý thuyết chi tiết - Câu Tường Thuật:</b><br><br>
-                        • <b>1. Lùi thì (Backshift):</b><br>
-                        - Hiện tại đơn $\rightarrow$ Quá khứ đơn<br>
-                        - Hiện tại tiếp diễn $\rightarrow$ Quá khứ tiếp diễn<br>
-                        - Quá khứ đơn $\rightarrow$ Quá khứ hoàn thành<br><br>
-                        • <b>2. Đổi trạng từ:</b> now $\rightarrow$ then, today $\rightarrow$ that day, here $\rightarrow$ there, yesterday $\rightarrow$ the day before...`,
+                        • Lùi 1 bậc thì (Hiện tại $\rightarrow$ Quá khứ)<br>
+                        • Đổi trạng từ chỉ thời gian, nơi chốn (now $\rightarrow$ then, yesterday $\rightarrow$ the day before).`,
                         questions: [
-                            { q: "He said, 'I am learning English now.' $\rightarrow$ He said that he _____ English then.", options: ["is learning", "was learning", "learned", "has learned"], answer: 1, explanation: "Lùi thì từ Hiện tại tiếp diễn ('am learning') sang Quá khứ tiếp diễn ('was learning') với chủ ngữ 'He'." },
-                            { q: "She said to me, 'I met your brother yesterday.' $\rightarrow$ She told me that she _____ my brother the day before.", options: ["met", "had met", "has met", "meets"], answer: 1, explanation: "Lùi thì từ Quá khứ đơn ('met') sang Quá khứ hoàn thành ('had met')." }
+                            { q: "He said, 'I am learning English now.' $\rightarrow$ He said that he _____ English then.", options: ["is learning", "was learning", "learned", "has learned"], answer: 1, explanation: "Lùi thì Hiện tại tiếp diễn sang Quá khứ tiếp diễn ('was learning')." },
+                            { q: "She said to me, 'I met your brother yesterday.' $\rightarrow$ She told me that she _____ my brother the day before.", options: ["met", "had met", "has met", "meets"], answer: 1, explanation: "Lùi thì Quá khứ đơn sang Quá khứ hoàn thành ('had met')." }
                         ]
                     }
                 ]
             }
         ];
 
-        // Trạng thái người chơi
         let userData = {
             exp: parseInt(localStorage.getItem("user_exp")) || 0,
             coins: parseInt(localStorage.getItem("user_coins")) || 50,
@@ -384,30 +381,30 @@
         let currentQIndex = 0;
         let score = 0;
 
-        // Khởi tạo giao diện
         applyTheme();
         updateUI();
         renderCategories();
 
-        function updateUI() {
-            document.getElementById('user-exp').innerText = userData.exp;
-            document.getElementById('user-coins').innerText = userData.coins;
-
-            // Xác định cấp bậc khoa cử dựa theo EXP
+        function getRankName(expVal) {
             let currentRankName = "Sĩ tử";
             for (let i = rankList.length - 1; i >= 0; i--) {
-                if (userData.exp >= rankList[i].exp) {
+                if (expVal >= rankList[i].exp) {
                     currentRankName = rankList[i].name;
                     break;
                 }
             }
-            document.getElementById('user-rank').innerText = currentRankName;
+            return currentRankName;
+        }
+
+        function updateUI() {
+            document.getElementById('user-exp').innerText = userData.exp;
+            document.getElementById('user-coins').innerText = userData.coins;
+            document.getElementById('user-rank').innerText = getRankName(userData.exp);
 
             localStorage.setItem("user_exp", userData.exp);
             localStorage.setItem("user_coins", userData.coins);
         }
 
-        // Chuyển đổi Dark Mode / Sáng Tối
         function toggleDarkMode() {
             userData.darkMode = !userData.darkMode;
             localStorage.setItem("dark_mode", userData.darkMode);
@@ -417,19 +414,16 @@
         function applyTheme() {
             const body = document.getElementById('body-theme');
             const btn = document.getElementById('dark-mode-btn');
-            const cards = document.querySelectorAll('.theme-card');
 
             if (userData.darkMode) {
                 body.className = "min-h-screen flex flex-col justify-between paper-bg-dark text-gray-100";
                 btn.innerText = "☀️";
-                cards.forEach(c => c.className = c.className.replace('bg-white', 'bg-[#1e1e1e]').replace('border', 'border-gray-800'));
             } else {
                 body.className = "min-h-screen flex flex-col justify-between paper-bg-light text-[#2c221e]";
                 btn.innerText = "🌙";
             }
         }
 
-        // Render danh mục trường thi và các lớp học nhỏ
         function renderCategories() {
             const container = document.getElementById('categories-container');
             container.innerHTML = '';
@@ -438,7 +432,7 @@
                 let topicsHtml = '';
                 cat.topics.forEach(t => {
                     topicsHtml += `
-                        <div onclick="openTheory('${t.id}')" class="border p-4 rounded-xl cursor-pointer hover:border-amber-500 transition flex justify-between items-center bg-white/50 dark:bg-[#1a1a1a]/50 shadow-xs">
+                        <div onclick="openTheory('${t.id}')" class="border p-4 rounded-xl cursor-pointer hover:border-amber-500 transition flex justify-between items-center bg-white dark:bg-[#1a1a1a] shadow-xs">
                             <div>
                                 <h4 class="font-bold text-sm sm:text-base">${t.name}</h4>
                                 <span class="text-xs opacity-60">📚 Kho câu hỏi: ${t.questions.length} câu + AI sinh thêm</span>
@@ -449,7 +443,7 @@
                 });
 
                 container.innerHTML += `
-                    <div class="border p-5 sm:p-6 rounded-2xl shadow-sm space-y-4 theme-card bg-white dark:bg-[#181818]">
+                    <div class="border p-5 sm:p-6 rounded-2xl shadow-sm space-y-4 theme-card bg-[#fffdfa] dark:bg-[#181818]">
                         <h3 class="cophong-title font-bold text-xl text-red-700 dark:text-red-400 border-b pb-2">${cat.title}</h3>
                         <div class="space-y-3">
                             ${topicsHtml}
@@ -459,9 +453,7 @@
             });
         }
 
-        // Mở bảng lý thuyết ôn tập cấp tốc của lớp học
         function openTheory(topicId) {
-            // Tìm topic trong danh mục
             for (let cat of categories) {
                 let found = cat.topics.find(t => t.id === topicId);
                 if (found) {
@@ -478,7 +470,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Bắt đầu làm bài thi
         function startQuiz() {
             currentQuestions = [...currentTopic.questions];
             currentQIndex = 0;
@@ -488,12 +479,11 @@
             document.getElementById('screen-quiz').classList.remove('hidden');
             document.getElementById('quiz-topic-name').innerText = currentTopic.name;
 
-            // Hiển thị nút gọi AI nếu có API Key
             const aiContainer = document.getElementById('ai-gen-btn-container');
             if (userData.apiKey) {
                 aiContainer.innerHTML = `<button onclick="generateMoreQuestions()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">✨ Thầy Đồ AI Sinh Câu Hỏi</button>`;
             } else {
-                aiContainer.innerHTML = `<button onclick="openApiKeyModal()" class="text-xs opacity-70 hover:underline text-indigo-400">🔑 Nhập Bí Kíp để mở khóa AI</button>`;
+                aiContainer.innerHTML = `<button onclick="openApiKeyModal()" class="text-xs opacity-70 hover:underline text-indigo-400">🔑 Nhập Bí Kíp mở khóa AI</button>`;
             }
 
             loadQuestion();
@@ -509,7 +499,7 @@
             optContainer.innerHTML = '';
             q.options.forEach((opt, idx) => {
                 optContainer.innerHTML += `
-                    <button onclick="selectAnswer(${idx})" class="option-btn w-full text-left p-3.5 rounded-xl border hover:border-amber-500 text-sm transition font-medium bg-black/5 dark:bg-white/5">
+                    <button onclick="selectAnswer(${idx})" class="option-btn w-full text-left p-3.5 rounded-xl border hover:border-amber-500 text-sm transition font-medium bg-white dark:bg-[#222]">
                         <b>${String.fromCharCode(65 + idx)}.</b> ${opt}
                     </button>
                 `;
@@ -522,6 +512,7 @@
         function selectAnswer(selectedIndex) {
             const q = currentQuestions[currentQIndex];
             const buttons = document.querySelectorAll('.option-btn');
+            const oldRank = getRankName(userData.exp);
 
             buttons.forEach((btn, idx) => {
                 btn.disabled = true;
@@ -534,11 +525,21 @@
 
             if (selectedIndex === q.answer) {
                 score++;
+                // Hiệu ứng tự động chuyển câu sau 1.2 giây khi làm đúng
+                setTimeout(() => {
+                    currentQIndex++;
+                    if (currentQIndex < currentQuestions.length) {
+                        loadQuestion();
+                    } else {
+                        finishQuiz(oldRank);
+                    }
+                }, 1200);
+            } else {
+                // Nếu sai, hiện lời giải và nút bấm thủ công sang câu tiếp
+                document.getElementById('explanation-text').innerText = q.explanation;
+                document.getElementById('explanation-box').classList.remove('hidden');
+                document.getElementById('next-btn').classList.remove('hidden');
             }
-
-            document.getElementById('explanation-text').innerText = q.explanation;
-            document.getElementById('explanation-box').classList.remove('hidden');
-            document.getElementById('next-btn').classList.remove('hidden');
         }
 
         function nextQuestion() {
@@ -546,11 +547,12 @@
             if (currentQIndex < currentQuestions.length) {
                 loadQuestion();
             } else {
-                finishQuiz();
+                const oldRank = getRankName(userData.exp);
+                finishQuiz(oldRank);
             }
         }
 
-        function finishQuiz() {
+        function finishQuiz(oldRank) {
             document.getElementById('screen-quiz').classList.add('hidden');
             document.getElementById('screen-result').classList.remove('hidden');
 
@@ -561,10 +563,25 @@
             userData.coins += earnedCoins;
             updateUI();
 
+            const newRank = getRankName(userData.exp);
+
             document.getElementById('res-score').innerText = `${score} / ${currentQuestions.length}`;
             document.getElementById('res-exp').innerText = `+${earnedExp}`;
             document.getElementById('res-coins').innerText = `+${earnedCoins} 🪙`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Kiểm tra nếu thăng cấp bậc mới -> Bật bảng vàng lấp lánh chúc mừng
+            if (oldRank !== newRank) {
+                setTimeout(() => {
+                    document.getElementById('rankup-title').innerText = `Trường thi chúc mừng bạn đã đậu ${newRank}!`;
+                    document.getElementById('rankup-desc').innerText = `Vượt qua cửa ải thành công, triều đình ghi nhận tài năng của sĩ tử lên hàng ${newRank}.`;
+                    document.getElementById('rankup-modal').classList.remove('hidden');
+                }, 500);
+            }
+        }
+
+        function closeRankUpModal() {
+            document.getElementById('rankup-modal').classList.add('hidden');
         }
 
         function backToMenu() {
@@ -576,7 +593,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- MODAL BẢNG VÀNG KHOA CỬ ---
         function openRanksModal() {
             const listContainer = document.getElementById('ranks-list-container');
             listContainer.innerHTML = '';
@@ -593,13 +609,12 @@
         }
         function closeRanksModal() { document.getElementById('ranks-modal').classList.add('hidden'); }
 
-        // --- MODAL MẶC HƯƠNG TRAI ---
         function openShop() {
             const grid = document.getElementById('shop-items-grid');
             grid.innerHTML = '';
             shopItems.forEach(item => {
                 grid.innerHTML += `
-                    <div class="border p-3.5 rounded-xl flex items-center justify-between bg-black/5 dark:bg-white/5">
+                    <div class="border p-3.5 rounded-xl flex items-center justify-between bg-white dark:bg-[#222]">
                         <div class="flex items-center space-x-3">
                             <span class="text-3xl">${item.icon}</span>
                             <div>
@@ -618,17 +633,26 @@
 
         function buyItem(price, itemName) {
             if (userData.coins >= price) {
+                const oldRank = getRankName(userData.exp);
                 userData.coins -= price;
-                userData.exp += 15; // Mua bảo vật được thưởng nóng 15 EXP
+                userData.exp += 15;
                 updateUI();
+                const newRank = getRankName(userData.exp);
                 alert(`Thỉnh thành công vật phẩm "${itemName}"! Bạn nhận được +15 EXP.`);
-                openShop(); // Làm mới lại shop
+                
+                if (oldRank !== newRank) {
+                    closeShop();
+                    document.getElementById('rankup-title').innerText = `Trường thi chúc mừng bạn đã đậu ${newRank}!`;
+                    document.getElementById('rankup-desc').innerText = `Nhờ thỉnh bảo vật Mặc Hương Trai, đạo hạnh tinh tiến, chính thức bước lên bậc ${newRank}.`;
+                    document.getElementById('rankup-modal').classList.remove('hidden');
+                } else {
+                    openShop();
+                }
             } else {
                 alert("Ngân lượng của sĩ tử không đủ để thỉnh bảo vật này!");
             }
         }
 
-        // --- MODAL BÍ KÍP (API KEY) ---
         function openApiKeyModal() {
             document.getElementById('api-key-input').value = userData.apiKey;
             document.getElementById('apikey-modal').classList.remove('hidden');
@@ -643,7 +667,6 @@
             closeApiKeyModal();
         }
 
-        // Tích hợp AI sinh thêm câu hỏi
         async function generateMoreQuestions() {
             if (!userData.apiKey) {
                 openApiKeyModal();
