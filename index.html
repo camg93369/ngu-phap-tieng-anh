@@ -20,27 +20,57 @@
         
         .seal-stamp { border: 2px dashed #b91c1c; color: #b91c1c; transform: rotate(-3deg); }
 
-        /* HIỆU ỨNG LẤP LÁNH ĐỘNG DÀNH CHO 25 CẤP BẬC */
-        @keyframes dynamicTextGlow {
-            0% { text-shadow: 0 0 5px var(--theme-color); }
-            50% { text-shadow: 0 0 15px var(--theme-color), 0 0 25px var(--theme-color); }
-            100% { text-shadow: 0 0 5px var(--theme-color); }
+        /* Khung Đua Top Thiết Kế Theo Ảnh */
+        .top-card {
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+            background: #18191c;
+            border: 2px solid #2d2f36;
+            transition: all 0.3s ease;
         }
-        .dynamic-glow-text {
-            animation: dynamicTextGlow 2.5s infinite alternate ease-in-out;
-            color: var(--theme-color);
-            font-weight: bold;
+        .top-card.rank-1 {
+            border-color: #f59e0b;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.25), inset 0 0 15px rgba(245, 158, 11, 0.1);
+        }
+        .top-card.rank-2 {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2), inset 0 0 10px rgba(59, 130, 246, 0.1);
+        }
+        .top-card.rank-3 {
+            border-color: #b45309;
+            box-shadow: 0 0 15px rgba(180, 83, 9, 0.2), inset 0 0 10px rgba(180, 83, 9, 0.1);
         }
 
-        @keyframes dynamicBoxGlow {
-            0% { box-shadow: 0 0 5px var(--theme-color), inset 0 0 5px var(--theme-color); border-color: var(--theme-color); }
-            50% { box-shadow: 0 0 15px var(--theme-color), inset 0 0 10px var(--theme-color); border-color: var(--theme-color); transform: scale(1.02); }
-            100% { box-shadow: 0 0 5px var(--theme-color), inset 0 0 5px var(--theme-color); border-color: var(--theme-color); }
+        .rank-badge {
+            position: absolute;
+            top: -12px;
+            left: 12px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            color: #fff;
         }
-        .dynamic-glow-box {
-            animation: dynamicBoxGlow 2.5s infinite alternate ease-in-out;
-            border-width: 2px;
-            border-style: solid;
+        .rank-1 .rank-badge { background: #f59e0b; }
+        .rank-2 .rank-badge { background: #3b82f6; }
+        .rank-3 .rank-badge { background: #b45309; }
+
+        .avatar-frame {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.4) 100%);
+            border: 2px solid #ffffff33;
         }
 
         /* Hiệu ứng tia sáng nút mượt mà */
@@ -52,19 +82,12 @@
             transform: skewX(-20deg); animation: shine 3s infinite;
         }
 
-        /* Hiệu ứng LẤP LÁNH TOÀN BỘ BẢNG */
-        @keyframes panelSparkle {
-            0% { box-shadow: 0 0 15px #f59e0b, inset 0 0 20px #fef3c7; border-color: #f59e0b; }
-            50% { box-shadow: 0 0 40px #fbbf24, inset 0 0 50px #fde68a; border-color: #fbbf24; }
-            100% { box-shadow: 0 0 15px #f59e0b, inset 0 0 20px #fef3c7; border-color: #f59e0b; }
-        }
         .sparkle-panel {
-            animation: panelSparkle 2.5s infinite alternate;
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(253,230,138,0.4) 100%);
+            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(253,230,138,0.3) 100%);
             border: 2px solid #fbbf24;
         }
         html.dark .sparkle-panel {
-            background: linear-gradient(135deg, #1a1a1a 0%, #422006 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a1a08 100%);
             border: 2px solid #b45309;
         }
     </style>
@@ -79,14 +102,14 @@
             </div>
             
             <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-                <div>Sĩ tử: <span id="current-player-name" class="font-bold underline">Ẩn Sĩ</span></div>
-                <div>Cấp: <span id="user-rank" class="font-bold">Sĩ tử</span></div>
+                <div>Sĩ tử: <span id="current-player-name" class="font-bold underline cursor-pointer" onclick="changePlayerName()" title="Bấm để đổi tên sĩ tử">Ẩn Sĩ ✏️</span></div>
+                <div>Cấp: <span id="user-rank" class="font-bold text-amber-400">Sĩ tử</span></div>
                 <div>EXP: <span id="user-exp" class="font-bold text-amber-400">0</span></div>
                 <div>Ngân lượng: <span id="user-coins" class="font-bold text-yellow-300">50</span> 🪙</div>
                 
                 <div class="flex items-center gap-1.5">
-                    <button onclick="openRankSystemModal()" class="bg-fuchsia-700 hover:bg-fuchsia-800 text-white px-3 py-1.5 rounded-md font-bold transition border border-fuchsia-300">Bảng Vàng ✨</button>
-                    <button onclick="openRanksModal()" id="rank-badge-btn" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-md font-bold transition border border-amber-300">Đua Top</button>
+                    <button onclick="openRankSystemModal()" class="bg-fuchsia-700 hover:bg-fuchsia-800 text-white px-3 py-1.5 rounded-md font-bold transition border border-fuchsia-300">Bảng Quan Phẩm ✨</button>
+                    <button onclick="openRanksModal()" id="rank-badge-btn" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-md font-bold transition border border-amber-300">Đua Top 🏆</button>
                     <button onclick="openShop()" class="btn-shine bg-[#b91c1c] hover:bg-red-800 text-white px-3 py-1.5 rounded-md font-bold transition">Mặc Hương Trai</button>
                     <button onclick="openApiKeyModal()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-2.5 py-1.5 rounded-md font-bold transition">🔑 Bí Kíp</button>
                     <button onclick="toggleDarkMode()" id="dark-mode-btn" class="bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1.5 rounded-md font-bold transition">🌙</button>
@@ -105,17 +128,20 @@
             <div class="space-y-8" id="categories-container"></div>
         </div>
 
-        <div id="screen-theory" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 bg-white dark:bg-[#1a1a1a]">
-            <div class="border-b dark:border-gray-700 pb-4 flex justify-between items-center">
+        <!-- BẢNG VÀNG CÔNG THỨC & LÝ THUYẾT (MỚI TẠO LẠI) -->
+        <div id="screen-theory" class="hidden border p-6 sm:p-8 rounded-2xl shadow-lg space-y-6 bg-amber-50/90 dark:bg-[#1a1714] border-amber-300 dark:border-amber-800">
+            <div class="border-b border-amber-300 dark:border-amber-800 pb-4 flex justify-between items-center">
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-widest text-red-600">Phao Cứu Sinh Cấp Tốc</span>
-                    <h2 id="theory-title" class="cophong-title text-2xl sm:text-3xl font-bold mt-1">Tên Lớp Học</h2>
+                    <span class="text-xs font-bold uppercase tracking-widest text-red-700 dark:text-red-400">📜 BẢNG VÀNG NGỮ PHÁP</span>
+                    <h2 id="theory-title" class="cophong-title text-2xl sm:text-3xl font-bold mt-1 text-amber-900 dark:text-amber-200">Tên Ngữ Pháp</h2>
                 </div>
-                <button onclick="backToMenu()" class="text-sm font-semibold hover:text-amber-500">← Quay lại</button>
+                <button onclick="backToMenu()" class="text-sm font-semibold hover:text-amber-600 px-3 py-1.5 border border-amber-400 rounded-lg bg-white/50 dark:bg-black/30">← Trở về</button>
             </div>
-            <div id="theory-content" class="text-sm sm:text-base leading-relaxed space-y-4"></div>
-            <div class="flex justify-end pt-4 border-t dark:border-gray-700">
-                <button onclick="startQuiz()" class="bg-[#b91c1c] hover:bg-red-800 text-white px-6 py-3 rounded-xl font-bold shadow transition">Vào Trường Thi Ngay ➔</button>
+            
+            <div id="theory-content" class="space-y-6"></div>
+
+            <div class="flex justify-end pt-4 border-t border-amber-300 dark:border-amber-800">
+                <button onclick="startQuiz()" class="btn-shine bg-[#b91c1c] hover:bg-red-800 text-white px-6 py-3 rounded-xl font-bold shadow transition">Vào Trường Thi Ngay ➔</button>
             </div>
         </div>
 
@@ -132,7 +158,7 @@
                 <div id="options-container" class="space-y-3"></div>
             </div>
             <div id="explanation-box" class="hidden p-4 rounded-xl text-sm border bg-amber-500/10 border-amber-500/30">
-                <p class="font-bold text-amber-600 dark:text-amber-400">💡 Lời giải từ Thầy Đồ:</p>
+                <p class="font-bold text-amber-600 dark:text-amber-400">💡 Chỉ dẫn từ Mặc Hiên tiên sinh:</p>
                 <p id="explanation-text" class="opacity-90"></p>
             </div>
             <div class="flex justify-between pt-4 border-t dark:border-gray-700">
@@ -155,42 +181,44 @@
         </div>
     </main>
 
-    <!-- BẢNG VÀNG CÁC CẤP BẬC (MỚI TÁCH RIÊNG ĐỂ XEM ĐỦ 25 CẤP) -->
+    <!-- BẢNG CÁC CẤP BẬC HỆ THỐNG -->
     <div id="rank-system-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-2xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative">
             <div class="flex justify-between border-b border-amber-300 pb-3 items-center">
-                <h3 class="cophong-title text-2xl font-bold text-amber-700 dark:text-amber-400">📜 Bảng Vàng Hệ Thống Quan Phẩm</h3>
+                <h3 class="cophong-title text-2xl font-bold text-amber-700 dark:text-amber-400">📜 Bảng Quan Phẩm Khoa Cử</h3>
                 <button onclick="closeRankSystemModal()" class="text-2xl font-bold opacity-70 hover:opacity-100">✕</button>
             </div>
-            <p class="text-sm italic text-center mb-2">Toàn bộ 25 cấp bậc tinh túy với hào quang lấp lánh riêng biệt đang chờ các sĩ tử chinh phục.</p>
+            <p class="text-sm italic text-center mb-2">Các cấp bậc danh giá trong đường công danh đang chờ các sĩ tử chinh phục.</p>
             <div id="rank-system-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm"></div>
-            <button onclick="closeRankSystemModal()" class="w-full bg-[#2c221e] text-white py-3 rounded-lg mt-4 font-bold">Đóng Bảng Vàng</button>
+            <button onclick="closeRankSystemModal()" class="w-full bg-[#2c221e] text-white py-3 rounded-lg mt-4 font-bold">Đóng</button>
         </div>
     </div>
 
-    <!-- BẢNG XẾP HẠNG NGƯỜI CHƠI (ĐUA TOP) -->
-    <div id="ranks-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
-        <div class="max-w-lg w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative bg-white dark:bg-[#1a1a1a] border-2 border-amber-500">
-            <div class="flex justify-between border-b border-amber-300 pb-3 items-center">
-                <h3 class="cophong-title text-xl font-bold text-amber-700 dark:text-amber-400">🏆 Bảng Xếp Hạng Người Chơi (<span id="player-count">1</span>/5 người)</h3>
+    <!-- BẢNG ĐUA TOP CỦA SĨ TỬ (THIẾT KẾ KHUNG GIỐNG ẢNH) -->
+    <div id="ranks-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+        <div class="max-w-4xl w-full p-6 rounded-2xl space-y-6 max-h-[90vh] overflow-y-auto relative bg-[#0f1012] text-white border border-gray-800">
+            <div class="flex justify-between border-b border-gray-800 pb-3 items-center">
+                <h3 class="cophong-title text-2xl font-bold text-amber-400">🏆 Bảng Vàng Sĩ Tử Xuất Sắc</h3>
                 <button onclick="closeRanksModal()" class="text-xl font-bold opacity-70 hover:opacity-100">✕</button>
             </div>
             
-            <div class="bg-amber-100/60 dark:bg-[#251f15] p-3 rounded-xl border border-amber-300 space-y-2">
-                <p class="text-xs font-bold text-amber-900 dark:text-amber-300">📜 Kết nạp nhóm bạn tham gia (Tối đa 5 người):</p>
+            <!-- Khu vực thêm bạn / Quản lý nhóm -->
+            <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-800 space-y-2">
+                <p class="text-xs font-bold text-gray-300">📜 Thêm sĩ tử tham gia thi tài (Tối đa 5 sĩ tử):</p>
                 <div class="flex gap-2">
-                    <input type="text" id="new-player-input" placeholder="Tên thành viên mới..." class="flex-grow px-3 py-1 text-xs border rounded-md dark:bg-black dark:border-gray-600 outline-none">
-                    <button onclick="addNewPlayer()" class="bg-amber-700 hover:bg-amber-800 text-white text-xs px-3 py-1 rounded-md font-bold transition">Thêm Bạn</button>
+                    <input type="text" id="new-player-input" placeholder="Nhập tên sĩ tử mới..." class="flex-grow px-3 py-1.5 text-xs bg-black border border-gray-700 rounded-md text-white outline-none focus:border-amber-500">
+                    <button onclick="addNewPlayer()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-4 py-1.5 rounded-md font-bold transition">Thêm Sĩ Tử</button>
                 </div>
                 <div id="players-selector-list" class="flex flex-wrap gap-1.5 pt-1"></div>
             </div>
 
-            <div class="space-y-2">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-red-700 dark:text-red-400">Thứ Hạng Đua Top:</h4>
-                <div id="ranks-list-container" class="space-y-3 text-sm text-[#2c221e] dark:text-gray-200"></div>
-            </div>
+            <!-- Khung Đua Top hiển thị dạng Card giống ảnh -->
+            <div id="top-ranks-cards-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2"></div>
 
-            <button onclick="closeRanksModal()" class="w-full bg-[#2c221e] text-white py-2 rounded-lg mt-2 font-bold">Đóng</button>
+            <!-- Các vị trí tiếp theo -->
+            <div id="other-ranks-list" class="space-y-2 pt-2 border-t border-gray-800"></div>
+
+            <button onclick="closeRanksModal()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-lg font-bold transition">Trở Về</button>
         </div>
     </div>
     
@@ -208,8 +236,6 @@
     
     <!-- Các Modal khác -->
     <div id="apikey-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50"><div class="border max-w-md w-full p-6 rounded-2xl bg-white dark:bg-[#1a1a1a]"><div class="flex justify-between border-b pb-3"><h3 class="font-bold">🔑 Nhập API Key</h3><button onclick="closeApiKeyModal()">✕</button></div><input type="password" id="api-key-input" class="w-full mt-4 p-2 border rounded text-black outline-none"><button onclick="saveApiKey()" class="w-full bg-indigo-700 hover:bg-indigo-800 font-bold text-white py-2 rounded mt-4">Lưu Bí Kíp</button></div></div>
-
-    <div id="rankup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"><div class="border-4 border-amber-400 bg-amber-50 dark:bg-[#2a2416] w-full max-w-md p-8 rounded-3xl text-center"><div class="text-5xl">👑</div><h3 id="rankup-title" class="cophong-title text-2xl font-bold text-amber-900 dark:text-amber-200 mt-2">Thăng quan!</h3><p id="rankup-desc" class="mt-2 text-sm">Chúc mừng!</p><button onclick="closeRankUpModal()" class="mt-4 bg-amber-600 text-white px-6 py-2 rounded-xl font-bold">Tạ ơn</button></div></div>
 
     <!-- MODULE FIREBASE VÀ LOGIC -->
     <script type="module">
@@ -273,7 +299,7 @@
         window.loadFromCloud();
     </script>
 
-    <!-- SCRIPT CHÍNH (LOGIC GAME VÀ GIAO DIỆN) -->
+    <!-- SCRIPT CHÍNH -->
     <script>
         const rankList = [ 
             { name: "Sĩ tử", exp: 0 }, { name: "Đồng Sinh", exp: 10 }, { name: "Tú Tài", exp: 25 }, 
@@ -283,27 +309,73 @@
             { name: "Chánh Lục Phẩm", exp: 450 }, { name: "Tòng Ngũ Phẩm", exp: 520 }, { name: "Chánh Ngũ Phẩm", exp: 595 }, 
             { name: "Tòng Tứ Phẩm", exp: 675 }, { name: "Chánh Tứ Phẩm", exp: 760 }, { name: "Tòng Tam Phẩm", exp: 850 }, 
             { name: "Chánh Tam Phẩm", exp: 945 }, { name: "Tòng Nhị Phẩm", exp: 1045 }, { name: "Chánh Nhị Phẩm", exp: 1150 }, 
-            { name: "Tòng Nhất Phẩm", exp: 1260 }, { name: "Chánh Nhất Phẩm", exp: 1375 }, { name: "Tam Súc", exp: 1500 }, 
+            { name: "Tòng Nhất Phẩm", exp: 1260 }, { name: "Chánh Nhất Phẩm", exp: 1375 }, { name: "Thái Sư", exp: 1500 }, 
             { name: "Tể Tướng Đương Triều", exp: 1650 } 
         ];
         
         const shopItems = [ { id: 1, name: "Bút Lông Sói Thượng Hạng", desc: "Tăng 20% trí tuệ khi giải đề.", price: 30, icon: "🖌️" }, { id: 2, name: "Nghiên Mực Hoàng Sơn", desc: "Giúp nét chữ thêm phần tinh anh.", price: 45, icon: "🪨" }, { id: 3, name: "Giấy Tuyên Chỉ Thượng Đẳng", desc: "Giấy thơm viết văn không sai sót.", price: 25, icon: "📜" }, { id: 4, name: "Tráp Đựng Sách Gỗ Trắc", desc: "Gọn gàng kinh thư, ôn bài nhanh.", price: 60, icon: "🧰" }, { id: 5, name: "Đèn Khổng Minh Soi Sáng", desc: "Xua tan bóng tối khi học ban đêm.", price: 80, icon: "🏮" }, { id: 6, name: "Quạt Giấy Thơ Đề", desc: "Tăng phong thái tiêu dao sĩ tử.", price: 50, icon: "🪭" } ];
 
+        // CẤU TRÚC NGỮ PHÁP MỚI VỚI BẢNG CÔNG THỨC & CÁCH DÙNG
         window.categories = [
             {
-                id: 'cat1', title: 'Trường Thi Thứ Nhất: Nhóm 4 Thì Hiện Tại',
+                id: 'cat1', title: 'Trường Thi Thứ Nhất: Nhóm Các Thì Hiện Tại',
                 topics: [
-                    { id: 't_present_simple', name: '1. Hiện Tại Đơn (Present Simple)', theory: `S + V(s/es)`, questions: [{ q: "She usually _____ to school.", options: ["go", "goes", "went", "going"], answer: 1, explanation: "Ngôi thứ 3 số ít thêm es" }] },
-                    { id: 't_present_continuous', name: '2. Hiện Tại Tiếp Diễn', theory: `S + am/is/are + V-ing`, questions: [{ q: "Listen! Someone _____ a song.", options: ["sing", "sings", "is singing", "sang"], answer: 2, explanation: "Đang diễn ra dùng V-ing." }] }
+                    { 
+                        id: 't_present_simple', 
+                        name: '1. Hiện Tại Đơn (Present Simple)', 
+                        type: 'tense',
+                        formula: {
+                            affirmative: "S + V(s/es) + O  (Đối với V thường) | S + am/is/are + N/Adj",
+                            negative: "S + do/does + NOT + V-bare + O | S + am/is/are + NOT + N/Adj",
+                            interrogative: "Do/Does + S + V-bare + O? | Am/Is/Are + S + N/Adj?"
+                        },
+                        signals: "always, usually, often, sometimes, seldom, never, every day/week/month...",
+                        usage: "Diễn tả hành động lặp đi lặp lại theo thói quen, một sự thật hiển nhiên hoặc một chân lý.",
+                        questions: [
+                            { q: "She usually _____ to school by bus.", options: ["go", "goes", "went", "going"], answer: 1, explanation: "Chủ ngữ là 'She' (số ít) và có 'usually' nên động từ thêm 'es'." },
+                            { q: "Earth _____ around the Sun.", options: ["move", "moves", "is moving", "moved"], answer: 1, explanation: "Chân lý sự thật hiển nhiên dùng Thì Hiện tại đơn." }
+                        ] 
+                    },
+                    { 
+                        id: 't_present_continuous', 
+                        name: '2. Hiện Tại Tiếp Diễn (Present Continuous)', 
+                        type: 'tense',
+                        formula: {
+                            affirmative: "S + am/is/are + V-ing",
+                            negative: "S + am/is/are + NOT + V-ing",
+                            interrogative: "Am/Is/Are + S + V-ing?"
+                        },
+                        signals: "now, at the moment, at present, Look!, Listen!, Keep silent!...",
+                        usage: "Diễn tả hành động đang diễn ra ngay tại thời điểm nói hoặc xung quanh thời điểm nói.",
+                        questions: [
+                            { q: "Listen! Someone _____ a song.", options: ["sing", "sings", "is singing", "sang"], answer: 2, explanation: "Có câu lệnh 'Listen!' báo hiệu hành động đang xảy ra." }
+                        ] 
+                    }
+                ]
+            },
+            {
+                id: 'cat2', title: 'Trường Thi Thứ Hai: Ngữ Pháp Khác',
+                topics: [
+                    { 
+                        id: 't_passive_voice', 
+                        name: '3. Câu Bị Động (Passive Voice)', 
+                        type: 'other',
+                        usage: "Dùng khi muốn nhấn mạnh vào đối tượng chịu tác động của hành động thay vì người thực hiện.",
+                        formulaDetails: "Chủ động: S + V + O  ➜  Bị động: S(O) + Be + V3/ed + (by O)",
+                        signals: "Thường đi kèm bởi từ 'by' (bởi ai đó). Ví dụ: 'by John', 'by the teacher'.",
+                        questions: [
+                            { q: "This house _____ in 1990.", options: ["built", "was built", "is built", "builds"], answer: 1, explanation: "Căn nhà được xây (bị động) trong quá khứ nên dùng 'was built'." }
+                        ] 
+                    }
                 ]
             }
         ];
 
-        // Có sẵn nhóm bạn làm mẫu, có thuộc tính customTitle để tự phong danh hiệu
+        // Danh sách sĩ tử mặc định (đã xóa Gia Hân, Cẩm Giang)
         window.playersList = JSON.parse(localStorage.getItem("khoacu_players")) || [
-            { id: "p1", name: "Cẩm Giang", exp: 0, coins: 50, customTitle: "" },
-            { id: "p2", name: "Vang", exp: 15, coins: 65, customTitle: "" },
-            { id: "p3", name: "Hoa", exp: 30, coins: 90, customTitle: "" }
+            { id: "p1", name: "Sĩ tử 1", exp: 120, coins: 50, avatar: "🧙‍♂️" },
+            { id: "p2", name: "Sĩ tử 2", exp: 460, coins: 65, avatar: "🥷" },
+            { id: "p3", name: "Sĩ tử 3", exp: 30, coins: 90, avatar: "🤴" }
         ];
         window.activePlayerId = localStorage.getItem("khoacu_active_id") || "p1";
         
@@ -314,7 +386,6 @@
 
         let currentTopic = null, currentQuestions = [], currentQIndex = 0, score = 0;
 
-        // TÍNH TOÁN HIỆU ỨNG MÀU SẮC LẤP LÁNH CHO HƠN 20 CẤP BẬC
         function getRankDetails(exp) {
             let currentRank = rankList[0];
             let rIndex = 0;
@@ -325,10 +396,7 @@
                     break; 
                 } 
             }
-            // Tạo ra 25 màu sắc trải dài trên vòng quang phổ HSL
-            let hue = Math.floor((rIndex / rankList.length) * 360);
-            let color = `hsl(${hue}, 100%, 55%)`; // Tươi sáng, lấp lánh
-            return { rank: currentRank, index: rIndex, color: color };
+            return { rank: currentRank, index: rIndex };
         }
 
         window.initAppData = function() {
@@ -347,7 +415,7 @@
 
         window.syncActivePlayerFromList = function() {
             let p = window.getActivePlayer();
-            if(p) { document.getElementById('current-player-name').innerText = p.name; }
+            if(p) { document.getElementById('current-player-name').innerText = p.name + " ✏️"; }
         }
 
         window.updateUI = function() {
@@ -358,16 +426,8 @@
             document.getElementById('user-coins').innerText = p.coins;
             
             let rDetails = getRankDetails(p.exp);
-            let displayTitle = p.customTitle ? p.customTitle : rDetails.rank.name;
-
-            // Gán hiệu ứng lấp lánh cho cả Tên Người Chơi và Danh Hiệu
-            const nameEl = document.getElementById('current-player-name');
-            nameEl.innerText = p.name;
-            nameEl.className = "font-bold dynamic-glow-text";
-            nameEl.style = `--theme-color: ${rDetails.color};`;
-
-            const rankEl = document.getElementById('user-rank');
-            rankEl.innerHTML = `<span class="dynamic-glow-text" style="--theme-color: ${rDetails.color}; cursor:pointer;" onclick="changeCustomTitle()" title="Nhấn để tự phong danh hiệu">${displayTitle} ✏️</span>`;
+            document.getElementById('current-player-name').innerText = p.name + " ✏️";
+            document.getElementById('user-rank').innerText = rDetails.rank.name;
 
             localStorage.setItem("khoacu_players", JSON.stringify(window.playersList));
             localStorage.setItem("khoacu_active_id", window.activePlayerId);
@@ -375,14 +435,14 @@
             if(window.saveToCloud) window.saveToCloud(); 
         }
 
-        // HÀM CHO PHÉP TỰ ĐẶT DANH HIỆU
-        window.changeCustomTitle = function() {
+        // ĐỔI TÊN SĨ TỬ
+        window.changePlayerName = function() {
             let p = window.getActivePlayer();
-            let newTitle = prompt("Hãy tự phong danh hiệu cho bạn (Để trống nếu muốn hệ thống tự gọi theo cấp bậc chuẩn):", p.customTitle || "");
-            if (newTitle !== null) {
-                p.customTitle = newTitle.trim();
+            let newName = prompt("Nhập tên mới cho sĩ tử:", p.name);
+            if (newName && newName.trim() !== "") {
+                p.name = newName.trim();
                 updateUI();
-                renderRanksList();
+                renderPlayersSelector();
             }
         }
 
@@ -406,19 +466,58 @@
             categories.forEach(cat => {
                 let topicsHtml = '';
                 cat.topics.forEach(t => {
-                    topicsHtml += `<div onclick="openTheory('${t.id}')" class="border p-4 rounded-xl cursor-pointer hover:border-amber-500 flex justify-between bg-white dark:bg-[#202020]"><h4 class="font-bold">${t.name} (Kho: ${t.questions.length} câu)</h4><span class="text-amber-600 font-bold">Vào học ➔</span></div>`;
+                    topicsHtml += `<div onclick="openTheory('${t.id}')" class="border p-4 rounded-xl cursor-pointer hover:border-amber-500 flex justify-between bg-white dark:bg-[#202020] shadow-sm transition"><h4 class="font-bold">${t.name}</h4><span class="text-amber-600 font-bold">Xem Bảng Vàng ➔</span></div>`;
                 });
-                container.innerHTML += `<div class="border p-5 rounded-2xl bg-[#fffdfa] dark:bg-[#181818] mb-4"><h3 class="cophong-title font-bold text-xl text-red-700 dark:text-red-400 border-b pb-2 mb-3">${cat.title}</h3>${topicsHtml}</div>`;
+                container.innerHTML += `<div class="border p-5 rounded-2xl bg-[#fffdfa] dark:bg-[#181818] mb-4 space-y-3"><h3 class="cophong-title font-bold text-xl text-red-700 dark:text-red-400 border-b pb-2">${cat.title}</h3>${topicsHtml}</div>`;
             });
         }
 
+        // HIỂN THỊ BẢNG VÀNG CÔNG THỨC & CÁCH DÙNG
         window.openTheory = function(topicId) {
             for (let cat of categories) {
                 let found = cat.topics.find(t => t.id === topicId);
                 if (found) { currentTopic = found; break; }
             }
             document.getElementById('theory-title').innerText = currentTopic.name;
-            document.getElementById('theory-content').innerHTML = currentTopic.theory;
+            
+            let contentEl = document.getElementById('theory-content');
+            
+            if (currentTopic.type === 'tense') {
+                contentEl.innerHTML = `
+                    <div class="bg-white dark:bg-[#221f1a] p-4 rounded-xl border border-amber-300 dark:border-amber-700 space-y-3">
+                        <h4 class="font-bold text-amber-800 dark:text-amber-300 text-lg flex items-center gap-2">📐 CÔNG THỨC CỦA THÌ</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="p-2.5 bg-green-500/10 border-l-4 border-green-500 rounded"><b class="text-green-700 dark:text-green-400">Câu Khẳng Định (+):</b> ${currentTopic.formula.affirmative}</div>
+                            <div class="p-2.5 bg-red-500/10 border-l-4 border-red-500 rounded"><b class="text-red-700 dark:text-red-400">Câu Phủ Định (-):</b> ${currentTopic.formula.negative}</div>
+                            <div class="p-2.5 bg-blue-500/10 border-l-4 border-blue-500 rounded"><b class="text-blue-700 dark:text-blue-400">Câu Nghi Vấn (?):</b> ${currentTopic.formula.interrogative}</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-[#221f1a] p-4 rounded-xl border border-amber-300 dark:border-amber-700 space-y-2">
+                        <h4 class="font-bold text-amber-800 dark:text-amber-300 text-lg flex items-center gap-2">💡 DẤU HIỆU NHẬN BIẾT</h4>
+                        <p class="text-sm italic text-gray-700 dark:text-gray-300">${currentTopic.signals}</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-[#221f1a] p-4 rounded-xl border border-amber-300 dark:border-amber-700 space-y-2">
+                        <h4 class="font-bold text-amber-800 dark:text-amber-300 text-lg flex items-center gap-2">📖 CÁCH DÙNG</h4>
+                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${currentTopic.usage}</p>
+                    </div>
+                `;
+            } else {
+                contentEl.innerHTML = `
+                    <div class="bg-white dark:bg-[#221f1a] p-4 rounded-xl border border-amber-300 dark:border-amber-700 space-y-3">
+                        <h4 class="font-bold text-amber-800 dark:text-amber-300 text-lg flex items-center gap-2">📖 CÁCH DÙNG VÀ CẤU TRÚC</h4>
+                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${currentTopic.usage}</p>
+                        <div class="p-2.5 bg-amber-500/10 border-l-4 border-amber-500 rounded text-sm font-semibold">${currentTopic.formulaDetails}</div>
+                    </div>
+
+                    <div class="bg-white dark:bg-[#221f1a] p-4 rounded-xl border border-amber-300 dark:border-amber-700 space-y-2">
+                        <h4 class="font-bold text-amber-800 dark:text-amber-300 text-lg flex items-center gap-2">💡 LƯU Ý & DẤU HIỆU</h4>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">${currentTopic.signals}</p>
+                    </div>
+                `;
+            }
+
             document.getElementById('screen-menu').classList.add('hidden');
             document.getElementById('screen-theory').classList.remove('hidden');
         }
@@ -488,19 +587,13 @@
             renderCategories();
         }
 
-        // HÀM HIỂN THỊ BẢNG VÀNG 25 CẤP BẬC RIÊNG BIỆT
         window.openRankSystemModal = function() {
             const list = document.getElementById('rank-system-list');
             list.innerHTML = '';
             rankList.forEach((r, idx) => {
-                let hue = Math.floor((idx / rankList.length) * 360);
-                let color = `hsl(${hue}, 100%, 65%)`; // Sáng nổi bật
                 list.innerHTML += `
-                    <div class="p-3 rounded-xl flex justify-between items-center bg-white/40 dark:bg-black/30 dynamic-glow-box" style="--theme-color: ${color}">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold px-1.5 py-0.5 rounded-md bg-black/10 dark:bg-white/10 opacity-70">#${idx + 1}</span>
-                            <span class="font-bold dynamic-glow-text text-base" style="--theme-color: ${color}">${r.name}</span>
-                        </div>
+                    <div class="p-3 rounded-xl flex justify-between items-center bg-white/40 dark:bg-black/30 border border-amber-300">
+                        <span class="font-bold text-amber-900 dark:text-amber-200">#${idx + 1} ${r.name}</span>
                         <span class="text-xs font-bold text-gray-700 dark:text-gray-300">${r.exp} EXP</span>
                     </div>
                 `;
@@ -509,7 +602,7 @@
         }
         window.closeRankSystemModal = () => document.getElementById('rank-system-modal').classList.add('hidden');
 
-        // BẢNG ĐUA TOP NGƯỜI CHƠI
+        // BẢNG ĐUA TOP THIẾT KẾ CARD GIỐNG ẢNH
         window.openRanksModal = function() {
             renderPlayersSelector();
             renderRanksList();
@@ -519,13 +612,12 @@
 
         window.renderPlayersSelector = function() {
             const selectorList = document.getElementById('players-selector-list');
-            document.getElementById('player-count').innerText = window.playersList.length;
             selectorList.innerHTML = '';
             
             window.playersList.forEach(pl => {
                 let isActive = pl.id === window.activePlayerId;
                 selectorList.innerHTML += `
-                    <button onclick="switchPlayer('${pl.id}')" class="px-2.5 py-1 text-xs rounded-lg font-bold border transition ${isActive ? 'bg-amber-600 text-white border-amber-500 shadow-sm' : 'bg-white dark:bg-black opacity-80 border-amber-300'}">
+                    <button onclick="switchPlayer('${pl.id}')" class="px-2.5 py-1 text-xs rounded-lg font-bold border transition ${isActive ? 'bg-amber-600 text-white border-amber-500' : 'bg-black opacity-80 border-gray-700'}">
                         ${pl.name} ${isActive ? '👑' : ''}
                     </button>
                 `;
@@ -549,7 +641,7 @@
             if (!name) return;
             
             const newId = 'p_' + Date.now();
-            window.playersList.push({ id: newId, name: name, exp: 0, coins: 50, customTitle: "" });
+            window.playersList.push({ id: newId, name: name, exp: 0, coins: 50, avatar: "👤" });
             window.activePlayerId = newId;
             input.value = '';
             updateUI();
@@ -558,28 +650,47 @@
         }
 
         window.renderRanksList = function() {
-            const listContainer = document.getElementById('ranks-list-container');
-            listContainer.innerHTML = '';
+            const cardsContainer = document.getElementById('top-ranks-cards-container');
+            const otherList = document.getElementById('other-ranks-list');
+            cardsContainer.innerHTML = '';
+            otherList.innerHTML = '';
 
-            let sortedPlayers = [...window.playersList].sort((a, b) => b.exp - a.exp);
+            let sorted = [...window.playersList].sort((a, b) => b.exp - a.exp);
 
-            sortedPlayers.forEach((pl, idx) => {
+            // Hiển thị 3 vị trí đầu dạng Khung Card lớn
+            sorted.slice(0, 3).forEach((pl, idx) => {
+                let rankClass = `rank-${idx + 1}`;
                 let rDetails = getRankDetails(pl.exp);
-                let isCurrent = pl.id === window.activePlayerId;
-                let displayTitle = pl.customTitle ? pl.customTitle : rDetails.rank.name;
+                let avatar = pl.avatar || "👤";
+                
+                cardsContainer.innerHTML += `
+                    <div class="top-card ${rankClass} text-center">
+                        <div class="rank-badge">${idx + 1}</div>
+                        <div class="avatar-frame">${avatar}</div>
+                        <h4 class="font-bold text-lg text-white truncate px-2" title="${pl.name}">${pl.name}</h4>
+                        <div class="mt-2 text-xs text-amber-400 font-semibold bg-amber-950/40 py-1 px-2 rounded-full inline-block border border-amber-800/50">
+                            🛡️ ${rDetails.rank.name}
+                        </div>
+                        <div class="mt-3 text-sm font-bold text-gray-300">
+                            ⚔️ ${pl.exp} EXP
+                        </div>
+                    </div>
+                `;
+            });
 
-                listContainer.innerHTML += `
-                    <div class="flex justify-between items-center p-3 rounded-xl border bg-white/40 dark:bg-black/20 dynamic-glow-box" style="--theme-color: ${rDetails.color}; ${isCurrent ? 'transform: scale(1.02);' : ''}">
+            // Hiển thị các vị trí còn lại bên dưới
+            sorted.slice(3).forEach((pl, idx) => {
+                let rDetails = getRankDetails(pl.exp);
+                otherList.innerHTML += `
+                    <div class="flex justify-between items-center p-3 rounded-xl bg-gray-900 border border-gray-800">
                         <div class="flex items-center space-x-3">
-                            <span class="font-bold text-sm px-2 py-1 rounded bg-black/10 dark:bg-white/10">#${idx + 1}</span>
+                            <span class="font-bold text-sm px-2.5 py-1 rounded-lg bg-gray-800 text-gray-400">#${idx + 4}</span>
                             <div>
-                                <span class="font-bold dynamic-glow-text text-base" style="--theme-color: ${rDetails.color}">${pl.name}</span>
-                                <div class="text-xs mt-0.5"><b style="color: ${rDetails.color}">${displayTitle}</b></div>
+                                <span class="font-bold text-white">${pl.name}</span>
+                                <div class="text-xs text-amber-500">${rDetails.rank.name}</div>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <span class="text-sm font-bold text-gray-800 dark:text-gray-200">${pl.exp} EXP</span>
-                        </div>
+                        <span class="text-sm font-bold text-gray-300">${pl.exp} EXP</span>
                     </div>
                 `;
             });
@@ -619,7 +730,6 @@
         window.openApiKeyModal = () => { document.getElementById('api-key-input').value = userData.apiKey; document.getElementById('apikey-modal').classList.remove('hidden'); }
         window.closeApiKeyModal = () => document.getElementById('apikey-modal').classList.add('hidden');
         window.saveApiKey = () => { userData.apiKey = document.getElementById('api-key-input').value; localStorage.setItem("gemini_api_key", userData.apiKey); closeApiKeyModal(); updateUI(); }
-        window.closeRankUpModal = () => document.getElementById('rankup-modal').classList.add('hidden');
 
         applyTheme(); updateUI();
     </script>
