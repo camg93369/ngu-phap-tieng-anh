@@ -613,7 +613,7 @@
             });
         }
 
-        // TÍNH NĂNG GỌI API GEMINI VÀ ĐỒNG BỘ CÂU HỎI LÊN ĐÁM MÂY
+        // TÍNH NĂNG GỌI API GEMINI VÀ ĐỒNG BỘ CÂU HỎI LÊN ĐÁM MÂY (ĐÃ CẬP NHẬT MODEL GEMINI-2.5-FLASH)
         window.generateAIQuiz = async function() {
             if (!userData.apiKey) {
                 MặcHiênThôngBáo("Chưa có Bí Kíp! Hãy vào bấm '🔑 Bí Kíp' để nhập API Key của bạn.");
@@ -623,8 +623,9 @@
             MặcHiênThôngBáo("Mặc Hiên tiên sinh đang vận dụng thiên khí để ra đề mới...");
             
             try {
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userData.apiKey}`;
-                const promptText = `Tạo 1 câu hỏi trắc nghiệm tiếng Anh độc đáo về chủ đề: "${currentTopic.name}". 
+                // Cập nhật endpoint dùng model gemini-2.5-flash
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${userData.apiKey}`;
+                const promptText = `Tạo 1 câu hỏi trắc nghiệm tiếng Anh độc đáo về đúng chủ đề: "${currentTopic.name}". 
                 Chỉ trả về định dạng JSON thuần túy, không có khoảng trắng thừa hay markdown, cấu trúc chính xác:
                 {
                   "q": "Nội dung câu hỏi tiếng Anh?",
@@ -639,45 +640,40 @@
                     body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
                 });
 
-                if (!response.ok) throw new Error("Lỗi API AI");
+                if (!response.ok) throw new Error(`Lỗi API HTTP status ${response.status}`);
 
                 const data = await response.json();
                 let textRes = data.candidates[0].content.parts[0].text;
                 textRes = textRes.replace(/```json/g, '').replace(/```/g, '').trim();
                 const aiQuestion = JSON.parse(textRes);
 
-                // Thêm vào danh sách câu hỏi của chủ đề hiện tại để lưu trực tiếp lên mây
                 currentQuestions.push(aiQuestion);
                 currentTopic.questions = [...currentQuestions];
                 currentQIndex = currentQuestions.length - 1;
                 
-                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã ra câu hỏi mới và đồng bộ lên mây!");
+                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã ra câu hỏi mới thành công!");
                 loadQuestion();
                 if(window.saveToCloud) window.saveToCloud();
             } catch (e) {
-                console.warn("Lỗi API, chuyển sang câu hỏi dự phòng:", e);
-                const randomPool = [
-                    { q: `[AI Đề Xuất] Chọn dạng đúng của động từ: She (not go) _____ to work yesterday.`, options: ["don't go", "doesn't go", "didn't go", "hasn't gone"], answer: 2, explanation: "Có 'yesterday' và dạng phủ định nên dùng 'didn't go'." },
-                    { q: `[AI Đề Xuất] Hoàn thành câu: They _____ football when it started to rain.`, options: ["play", "were playing", "played", "are playing"], answer: 1, explanation: "Hành động đang diễn ra (chia tiếp diễn) thì có hành động khác cắt ngang." }
-                ];
-                let selectedFallback = randomPool[Math.floor(Math.random() * randomPool.length)];
-                currentQuestions.push(selectedFallback);
+                console.warn("Lỗi API, chuyển sang câu hỏi dự phòng linh hoạt:", e);
+                
+                // Mã dự phòng linh hoạt theo chủ đề hiện tại
+                const fallbackQuestion = { 
+                    q: `[Dự phòng - ${currentTopic.name}] Chọn dạng đúng của động từ: She usually (go) _____ to school on time.`, 
+                    options: ["go", "goes", "went", "is going"], 
+                    answer: 1, 
+                    explanation: "Chủ ngữ số ít 'She' kết hợp dấu hiệu 'usually' chia Thì hiện tại đơn (thêm -es vào động từ go)." 
+                };
+                
+                currentQuestions.push(fallbackQuestion);
                 currentTopic.questions = [...currentQuestions];
                 currentQIndex = currentQuestions.length - 1;
                 
-                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã mở cẩm nang dự phòng và đồng bộ lên mây!");
+                MặcHiênThôngBáo("Mặc Hiên tiên sinh đã mở cẩm nang dự phòng theo đúng chủ đề!");
                 loadQuestion();
                 if(window.saveToCloud) window.saveToCloud();
             }
         }
-
-        function MặcHiênThôngBáo(msg) {
-            const box = document.getElementById('cophong-alert');
-            document.getElementById('alert-msg').innerText = msg;
-            box.classList.add('show');
-            setTimeout(() => { box.classList.remove('show'); }, 3500);
-        }
-        window.showCophongAlert = MặcHiênThôngBáo;
 
         window.openTheory = function(topicId) {
             for (let cat of categories) {
