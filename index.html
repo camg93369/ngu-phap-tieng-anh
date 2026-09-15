@@ -311,7 +311,7 @@
             window.playersList = data.players || window.playersList;
             window.activePlayerId = data.activeId || window.playersList[0].id;
             
-            // THÊM DÒNG NÀY: Nạp danh sách câu hỏi (categories) từ Đám Mây về
+            // Nạp danh sách câu hỏi (categories) đã lưu trên Đám Mây về
             if (data.categories && data.categories.length > 0) {
                 window.categories = data.categories;
             }
@@ -329,7 +329,6 @@
         window.initAppData(); 
     }
 }
-
         window.loadFromCloud();
     </script>
 
@@ -666,6 +665,8 @@ YÊU CẦU:
                 const aiQuestion = JSON.parse(jsonMatch[0]);
 
            // CODE MỚI ĐÃ SỬA
+// Thay thế đoạn lưu câu hỏi trong hàm generateAIQuiz() bằng đoạn sau:
+
 const formattedQuestion = {
     q: aiQuestion.question || aiQuestion.q,
     options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
@@ -673,11 +674,12 @@ const formattedQuestion = {
     explanation: aiQuestion.explanation || aiQuestion.e || "Mặc Hiên tiên sinh chưa để lại giải thích."
 };
 
+// 1. Thêm vào topic hiện tại
 if (currentTopic && currentTopic.questions) {
     currentTopic.questions.push(formattedQuestion);
 }
 
-// Cập nhật câu hỏi vào categories gốc
+// 2. Cập nhật câu hỏi vào categories gốc
 window.categories.forEach(cat => {
     let t = cat.topics.find(top => top.id === currentTopic.id);
     if (t) {
@@ -685,7 +687,7 @@ window.categories.forEach(cat => {
     }
 });
 
-// Lưu lên Firebase Đám Mây
+// 3. Lưu toàn bộ lên Đám Mây (Firestore)
 if (typeof window.saveToCloud === 'function') {
     await window.saveToCloud();
 }
@@ -694,7 +696,6 @@ currentQuestions = [...currentTopic.questions];
 currentQIndex = currentQuestions.length - 1;
 loadQuestion();
 MặcHiênThôngBáo("Đã lưu đề thi mới từ Mặc Hiên tiên sinh lên Đám mây!");
-
             } catch (error) {
                 console.error("Lỗi AI ra đề:", error);
                 alert("Lỗi tạo câu hỏi từ AI: " + error.message + "\nVui lòng nhấn thử lại!");
