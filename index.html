@@ -198,7 +198,7 @@
     <div id="rank-system-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-4xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative">
             <div class="flex justify-between border-b border-amber-300 pb-3 items-center">
-                <h3 class="cophong-title text-2xl font-bold text-amber-700 dark:text-amber-400">📜 Bảng Quan Phẩm Khoa Cử (25 Cấp Bậc)</h3>
+                <h3 class="cophong-title text-2xl font-bold text-amber-700 dark:text-amber-400">📜 Bảng Quan Phẩm Khoa Cử (28 Cấp Bậc)</h3>
                 <button onclick="closeRankSystemModal()" class="text-2xl font-bold opacity-70 hover:opacity-100">✕</button>
             </div>
             <p class="text-sm italic text-center mb-4">Các cấp bậc mang theo uy lực và hiệu ứng độc tôn dưới sự phò tá của Mặc Hiên tiên sinh.</p>
@@ -353,9 +353,12 @@
             { name: "Đồng Sinh", exp: 100, frame: "border-emerald-500 bg-emerald-500/10 text-emerald-600 effect-leaf" }, 
             { name: "Tú Tài", exp: 300, frame: "border-blue-500 bg-blue-500/10 text-blue-500 effect-leaf" }, 
             { name: "Cử Nhân", exp: 600, frame: "border-indigo-500 bg-indigo-500/10 text-indigo-500 effect-leaf" }, 
-            { name: "Tiến Sĩ", exp: 1000, frame: "border-purple-500 bg-purple-500/10 text-purple-400 effect-leaf" }, 
-            { name: "Tòng Cửu Phẩm", exp: 1500, frame: "border-amber-700 bg-amber-700/10 text-amber-700 effect-lightning" }, 
-            { name: "Chánh Cửu Phẩm", exp: 2100, frame: "border-amber-600 bg-amber-600/10 text-amber-600 effect-lightning" }, 
+            { name: "Tiến Sĩ", exp: 900, frame: "border-purple-500 bg-purple-500/10 text-purple-400 effect-leaf" }, 
+            { name: "Thám Hoa", exp: 1200, frame: "border-purple-500 bg-purple-500/10 text-purple-400 effect-leaf" }, 
+            { name: "Bảng Nhãn", exp: 1500, frame: "border-purple-500 bg-purple-500/10 text-purple-400 effect-leaf" }, 
+            { name: "Trạng Nguyên", exp: 1800, frame: "border-purple-500 bg-purple-500/10 text-purple-400 effect-leaf" }, 
+            { name: "Tòng Cửu Phẩm", exp: 2100, frame: "border-amber-700 bg-amber-700/10 text-amber-700 effect-lightning" }, 
+            { name: "Chánh Cửu Phẩm", exp: 2400, frame: "border-amber-600 bg-amber-600/10 text-amber-600 effect-lightning" }, 
             { name: "Tòng Bát Phẩm", exp: 2800, frame: "border-stone-400 bg-stone-400/10 text-stone-300 effect-lightning" }, 
             { name: "Chánh Bát Phẩm", exp: 3600, frame: "border-stone-300 bg-stone-300/10 text-stone-200 effect-lightning" }, 
             { name: "Tòng Thất Phẩm", exp: 4500, frame: "border-yellow-600 bg-yellow-600/10 text-yellow-600 effect-lightning" }, 
@@ -860,7 +863,7 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
             rankList.forEach((r, idx) => {
                 list.innerHTML += `
                     <div class="p-4 rounded-xl flex flex-col justify-between items-center border-2 shadow-md ${r.frame} transition transform hover:scale-[1.03]">
-                        <span class="text-xs font-extrabold uppercase opacity-80 tracking-wider">Quan Phẩm #${idx + 1}</span>
+                        <span class="text-xs font-extrabold uppercase opacity-80 tracking-wider">#${idx + 1}</span>
                         <span class="font-bold text-base my-1 text-center">${r.name}</span>
                         <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-black/20 mt-1">🎯 ${r.exp} EXP</span>
                     </div>
