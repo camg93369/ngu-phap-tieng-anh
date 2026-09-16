@@ -141,7 +141,7 @@
                 <div>Ngân lượng: <span id="user-coins" class="font-bold text-yellow-300">50</span> 🪙</div>
                 
                 <div class="flex items-center gap-1.5">
-                    <button onclick="openRankSystemModal()" class="bg-fuchsia-700 hover:bg-fuchsia-800 text-white px-3 py-1.5 rounded-md font-bold transition border border-fuchsia-300">Bảng Quan Phẩm ✨</button>
+                    <button onclick="openRankSystemModal()" class="bg-fuchsia-700 hover:bg-fuchsia-800 text-white px-3 py-1.5 rounded-md font-bold transition border border-fuchsia-300">Bảng Chức Quan ✨</button>
                     <button onclick="openRanksModal()" id="rank-badge-btn" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-md font-bold transition border border-amber-300">Đua Top 🏆</button>
                     <button onclick="openShop()" class="btn-shine bg-[#b91c1c] hover:bg-red-800 text-white px-3 py-1.5 rounded-md font-bold transition">Mặc Hương Trai</button>
                     <button onclick="openApiKeyModal()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-2.5 py-1.5 rounded-md font-bold transition">🔑 Bí Kíp</button>
@@ -231,10 +231,10 @@
     <div id="rank-system-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-4xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative">
             <div class="flex justify-between border-b border-amber-300 pb-3 items-center">
-                <h3 class="cophong-title text-2xl font-bold text-amber-700 dark:text-amber-400">📜 Bảng Quan Phẩm Khoa Cử (28 Cấp Bậc Hào Quang)</h3>
+                <h3 class="cophong-title text-2xl font-bold text-amber-700 dark:text-amber-400">📜 Bảng Chức Quan Khoa Cử (28 Cấp Bậc Hào Quang)</h3>
                 <button onclick="closeRankSystemModal()" class="text-2xl font-bold opacity-70 hover:opacity-100">✕</button>
             </div>
-            <p class="text-sm italic text-center mb-4">Các cấp bậc mang theo uy lực và vầng hào quang chuyển động 360 độ xoay quanh tên quan phẩm.</p>
+            <p class="text-sm italic text-center mb-4">Các cấp bậc mang theo uy lực, hãy dùi mài kinh sử để thăng quan tiến ch.</p>
             <div id="rank-system-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm"></div>
             <button onclick="closeRankSystemModal()" class="w-full bg-[#2c221e] text-white py-3 rounded-lg mt-4 font-bold">Đóng</button>
         </div>
@@ -289,7 +289,7 @@
     <div id="shop-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-3xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto">
             <div class="flex justify-between border-b border-amber-300 pb-3">
-                <h3 class="cophong-title text-xl font-bold text-amber-700 dark:text-amber-400">🏮 Mặc Hương Trai (Cộng EXP Tương Xứng Ngân Lượng)</h3>
+                <h3 class="cophong-title text-xl font-bold text-amber-700 dark:text-amber-400">🏮 Mặc Hương Trai</h3>
                 <button onclick="closeShop()" class="text-xl font-bold opacity-70 hover:opacity-100">✕</button>
             </div>
             <div id="shop-items-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4 text-[#2c221e] dark:text-gray-200"></div>
@@ -943,7 +943,7 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
             rankList.forEach((r, idx) => {
                 list.innerHTML += `
                     <div class="rank-card-glow ${r.glow} p-4 flex flex-col justify-between items-center transition transform hover:scale-[1.05]">
-                        <span class="text-xs font-extrabold uppercase opacity-80 tracking-wider text-amber-500">#${idx + 1} Quan Phẩm</span>
+                        <span class="text-xs font-extrabold uppercase opacity-80 tracking-wider text-amber-500">#${idx + 1} Chức Quan</span>
                         <span class="font-bold text-base my-2 text-center ${r.text}">${r.name}</span>
                         <span class="text-xs font-bold px-3 py-1 rounded-full bg-black/40 text-amber-300 border border-amber-500/30">🎯 ${r.exp.toLocaleString()} EXP</span>
                     </div>
