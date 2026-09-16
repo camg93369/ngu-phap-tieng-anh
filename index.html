@@ -20,32 +20,62 @@
         
         .seal-stamp { border: 2px dashed #b91c1c; color: #b91c1c; transform: rotate(-3deg); }
 
-        /* Hiệu ứng động cho khung cấp bậc */
-        @keyframes fireAnim {
-            0% { box-shadow: 0 0 8px #f59e0b, inset 0 0 5px #ef4444; border-color: #f59e0b; transform: scale(1); }
-            50% { box-shadow: 0 0 22px #ef4444, inset 0 0 12px #f59e0b; border-color: #ef4444; transform: scale(1.02); }
-            100% { box-shadow: 0 0 8px #f59e0b, inset 0 0 5px #ef4444; border-color: #f59e0b; transform: scale(1); }
-        }
-        @keyframes lightningAnim {
-            0% { box-shadow: 0 0 6px #38bdf8; border-color: #38bdf8; }
-            30% { box-shadow: 0 0 20px #ffffff, inset 0 0 10px #38bdf8; border-color: #ffffff; }
-            100% { box-shadow: 0 0 6px #38bdf8; border-color: #38bdf8; }
-        }
-        @keyframes royalGoldAnim {
-            0% { box-shadow: 0 0 12px #fbbf24; border-color: #fbbf24; }
-            50% { box-shadow: 0 0 28px #facc15, inset 0 0 15px #f59e0b; border-color: #fef08a; }
-            100% { box-shadow: 0 0 12px #fbbf24; border-color: #fbbf24; }
-        }
-        @keyframes leafWindAnim {
-            0% { box-shadow: 0 0 10px #10b981; border-color: #10b981; transform: translateY(0); }
-            50% { box-shadow: 0 0 18px #34d399; border-color: #34d399; transform: translateY(-2px); }
-            100% { box-shadow: 0 0 10px #10b981; border-color: #10b981; transform: translateY(0); }
+        /* ==================== HIỆU ỨNG VÒNG XOAY HÀO QUANG CẤP BẬC ==================== */
+        .rank-card-glow {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            z-index: 1;
         }
 
-        .effect-fire { animation: fireAnim 2.5s infinite ease-in-out; }
-        .effect-lightning { animation: lightningAnim 1.8s infinite ease-in-out; }
-        .effect-royal { animation: royalGoldAnim 2s infinite ease-in-out; }
-        .effect-leaf { animation: leafWindAnim 3s infinite ease-in-out; }
+        .rank-card-glow::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            z-index: -2;
+            animation: rotateGlow 3s linear infinite;
+        }
+
+        .rank-card-glow::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: rgba(18, 18, 18, 0.92);
+            border-radius: 10px;
+            z-index: -1;
+        }
+
+        html:not(.dark) .rank-card-glow::after {
+            background: rgba(255, 255, 255, 0.94);
+        }
+
+        /* 1. Hiệu ứng Phong / Lá (Gió Xanh) */
+        .glow-leaf::before {
+            background: conic-gradient(transparent, #10b981, #34d399, transparent 40%);
+        }
+
+        /* 2. Hiệu ứng Lôi (Sấm Sét Xanh Dương/Trắng) */
+        .glow-lightning::before {
+            background: conic-gradient(transparent, #38bdf8, #ffffff, #0284c7, transparent 40%);
+        }
+
+        /* 3. Hiệu ứng Hỏa (Lửa Đỏ/Cam) */
+        .glow-fire::before {
+            background: conic-gradient(transparent, #f59e0b, #ef4444, #b91c1c, transparent 40%);
+        }
+
+        /* 4. Hiệu ứng Hoàng Gia / Thái Sư (Vàng Vua/Tím) */
+        .glow-royal::before {
+            background: conic-gradient(transparent, #fbbf24, #facc15, #8b5cf6, transparent 40%);
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
         /* Khung Đua Top Card */
         .top-card {
@@ -84,7 +114,6 @@
             background: linear-gradient(135deg, #1a1a1a 0%, #2a1a08 100%); border: 2px solid #b45309;
         }
         
-        /* Hộp thoại thông báo cổ phong */
         #cophong-alert {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999;
             background: #2c221e; color: #f7f1e5; border: 2px solid #fbbf24; padding: 12px 24px;
@@ -150,14 +179,18 @@
         </div>
 
         <!-- MÀN HÌNH THI -->
-       <!-- MÀN HÌNH THI -->
         <div id="screen-quiz" class="hidden border p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 bg-white dark:bg-[#1a1a1a]">
             <div class="flex flex-wrap justify-between items-center border-b dark:border-gray-700 pb-4 gap-2">
                 <div>
                     <span id="quiz-progress" class="text-xs font-bold opacity-70">Câu 1 / 5</span>
                     <h3 id="quiz-topic-name" class="font-bold text-lg">Chủ đề</h3>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <!-- NÚT UPLOAD FILE TXT MỚI -->
+                    <label class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow cursor-pointer transition flex items-center gap-1">
+                        📁 Tải Đề từ File (.txt)
+                        <input type="file" accept=".txt" onchange="importQuizFromTxt(event)" class="hidden">
+                    </label>
                     <button onclick="deleteCurrentQuestion()" class="bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-950/50 dark:text-red-400 text-xs font-bold px-3 py-2 rounded-lg border border-red-300 dark:border-red-800 transition">
                         🗑️ Xóa câu này
                     </button>
@@ -194,15 +227,15 @@
         </div>
     </main>
 
-    <!-- BẢNG CÁC CẤP BẬC HỆ THỐNG -->
+    <!-- BẢNG CÁC CẤP BẬC HỆ THỐNG NÂNG CẤP HIỆU ỨNG CHUYỂN ĐỘNG -->
     <div id="rank-system-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-4xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto relative">
             <div class="flex justify-between border-b border-amber-300 pb-3 items-center">
-                <h3 class="cophong-title text-2xl font-bold text-amber-700 dark:text-amber-400">📜 Bảng Quan Phẩm Khoa Cử (28 Cấp Bậc)</h3>
+                <h3 class="cophong-title text-2xl font-bold text-amber-700 dark:text-amber-400">📜 Bảng Quan Phẩm Khoa Cử (28 Cấp Bậc Hào Quang)</h3>
                 <button onclick="closeRankSystemModal()" class="text-2xl font-bold opacity-70 hover:opacity-100">✕</button>
             </div>
-            <p class="text-sm italic text-center mb-4">Các cấp bậc mang theo uy lực và hiệu ứng độc tôn dưới sự phò tá của Mặc Hiên tiên sinh.</p>
-            <div id="rank-system-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-sm"></div>
+            <p class="text-sm italic text-center mb-4">Các cấp bậc mang theo uy lực và vầng hào quang chuyển động 360 độ xoay quanh tên quan phẩm.</p>
+            <div id="rank-system-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm"></div>
             <button onclick="closeRankSystemModal()" class="w-full bg-[#2c221e] text-white py-3 rounded-lg mt-4 font-bold">Đóng</button>
         </div>
     </div>
@@ -252,11 +285,11 @@
         </div>
     </div>
 
-    <!-- MẶC HƯƠNG TRAI -->
+    <!-- MẶC HƯƠNG TRAI (CẬP NHẬT 15 BẢO VẬT CỘNG EXP TƯƠNG XỨNG COIN) -->
     <div id="shop-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
         <div class="sparkle-panel max-w-3xl w-full p-6 rounded-2xl space-y-4 max-h-[85vh] overflow-y-auto">
             <div class="flex justify-between border-b border-amber-300 pb-3">
-                <h3 class="cophong-title text-xl font-bold text-amber-700 dark:text-amber-400">🏮 Mặc Hương Trai (15 Bảo Vật Cổ Phong)</h3>
+                <h3 class="cophong-title text-xl font-bold text-amber-700 dark:text-amber-400">🏮 Mặc Hương Trai (Cộng EXP Tương Xứng Ngân Lượng)</h3>
                 <button onclick="closeShop()" class="text-xl font-bold opacity-70 hover:opacity-100">✕</button>
             </div>
             <div id="shop-items-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4 text-[#2c221e] dark:text-gray-200"></div>
@@ -268,7 +301,7 @@
     <div id="apikey-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
         <div class="border max-w-md w-full p-6 rounded-2xl bg-white dark:bg-[#1a1a1a] space-y-3">
             <div class="flex justify-between border-b pb-3"><h3 class="font-bold">🔑 Nhập API Key (Bí Kíp AI)</h3><button onclick="closeApiKeyModal()">✕</button></div>
-            <p class="text-xs opacity-80">Dán Bí Kíp dạng AQ.Ab... để Mặc Hiên tiên sinh linh ứng ra đề thi mới.</p>
+            <p class="text-xs opacity-80">Dán Bí Kíp Gemini 3.6 Flash để Mặc Hiên tiên sinh linh ứng ra đề thi mới.</p>
             <input type="password" id="api-key-input" placeholder="Dán API Key vào đây..." class="w-full p-2 border rounded text-black outline-none text-sm">
             <button onclick="saveApiKey()" class="w-full bg-indigo-700 hover:bg-indigo-800 font-bold text-white py-2 rounded">Lưu Bí Kíp</button>
         </div>
@@ -308,33 +341,32 @@
             } catch(e) { console.error("Lỗi khi lưu mây:", e); }
         }
 
- window.loadFromCloud = async function() {
-    if (!db) { window.initAppData(); return; }
-    try {
-        const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV11"));
-        if (docSnap.exists()) {
-            let data = docSnap.data();
-            window.playersList = data.players || window.playersList;
-            window.activePlayerId = data.activeId || window.playersList[0].id;
-            
-            // Nạp danh sách câu hỏi (categories) đã lưu trên Đám Mây về
-            if (data.categories && data.categories.length > 0) {
-                window.categories = data.categories;
+        window.loadFromCloud = async function() {
+            if (!db) { window.initAppData(); return; }
+            try {
+                const docSnap = await getDoc(doc(db, "UsersData", "MultiPlayersKhoaCuFullV11"));
+                if (docSnap.exists()) {
+                    let data = docSnap.data();
+                    window.playersList = data.players || window.playersList;
+                    window.activePlayerId = data.activeId || window.playersList[0].id;
+                    
+                    if (data.categories && data.categories.length > 0) {
+                        window.categories = data.categories;
+                    }
+                    
+                    window.syncActivePlayerFromList();
+                    window.updateUI();
+                    window.renderCategories();
+                    window.applyTheme();
+                } else {
+                    window.initAppData();
+                    window.saveToCloud();
+                }
+            } catch(e) { 
+                console.error("Lỗi khi tải mây:", e);
+                window.initAppData(); 
             }
-            
-            window.syncActivePlayerFromList();
-            window.updateUI();
-            window.renderCategories();
-            window.applyTheme();
-        } else {
-            window.initAppData();
-            window.saveToCloud();
         }
-    } catch(e) { 
-        console.error("Lỗi khi tải mây:", e);
-        window.initAppData(); 
-    }
-}
         window.loadFromCloud();
     </script>
 
@@ -348,53 +380,55 @@
         }
         window.showCophongAlert = MặcHiênThôngBáo;
 
+        /* 28 CẤP BẬC VỚI LOẠI HIỆU ỨNG THỜI TIẾT / HÀO QUANG CỤ THỂ */
         const rankList = [ 
-            { name: "Sĩ tử", exp: 0, frame: "border-gray-400 bg-gray-500/10 text-gray-700 dark:text-gray-300" }, 
-            { name: "Đồng Sinh", exp: 100, frame: "border-emerald-500 bg-emerald-500/10 text-emerald-600 effect-leaf" }, 
-            { name: "Tú Tài", exp: 300, frame: "border-blue-500 bg-blue-500/10 text-blue-500 effect-leaf" }, 
-            { name: "Cử Nhân", exp: 600, frame: "border-indigo-500 bg-indigo-500/10 text-indigo-500 effect-leaf" }, 
-            { name: "Tiến Sĩ", exp: 900, frame: "border-purple-500 bg-purple-500/10 text-purple-400 effect-leaf" }, 
-            { name: "Thám Hoa", exp: 1200, frame: "border-pink-600 bg-pink-600/10 text-pink-300 effect-fire" }, 
-            { name: "Bảng Nhãn", exp: 1500, frame: "border-stone-300 bg-stone-300/10 text-stone-200 effect-lightning" }, 
-            { name: "Trạng Nguyên", exp: 1800, frame: "border-amber-400 bg-amber-400/20 text-amber-300 font-bold effect-royal" }, 
-            { name: "Tòng Cửu Phẩm", exp: 2100, frame: "border-amber-700 bg-amber-700/10 text-amber-700 effect-lightning" }, 
-            { name: "Chánh Cửu Phẩm", exp: 2400, frame: "border-amber-600 bg-amber-600/10 text-amber-600 effect-lightning" }, 
-            { name: "Tòng Bát Phẩm", exp: 2800, frame: "border-stone-400 bg-stone-400/10 text-stone-300 effect-lightning" }, 
-            { name: "Chánh Bát Phẩm", exp: 3600, frame: "border-stone-300 bg-stone-300/10 text-stone-200 effect-lightning" }, 
-            { name: "Tòng Thất Phẩm", exp: 4500, frame: "border-yellow-600 bg-yellow-600/10 text-yellow-600 effect-lightning" }, 
-            { name: "Chánh Thất Phẩm", exp: 5500, frame: "border-yellow-500 bg-yellow-500/10 text-yellow-500 effect-lightning" }, 
-            { name: "Tòng Lục Phẩm", exp: 6800, frame: "border-teal-500 bg-teal-500/10 text-teal-400 effect-fire" }, 
-            { name: "Chánh Lục Phẩm", exp: 8200, frame: "border-teal-400 bg-teal-400/10 text-teal-300 effect-fire" }, 
-            { name: "Tòng Ngũ Phẩm", exp: 10000, frame: "border-cyan-500 bg-cyan-500/10 text-cyan-400 effect-fire" }, 
-            { name: "Chánh Ngũ Phẩm", exp: 12000, frame: "border-cyan-400 bg-cyan-400/10 text-cyan-300 effect-fire" }, 
-            { name: "Tòng Tứ Phẩm", exp: 15000, frame: "border-rose-500 bg-rose-500/10 text-rose-400 effect-fire" }, 
-            { name: "Chánh Tứ Phẩm", exp: 18000, frame: "border-rose-600 bg-rose-600/10 text-rose-300 effect-fire" }, 
-            { name: "Tòng Tam Phẩm", exp: 22000, frame: "border-pink-500 bg-pink-500/10 text-pink-400 effect-fire" }, 
-            { name: "Chánh Tam Phẩm", exp: 27000, frame: "border-pink-600 bg-pink-600/10 text-pink-300 effect-fire" }, 
-            { name: "Tòng Nhị Phẩm", exp: 33000, frame: "border-violet-500 bg-violet-500/10 text-violet-400 effect-royal" }, 
-            { name: "Chánh Nhị Phẩm", exp: 40000, frame: "border-violet-600 bg-violet-600/10 text-violet-300 effect-royal" }, 
-            { name: "Tòng Nhất Phẩm", exp: 48000, frame: "border-red-500 bg-red-500/10 text-red-500 effect-royal" }, 
-            { name: "Chánh Nhất Phẩm", exp: 57000, frame: "border-red-600 bg-red-600/10 text-red-400 effect-royal" }, 
-            { name: "Thái Sư", exp: 68000, frame: "border-amber-400 bg-amber-400/20 text-amber-300 font-bold effect-royal" }, 
-            { name: "Tể Tướng Đương Triều", exp: 80000, frame: "border-yellow-300 bg-gradient-to-r from-amber-600/30 to-red-600/30 text-yellow-200 font-extrabold effect-royal" } 
+            { name: "Sĩ tử", exp: 0, glow: "glow-leaf", text: "text-gray-300" }, 
+            { name: "Đồng Sinh", exp: 100, glow: "glow-leaf", text: "text-emerald-400" }, 
+            { name: "Tú Tài", exp: 300, glow: "glow-leaf", text: "text-blue-400" }, 
+            { name: "Cử Nhân", exp: 600, glow: "glow-leaf", text: "text-indigo-400" }, 
+            { name: "Tiến Sĩ", exp: 900, glow: "glow-leaf", text: "text-purple-400" }, 
+            { name: "Thám Hoa", exp: 1200, glow: "glow-fire", text: "text-pink-400" }, 
+            { name: "Bảng Nhãn", exp: 1500, glow: "glow-lightning", text: "text-sky-300" }, 
+            { name: "Trạng Nguyên", exp: 1800, glow: "glow-royal", text: "text-amber-300" }, 
+            { name: "Tòng Cửu Phẩm", exp: 2100, glow: "glow-lightning", text: "text-amber-500" }, 
+            { name: "Chánh Cửu Phẩm", exp: 2400, glow: "glow-lightning", text: "text-amber-400" }, 
+            { name: "Tòng Bát Phẩm", exp: 2800, glow: "glow-lightning", text: "text-cyan-300" }, 
+            { name: "Chánh Bát Phẩm", exp: 3600, glow: "glow-lightning", text: "text-cyan-400" }, 
+            { name: "Tòng Thất Phẩm", exp: 4500, glow: "glow-lightning", text: "text-yellow-400" }, 
+            { name: "Chánh Thất Phẩm", exp: 5500, glow: "glow-lightning", text: "text-yellow-300" }, 
+            { name: "Tòng Lục Phẩm", exp: 6800, glow: "glow-fire", text: "text-teal-300" }, 
+            { name: "Chánh Lục Phẩm", exp: 8200, glow: "glow-fire", text: "text-teal-200" }, 
+            { name: "Tòng Ngũ Phẩm", exp: 10000, glow: "glow-fire", text: "text-rose-400" }, 
+            { name: "Chánh Ngũ Phẩm", exp: 12000, glow: "glow-fire", text: "text-rose-300" }, 
+            { name: "Tòng Tứ Phẩm", exp: 15000, glow: "glow-fire", text: "text-red-400" }, 
+            { name: "Chánh Tứ Phẩm", exp: 18000, glow: "glow-fire", text: "text-red-500" }, 
+            { name: "Tòng Tam Phẩm", exp: 22000, glow: "glow-fire", text: "text-fuchsia-400" }, 
+            { name: "Chánh Tam Phẩm", exp: 27000, glow: "glow-fire", text: "text-fuchsia-300" }, 
+            { name: "Tòng Nhị Phẩm", exp: 33000, glow: "glow-royal", text: "text-violet-400" }, 
+            { name: "Chánh Nhị Phẩm", exp: 40000, glow: "glow-royal", text: "text-violet-300" }, 
+            { name: "Tòng Nhất Phẩm", exp: 48000, glow: "glow-royal", text: "text-amber-300" }, 
+            { name: "Chánh Nhất Phẩm", exp: 57000, glow: "glow-royal", text: "text-amber-200" }, 
+            { name: "Thái Sư", exp: 68000, glow: "glow-royal", text: "text-amber-300" }, 
+            { name: "Tể Tướng Đương Triều", exp: 80000, glow: "glow-royal", text: "text-yellow-200" } 
         ];
         
+        /* 15 BẢO VẬT MẶC HƯƠNG TRAI VỚI COIN VÀ EXP TƯƠNG XỨNG */
         const shopItems = [
-            { id: 1, name: "Bút Lông Sói Thượng Hạng", desc: "Giúp thi cử hanh thông.", price: 50, icon: "🖌️" },
-            { id: 2, name: "Nghiên Mực Hoàng Sơn", desc: "Nét chữ mượt mà, rèn luyện trí tuệ.", price: 100, icon: "🪨" },
-            { id: 3, name: "Giấy Tuyên Chỉ Thượng Đẳng", desc: "Giấy thơm làm bài thi chuẩn xác.", price: 200, icon: "📜" },
-            { id: 4, name: "Tráp Đựng Sách Gỗ Trắc", desc: "Gọn gàng kinh thư, ôn tập hiệu quả.", price: 400, icon: "🧰" },
-            { id: 5, name: "Đèn Khổng Minh Soi Sáng", desc: "Soi tỏ đêm dài dùi mài kinh sử.", price: 500, icon: "🏮" },
-            { id: 6, name: "Quạt Giấy Thơ Đề", desc: "Thong dong sĩ tử, giữ tâm tĩnh lặng.", price: 800, icon: "🪭" },
-            { id: 7, name: "Bút Nghiên Ngọc Bích", desc: "Bút ngọc may mắn thăng tiến nhanh.", price: 1000, icon: "🖋️" },
-            { id: 8, name: "Sách Cổ Càn Khôn", desc: "Chứa đựng bí kíp giải bài tập khó.", price: 1500, icon: "📚" },
-            { id: 9, name: "Trà Tuyết Shan Tuyết Sơn", desc: "Tỉnh táo tinh thần khi thi cử.", price: 2000, icon: "🍵" },
-            { id: 10, name: "Hương Trầm Long Náo", desc: "Tăng khả năng tập trung làm bài.", price: 3000, icon: "🪵" },
-            { id: 11, name: "Ngọc Bội Báu Vật", desc: "Tượng trưng danh gia vọng tộc.", price: 5000, icon: "📿" },
-            { id: 12, name: "Thẻ Bảo Lưu Công Danh", desc: "Bảo vệ thành tích sĩ tử.", price: 8000, icon: "🏷️" },
-            { id: 13, name: "Túi Cẩm Nang Trí Tuệ", desc: "Giải đáp tức thì câu hỏi hóc húa.", price: 10000, icon: "🎒" },
-            { id: 14, name: "Thư Pháp Ngự Bút", desc: "Phủ phê bài thi chuẩn phong thái.", price: 50000, icon: "🎨" },
-            { id: 15, name: "Ấn Chương Tử Giáp", desc: "Báu vật uy quyền của bậc đại khoa.", price: 100000, icon: "🏺" }
+            { id: 1, name: "Bút Lông Sói Thượng Hạng", desc: "Giúp thi cử hanh thông.", price: 50, exp: 10, icon: "🖌️" },
+            { id: 2, name: "Nghiên Mực Hoàng Sơn", desc: "Nét chữ mượt mà, rèn trí.", price: 100, exp: 20, icon: "🪨" },
+            { id: 3, name: "Giấy Tuyên Chỉ Thượng Đẳng", desc: "Giấy thơm bài thi chuẩn.", price: 200, exp: 40, icon: "📜" },
+            { id: 4, name: "Tráp Đựng Sách Gỗ Trắc", desc: "Gọn gàng kinh thư.", price: 400, exp: 80, icon: "🧰" },
+            { id: 5, name: "Đèn Khổng Minh Soi Sáng", desc: "Soi tỏ đêm dài dùi mài.", price: 500, exp: 100, icon: "🏮" },
+            { id: 6, name: "Quạt Giấy Thơ Đề", desc: "Tĩnh lặng tâm trí sĩ tử.", price: 800, exp: 160, icon: "🪭" },
+            { id: 7, name: "Bút Nghiên Ngọc Bích", desc: "May mắn thăng tiến.", price: 1000, exp: 200, icon: "🖋️" },
+            { id: 8, name: "Sách Cổ Càn Khôn", desc: "Bí kíp giải bài tập khó.", price: 1500, exp: 300, icon: "📚" },
+            { id: 9, name: "Trà Shan Tuyết Sơn", desc: "Tỉnh táo tinh thần thi cử.", price: 2000, exp: 400, icon: "🍵" },
+            { id: 10, name: "Hương Trầm Long Náo", desc: "Tăng khả năng tập trung.", price: 3000, exp: 600, icon: "🪵" },
+            { id: 11, name: "Ngọc Bội Báu Vật", desc: "Tượng trưng vọng tộc.", price: 5000, exp: 1000, icon: "📿" },
+            { id: 12, name: "Thẻ Bảo Lưu Công Danh", desc: "Bảo vệ thành tích.", price: 8000, exp: 1600, icon: "🏷️" },
+            { id: 13, name: "Túi Cẩm Nang Trí Tuệ", desc: "Giải đáp câu hỏi hóc húa.", price: 10000, exp: 2000, icon: "🎒" },
+            { id: 14, name: "Thư Pháp Ngự Bút", desc: "Phủ phê bài thi đại khoa.", price: 50000, exp: 10000, icon: "🎨" },
+            { id: 15, name: "Ấn Chương Tử Giáp", desc: "Báu vật uy quyền chí tôn.", price: 100000, exp: 25000, icon: "🏺" }
         ];
 
         const petAvatars = ["🐱", "🦊", "🐰", "🐼", "🐯", "🦁", "🐨", "🦉"];
@@ -620,25 +654,77 @@
             categories.forEach(cat => {
                 let topicsHtml = '';
                 cat.topics.forEach(t => {
-                    topicsHtml += `<div onclick="openTheory('${t.id}')" class="border p-4 rounded-xl cursor-pointer hover:border-amber-500 flex justify-between bg-white dark:bg-[#202020] shadow-sm transition"><h4 class="font-bold">${t.name}</h4><span class="text-amber-600 font-bold">Xem Bảng Vàng ➔</span></div>`;
+                    topicsHtml += `<div onclick="openTheory('${t.id}')" class="border p-4 rounded-xl cursor-pointer hover:border-amber-500 flex justify-between bg-white dark:bg-[#202020] shadow-sm transition"><h4 class="font-bold">${t.name}</h4><span class="text-amber-600 font-bold">Xem đề thi ➔</span></div>`;
                 });
                 container.innerHTML += `<div class="border p-5 rounded-2xl bg-[#fffdfa] dark:bg-[#181818] mb-4 space-y-3"><h3 class="cophong-title font-bold text-xl text-red-700 dark:text-red-400 border-b pb-2">${cat.title}</h3>${topicsHtml}</div>`;
             });
         }
 
-        // TÍNH NĂNG GỌI API GEMINI DÙNG MODEL GEMINI-3.6-FLASH
-window.generateAIQuiz = async function() {
-    if (!userData || !userData.apiKey) {
-        alert("Vui lòng nhập Gemini API Key trong phần Cài đặt!");
-        return;
-    }
+        /* HÀM IMPORT FILE TXT CHO TỪNG PHẦN NGỮ PHÁP */
+        window.importQuizFromTxt = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
-    
-    const existingQuestions = (currentTopic && currentTopic.questions) ? currentTopic.questions.map(q => q.q).join("\n- ") : "";
-    const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                let countAdded = 0;
 
-    const promptText = `Bạn là Mặc Hiên tiên sinh. Hãy tạo 1 câu hỏi trắc nghiệm tiếng Anh cho học sinh TRUNG HỌC (Trình độ A2 - B1) thuộc chủ đề: "${currentTopic.name}".
+                lines.forEach(line => {
+                    const parts = line.split('|').map(p => p.trim());
+                    // Cấu trúc yêu cầu: Câu hỏi | A | B | C | D | Đáp án đúng (0/1/2/3) | Giải thích
+                    if (parts.length >= 6) {
+                        const question = parts[0];
+                        const options = [parts[1], parts[2], parts[3], parts[4]];
+                        const answer = parseInt(parts[5]) || 0;
+                        const explanation = parts[6] || "Không có giải thích chi tiết.";
+
+                        const formattedQuestion = { q: question, options: options, answer: answer, explanation: explanation };
+
+                        if (currentTopic && currentTopic.questions) {
+                            currentTopic.questions.push(formattedQuestion);
+                            countAdded++;
+                        }
+                    }
+                });
+
+                if (countAdded > 0) {
+                    if (typeof window.categories !== 'undefined') {
+                        window.categories.forEach(cat => {
+                            let t = cat.topics.find(top => top.id === currentTopic.id);
+                            if (t) t.questions = currentTopic.questions;
+                        });
+                    }
+
+                    if (typeof window.saveToCloud === 'function') {
+                        await window.saveToCloud();
+                    }
+
+                    currentQuestions = [...currentTopic.questions];
+                    currentQIndex = currentQuestions.length - 1;
+                    loadQuestion();
+                    MặcHiênThôngBáo(`Đã nạp thành công ${countAdded} câu từ File (.txt)!`);
+                } else {
+                    alert("File không đúng định dạng! Cấu trúc đúng:\nCâu hỏi | Đáp án A | Đáp án B | Đáp án C | Đáp án D | Chỉ số đúng (0-3) | Giải thích");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input file
+        }
+
+        /* GOI GEMINI 3.6 FLASH KHÔNG THAY ĐỔI */
+        window.generateAIQuiz = async function() {
+            if (!userData || !userData.apiKey) {
+                alert("Vui lòng nhập Gemini API Key trong phần Cài đặt!");
+                return;
+            }
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userData.apiKey}`;
+            const existingQuestions = (currentTopic && currentTopic.questions) ? currentTopic.questions.map(q => q.q).join("\n- ") : "";
+            const randomSeed = Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+
+            const promptText = `Bạn là Mặc Hiên tiên sinh. Hãy tạo 1 câu hỏi trắc nghiệm tiếng Anh cho học sinh TRUNG HỌC (Trình độ A2 - B1) thuộc chủ đề: "${currentTopic.name}".
 Mã ngẫu nhiên: [${randomSeed}].
 
 QUY ĐỊNH BẮT BUỘC VỀ ĐỘ DÀI VÀ NGỮ PHÁP:
@@ -653,65 +739,59 @@ QUY ĐỊNH BẮT BUỘC VỀ ĐỘ DÀI VÀ NGỮ PHÁP:
 Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
 {"question": "Câu hỏi ngắn...", "options": ["A", "B", "C", "D"], "correct": 0, "explanation": "Giải thích ngắn..."}`;
 
-    try {
-        if (typeof MặcHiênThôngBáo === 'function') MặcHiênThôngBáo("Mặc Hiên tiên sinh đang tạo đề A2-B1...");
+            try {
+                if (typeof MặcHiênThôngBáo === 'function') MặcHiênThôngBáo("Mặc Hiên tiên sinh đang tạo đề A2-B1...");
 
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: {
-                    temperature: 0.2,
-                    topP: 0.8
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }] }],
+                        generationConfig: { temperature: 0.2, topP: 0.8 }
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error?.message || "Lỗi kết nối API");
+
+                let rawText = data.candidates[0].content.parts[0].text;
+                const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) throw new Error("AI không trả về cấu trúc JSON hợp lệ");
+                
+                const aiQuestion = JSON.parse(jsonMatch[0]);
+
+                const formattedQuestion = {
+                    q: aiQuestion.question || aiQuestion.q,
+                    options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
+                    answer: typeof aiQuestion.correct !== 'undefined' ? aiQuestion.correct : aiQuestion.c,
+                    explanation: aiQuestion.explanation || aiQuestion.e || "Giải thích ngắn gọn."
+                };
+
+                if (currentTopic && currentTopic.questions) {
+                    currentTopic.questions.push(formattedQuestion);
                 }
-            })
-        });
 
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error?.message || "Lỗi kết nối API");
+                if (typeof window.categories !== 'undefined') {
+                    window.categories.forEach(cat => {
+                        let t = cat.topics.find(top => top.id === currentTopic.id);
+                        if (t) t.questions = currentTopic.questions;
+                    });
+                }
 
-        let rawText = data.candidates[0].content.parts[0].text;
-        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error("AI không trả về cấu trúc JSON hợp lệ");
+                if (typeof window.saveToCloud === 'function') {
+                    await window.saveToCloud();
+                }
+
+                currentQuestions = [...currentTopic.questions];
+                currentQIndex = currentQuestions.length - 1;
+                loadQuestion();
+                if (typeof MặcHiênThôngBáo === 'function') MặcHiênThôngBáo("Đã thêm & lưu câu hỏi mới lên Đám Mây!");
+            } catch (error) {
+                console.error("Lỗi AI ra đề:", error);
+                alert("Lỗi tạo câu hỏi: " + error.message);
+            }
+        };       
         
-        const aiQuestion = JSON.parse(jsonMatch[0]);
-
-        const formattedQuestion = {
-            q: aiQuestion.question || aiQuestion.q,
-            options: aiQuestion.options || aiQuestion.choices || aiQuestion.a,
-            answer: typeof aiQuestion.correct !== 'undefined' ? aiQuestion.correct : aiQuestion.c,
-            explanation: aiQuestion.explanation || aiQuestion.e || "Giải thích ngắn gọn."
-        };
-
-        // 1. Thêm câu hỏi vào danh mục hiện tại
-        if (currentTopic && currentTopic.questions) {
-            currentTopic.questions.push(formattedQuestion);
-        }
-
-        // 2. Cập nhật mảng categories tổng
-        if (typeof window.categories !== 'undefined') {
-            window.categories.forEach(cat => {
-                let t = cat.topics.find(top => top.id === currentTopic.id);
-                if (t) t.questions = currentTopic.questions;
-            });
-        }
-
-        // 3. LƯU LÊN ĐÁM MÂY FIREBASE (Đảm bảo lưu tức thì)
-        if (typeof window.saveToCloud === 'function') {
-            await window.saveToCloud();
-        }
-
-        // 4. Render lại giao diện thi
-        currentQuestions = [...currentTopic.questions];
-        currentQIndex = currentQuestions.length - 1;
-        loadQuestion();
-        if (typeof MặcHiênThôngBáo === 'function') MặcHiênThôngBáo("Đã thêm & lưu câu hỏi mới lên Đám Mây!");
-    } catch (error) {
-        console.error("Lỗi AI ra đề:", error);
-        alert("Lỗi tạo câu hỏi: " + error.message);
-    }
-};       
         window.openTheory = function(topicId) {
             for (let cat of categories) {
                 let found = cat.topics.find(t => t.id === topicId);
@@ -765,7 +845,7 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
             loadQuestion();
         }
 
-  window.loadQuestion = function() {
+        window.loadQuestion = function() {
             const q = currentQuestions[currentQIndex];
             document.getElementById('quiz-progress').innerText = `Câu ${currentQIndex + 1} / ${currentQuestions.length}`;
             document.getElementById('question-text').innerText = q.q;
@@ -779,7 +859,6 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
             document.getElementById('next-btn').classList.add('hidden');
         }
 
-        // Hàm xóa an toàn tách biệt 2 bước cho điện thoại
         window.deleteCurrentQuestion = async function() {
             if (!currentQuestions || currentQuestions.length === 0) return;
 
@@ -857,15 +936,16 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
             renderCategories();
         }
 
+        /* VIẾT LẠI HOÀN TOÀN MÃ BẢNG CẤP BẬC HÀO QUANG XOAY CHUYỂN ĐỘNG */
         window.openRankSystemModal = function() {
             const list = document.getElementById('rank-system-list');
             list.innerHTML = '';
             rankList.forEach((r, idx) => {
                 list.innerHTML += `
-                    <div class="p-4 rounded-xl flex flex-col justify-between items-center border-2 shadow-md ${r.frame} transition transform hover:scale-[1.03]">
-                        <span class="text-xs font-extrabold uppercase opacity-80 tracking-wider">#${idx + 1}</span>
-                        <span class="font-bold text-base my-1 text-center">${r.name}</span>
-                        <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-black/20 mt-1">🎯 ${r.exp} EXP</span>
+                    <div class="rank-card-glow ${r.glow} p-4 flex flex-col justify-between items-center transition transform hover:scale-[1.05]">
+                        <span class="text-xs font-extrabold uppercase opacity-80 tracking-wider text-amber-500">#${idx + 1} Quan Phẩm</span>
+                        <span class="font-bold text-base my-2 text-center ${r.text}">${r.name}</span>
+                        <span class="text-xs font-bold px-3 py-1 rounded-full bg-black/40 text-amber-300 border border-amber-500/30">🎯 ${r.exp.toLocaleString()} EXP</span>
                     </div>
                 `;
             });
@@ -936,7 +1016,7 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
                             ${avatarContent}
                         </div>
                         <h4 class="font-bold text-lg text-white truncate px-2" title="${pl.name}">${pl.name}</h4>
-                        <div class="mt-2 text-xs font-semibold px-2.5 py-1 rounded-full inline-block border ${rDetails.rank.frame}">
+                        <div class="mt-2 text-xs font-semibold px-2.5 py-1 rounded-full inline-block border bg-amber-500/10 border-amber-500 ${rDetails.rank.text}">
                             🛡️ ${rDetails.rank.name}
                         </div>
                         <div class="mt-3 text-sm font-bold text-gray-300">
@@ -993,20 +1073,25 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
             reader.readAsDataURL(file);
         }
 
+        /* VIẾT LẠI HOÀN TOÀN MÃ MẶC HƯƠNG TRAI VÀ CỘNG EXP TƯƠNG XỨNG */
         window.openShop = function() {
             const grid = document.getElementById('shop-items-grid');
             grid.innerHTML = '';
             shopItems.forEach(item => {
                 grid.innerHTML += `
-                    <div class="border border-amber-300 p-3 rounded-xl flex items-center justify-between bg-white/60 dark:bg-black/40 shadow-sm hover:shadow-md transition">
+                    <div class="border border-amber-300 p-3 rounded-xl flex flex-col justify-between bg-white/70 dark:bg-black/40 shadow-sm hover:shadow-md transition">
                         <div class="flex items-center space-x-2.5">
-                            <span class="text-2xl">${item.icon}</span>
+                            <span class="text-3xl">${item.icon}</span>
                             <div>
                                 <h4 class="font-bold text-xs text-amber-900 dark:text-amber-200">${item.name}</h4>
-                                <span class="text-xs font-bold text-yellow-600 dark:text-yellow-400">${item.price} 🪙</span>
+                                <div class="text-[11px] opacity-75 leading-tight my-0.5">${item.desc}</div>
+                                <div class="flex gap-2 text-xs font-bold mt-1">
+                                    <span class="text-yellow-600 dark:text-yellow-400">🪙 ${item.price.toLocaleString()}</span>
+                                    <span class="text-emerald-600 dark:text-emerald-400">✨ +${item.exp.toLocaleString()} EXP</span>
+                                </div>
                             </div>
                         </div>
-                        <button onclick="buyItem(${item.price}, '${item.name}')" class="bg-amber-700 text-white text-xs px-2.5 py-1 rounded-lg font-bold shrink-0">Thỉnh</button>
+                        <button onclick="buyItem(${item.price}, ${item.exp}, '${item.name}')" class="mt-2.5 w-full bg-amber-700 hover:bg-amber-800 text-white text-xs py-1.5 rounded-lg font-bold transition">Thỉnh Bảo Vật</button>
                     </div>
                 `;
             });
@@ -1014,13 +1099,18 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
         }
         window.closeShop = () => document.getElementById('shop-modal').classList.add('hidden');
 
-        window.buyItem = function(price, itemName) {
+        window.buyItem = function(price, expReward, itemName) {
             let p = window.getActivePlayer();
             if (!p) return;
             if (p.coins >= price) {
-                p.coins -= price; p.exp += 25; updateUI();
-                MặcHiênThôngBáo(`Đã thỉnh "${itemName}" thành công! Nhận +25 EXP.`); openShop();
-            } else { MặcHiênThôngBáo("Ngân lượng trong tay áo không đủ để thỉnh bảo vật này!"); }
+                p.coins -= price; 
+                p.exp += expReward; 
+                updateUI();
+                MặcHiênThôngBáo(`Đã thỉnh "${itemName}" thành công! Nhận +${expReward.toLocaleString()} EXP.`); 
+                openShop();
+            } else { 
+                MặcHiênThôngBáo("Ngân lượng trong tay áo không đủ để thỉnh bảo vật này!"); 
+            }
         }
 
         window.openApiKeyModal = () => { document.getElementById('api-key-input').value = userData.apiKey; document.getElementById('apikey-modal').classList.remove('hidden'); }
