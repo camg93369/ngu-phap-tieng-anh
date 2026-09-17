@@ -173,7 +173,19 @@
             
             <div id="theory-content" class="space-y-6"></div>
 
-            <div class="flex justify-end pt-4 border-t border-amber-300 dark:border-amber-800">
+            <!-- KHU VỰC CHỌN SỐ CÂU HỎI & BẮT ĐẦU THI -->
+            <div class="flex flex-wrap justify-between items-center pt-4 border-t border-amber-300 dark:border-amber-800 gap-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm font-bold text-amber-900 dark:text-amber-200">Chọn số câu thi:</span>
+                    <select id="question-limit-select" class="bg-white dark:bg-[#2c221e] text-amber-900 dark:text-amber-100 border border-amber-400 font-bold px-3 py-2 rounded-xl text-sm outline-none shadow-sm cursor-pointer">
+                        <option value="10">10 câu</option>
+                        <option value="20">20 câu</option>
+                        <option value="30">30 câu</option>
+                        <option value="40">40 câu</option>
+                        <option value="50">50 câu</option>
+                        <option value="all">Tất cả câu</option>
+                    </select>
+                </div>
                 <button onclick="startQuiz()" class="btn-shine bg-[#b91c1c] hover:bg-red-800 text-white px-6 py-3 rounded-xl font-bold shadow transition">Vào Trường Thi Ngay ➔</button>
             </div>
         </div>
@@ -837,34 +849,33 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
             document.getElementById('screen-theory').classList.remove('hidden');
         }
 
-      window.startQuiz = function() {
-    if (!currentTopic || !currentTopic.questions || currentTopic.questions.length === 0) {
-        alert("Chủ đề này hiện chưa có câu hỏi nào!");
-        return;
-    }
+        window.startQuiz = function() {
+            if (!currentTopic || !currentTopic.questions || currentTopic.questions.length === 0) {
+                alert("Chủ đề này hiện chưa có câu hỏi nào!");
+                return;
+            }
 
-    // Lấy số lượng câu hỏi người dùng đã chọn
-    const limitValue = document.getElementById('question-limit-select').value;
-    
-    // Sao chép và xáo trộn ngẫu nhiên danh sách câu hỏi
-    let shuffledQuestions = [...currentTopic.questions].sort(() => Math.random() - 0.5);
+            const limitSelect = document.getElementById('question-limit-select');
+            const limitValue = limitSelect ? limitSelect.value : 'all';
+            
+            let shuffledQuestions = [...currentTopic.questions].sort(() => Math.random() - 0.5);
 
-    if (limitValue !== 'all') {
-        const count = parseInt(limitValue, 10);
-        // Lấy đúng số lượng câu hỏi được chọn
-        currentQuestions = shuffledQuestions.slice(0, count);
-    } else {
-        currentQuestions = shuffledQuestions;
-    }
+            if (limitValue !== 'all') {
+                const count = parseInt(limitValue, 10);
+                currentQuestions = shuffledQuestions.slice(0, count);
+            } else {
+                currentQuestions = shuffledQuestions;
+            }
 
-    currentQIndex = 0; 
-    score = 0;
+            currentQIndex = 0; 
+            score = 0;
 
-    document.getElementById('screen-theory').classList.add('hidden');
-    document.getElementById('screen-quiz').classList.remove('hidden');
-    document.getElementById('quiz-topic-name').innerText = currentTopic.name;
-    loadQuestion();
-}
+            document.getElementById('screen-theory').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('quiz-topic-name').innerText = currentTopic.name;
+            loadQuestion();
+        }
+
         window.loadQuestion = function() {
             const q = currentQuestions[currentQIndex];
             document.getElementById('quiz-progress').innerText = `Câu ${currentQIndex + 1} / ${currentQuestions.length}`;
