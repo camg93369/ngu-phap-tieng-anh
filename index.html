@@ -173,19 +173,7 @@
             
             <div id="theory-content" class="space-y-6"></div>
 
-            <!-- KHU VỰC CHỌN SỐ CÂU HỎI & BẮT ĐẦU THI -->
-            <div class="flex flex-wrap justify-between items-center pt-4 border-t border-amber-300 dark:border-amber-800 gap-4">
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm font-bold text-amber-900 dark:text-amber-200">Chọn số câu thi:</span>
-                    <select id="question-limit-select" class="bg-white dark:bg-[#2c221e] text-amber-900 dark:text-amber-100 border border-amber-400 font-bold px-3 py-2 rounded-xl text-sm outline-none shadow-sm cursor-pointer">
-                        <option value="10">10 câu</option>
-                        <option value="20">20 câu</option>
-                        <option value="30">30 câu</option>
-                        <option value="40">40 câu</option>
-                        <option value="50">50 câu</option>
-                        <option value="all">Tất cả câu</option>
-                    </select>
-                </div>
+            <div class="flex justify-end pt-4 border-t border-amber-300 dark:border-amber-800">
                 <button onclick="startQuiz()" class="btn-shine bg-[#b91c1c] hover:bg-red-800 text-white px-6 py-3 rounded-xl font-bold shadow transition">Vào Trường Thi Ngay ➔</button>
             </div>
         </div>
@@ -403,24 +391,24 @@
             { name: "Bảng Nhãn", exp: 1500, glow: "glow-lightning", text: "text-sky-300" }, 
             { name: "Trạng Nguyên", exp: 1800, glow: "glow-royal", text: "text-amber-300" }, 
             { name: "Tòng Cửu Phẩm", exp: 2100, glow: "glow-lightning", text: "text-amber-500" }, 
-            { name: "Chánh Cửu Phẩm", exp: 2400, glow: "glow-lightning", text: "text-amber-400" }, 
+            { name: "Chánh Cửu Phẩm", exp: 2500, glow: "glow-lightning", text: "text-amber-400" }, 
             { name: "Tòng Bát Phẩm", exp: 2800, glow: "glow-lightning", text: "text-cyan-300" }, 
-            { name: "Chánh Bát Phẩm", exp: 3600, glow: "glow-lightning", text: "text-cyan-400" }, 
+            { name: "Chánh Bát Phẩm", exp: 3500, glow: "glow-lightning", text: "text-cyan-400" }, 
             { name: "Tòng Thất Phẩm", exp: 4500, glow: "glow-lightning", text: "text-yellow-400" }, 
-            { name: "Chánh Thất Phẩm", exp: 5500, glow: "glow-lightning", text: "text-yellow-300" }, 
-            { name: "Tòng Lục Phẩm", exp: 6800, glow: "glow-fire", text: "text-teal-300" }, 
-            { name: "Chánh Lục Phẩm", exp: 8200, glow: "glow-fire", text: "text-teal-200" }, 
+            { name: "Chánh Thất Phẩm", exp: 5000, glow: "glow-lightning", text: "text-yellow-300" }, 
+            { name: "Tòng Lục Phẩm", exp: 6500, glow: "glow-fire", text: "text-teal-300" }, 
+            { name: "Chánh Lục Phẩm", exp: 8000, glow: "glow-fire", text: "text-teal-200" }, 
             { name: "Tòng Ngũ Phẩm", exp: 10000, glow: "glow-fire", text: "text-rose-400" }, 
             { name: "Chánh Ngũ Phẩm", exp: 12000, glow: "glow-fire", text: "text-rose-300" }, 
             { name: "Tòng Tứ Phẩm", exp: 15000, glow: "glow-fire", text: "text-red-400" }, 
             { name: "Chánh Tứ Phẩm", exp: 18000, glow: "glow-fire", text: "text-red-500" }, 
             { name: "Tòng Tam Phẩm", exp: 22000, glow: "glow-fire", text: "text-fuchsia-400" }, 
-            { name: "Chánh Tam Phẩm", exp: 27000, glow: "glow-fire", text: "text-fuchsia-300" }, 
-            { name: "Tòng Nhị Phẩm", exp: 33000, glow: "glow-royal", text: "text-violet-400" }, 
+            { name: "Chánh Tam Phẩm", exp: 28000, glow: "glow-fire", text: "text-fuchsia-300" }, 
+            { name: "Tòng Nhị Phẩm", exp: 35000, glow: "glow-royal", text: "text-violet-400" }, 
             { name: "Chánh Nhị Phẩm", exp: 40000, glow: "glow-royal", text: "text-violet-300" }, 
-            { name: "Tòng Nhất Phẩm", exp: 48000, glow: "glow-royal", text: "text-amber-300" }, 
-            { name: "Chánh Nhất Phẩm", exp: 57000, glow: "glow-royal", text: "text-amber-200" }, 
-            { name: "Thái Sư", exp: 68000, glow: "glow-royal", text: "text-amber-300" }, 
+            { name: "Tòng Nhất Phẩm", exp: 45000, glow: "glow-royal", text: "text-amber-300" }, 
+            { name: "Chánh Nhất Phẩm", exp: 50000, glow: "glow-royal", text: "text-amber-200" }, 
+            { name: "Thái Sư", exp: 65000, glow: "glow-royal", text: "text-amber-300" }, 
             { name: "Tể Tướng Đương Triều", exp: 80000, glow: "glow-royal", text: "text-yellow-200" } 
         ];
         
@@ -849,33 +837,34 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
             document.getElementById('screen-theory').classList.remove('hidden');
         }
 
-        window.startQuiz = function() {
-            if (!currentTopic || !currentTopic.questions || currentTopic.questions.length === 0) {
-                alert("Chủ đề này hiện chưa có câu hỏi nào!");
-                return;
-            }
+      window.startQuiz = function() {
+    if (!currentTopic || !currentTopic.questions || currentTopic.questions.length === 0) {
+        alert("Chủ đề này hiện chưa có câu hỏi nào!");
+        return;
+    }
 
-            const limitSelect = document.getElementById('question-limit-select');
-            const limitValue = limitSelect ? limitSelect.value : 'all';
-            
-            let shuffledQuestions = [...currentTopic.questions].sort(() => Math.random() - 0.5);
+    // Lấy số lượng câu hỏi người dùng đã chọn
+    const limitValue = document.getElementById('question-limit-select').value;
+    
+    // Sao chép và xáo trộn ngẫu nhiên danh sách câu hỏi
+    let shuffledQuestions = [...currentTopic.questions].sort(() => Math.random() - 0.5);
 
-            if (limitValue !== 'all') {
-                const count = parseInt(limitValue, 10);
-                currentQuestions = shuffledQuestions.slice(0, count);
-            } else {
-                currentQuestions = shuffledQuestions;
-            }
+    if (limitValue !== 'all') {
+        const count = parseInt(limitValue, 10);
+        // Lấy đúng số lượng câu hỏi được chọn
+        currentQuestions = shuffledQuestions.slice(0, count);
+    } else {
+        currentQuestions = shuffledQuestions;
+    }
 
-            currentQIndex = 0; 
-            score = 0;
+    currentQIndex = 0; 
+    score = 0;
 
-            document.getElementById('screen-theory').classList.add('hidden');
-            document.getElementById('screen-quiz').classList.remove('hidden');
-            document.getElementById('quiz-topic-name').innerText = currentTopic.name;
-            loadQuestion();
-        }
-
+    document.getElementById('screen-theory').classList.add('hidden');
+    document.getElementById('screen-quiz').classList.remove('hidden');
+    document.getElementById('quiz-topic-name').innerText = currentTopic.name;
+    loadQuestion();
+}
         window.loadQuestion = function() {
             const q = currentQuestions[currentQIndex];
             document.getElementById('quiz-progress').innerText = `Câu ${currentQIndex + 1} / ${currentQuestions.length}`;
