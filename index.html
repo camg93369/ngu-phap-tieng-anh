@@ -837,14 +837,34 @@ Chỉ trả về 1 chuỗi JSON duy nhất (không chứa Markdown codeblock):
             document.getElementById('screen-theory').classList.remove('hidden');
         }
 
-        window.startQuiz = function() {
-            currentQuestions = [...currentTopic.questions]; currentQIndex = 0; score = 0;
-            document.getElementById('screen-theory').classList.add('hidden');
-            document.getElementById('screen-quiz').classList.remove('hidden');
-            document.getElementById('quiz-topic-name').innerText = currentTopic.name;
-            loadQuestion();
-        }
+      window.startQuiz = function() {
+    if (!currentTopic || !currentTopic.questions || currentTopic.questions.length === 0) {
+        alert("Chủ đề này hiện chưa có câu hỏi nào!");
+        return;
+    }
 
+    // Lấy số lượng câu hỏi người dùng đã chọn
+    const limitValue = document.getElementById('question-limit-select').value;
+    
+    // Sao chép và xáo trộn ngẫu nhiên danh sách câu hỏi
+    let shuffledQuestions = [...currentTopic.questions].sort(() => Math.random() - 0.5);
+
+    if (limitValue !== 'all') {
+        const count = parseInt(limitValue, 10);
+        // Lấy đúng số lượng câu hỏi được chọn
+        currentQuestions = shuffledQuestions.slice(0, count);
+    } else {
+        currentQuestions = shuffledQuestions;
+    }
+
+    currentQIndex = 0; 
+    score = 0;
+
+    document.getElementById('screen-theory').classList.add('hidden');
+    document.getElementById('screen-quiz').classList.remove('hidden');
+    document.getElementById('quiz-topic-name').innerText = currentTopic.name;
+    loadQuestion();
+}
         window.loadQuestion = function() {
             const q = currentQuestions[currentQIndex];
             document.getElementById('quiz-progress').innerText = `Câu ${currentQIndex + 1} / ${currentQuestions.length}`;
